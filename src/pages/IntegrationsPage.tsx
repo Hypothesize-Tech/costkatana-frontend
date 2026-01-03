@@ -23,6 +23,7 @@ import GitHubConnector from '../components/chat/GitHubConnector';
 import GoogleConnector from '../components/chat/GoogleConnector';
 import VercelConnector from '../components/integrations/VercelConnector';
 import { AWSConnector } from '../components/integrations/AWSConnector';
+import { AWSServicePanel } from '../components/integrations/AWSServicePanel';
 import { VercelServicePanel } from '../components/chat/VercelServicePanel';
 import FeatureSelector from '../components/chat/FeatureSelector';
 import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
@@ -44,6 +45,8 @@ export const IntegrationsPage: React.FC = () => {
     const [viewModal, setViewModal] = useState<ViewModal>(null);
     const [showLogs, setShowLogs] = useState(false);
     const [showVercelPanel, setShowVercelPanel] = useState(false);
+    const [showAWSPanel, setShowAWSPanel] = useState(false);
+    const [selectedAWSConnection, setSelectedAWSConnection] = useState<AWSConnection | null>(null);
     const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
     const [showFeatureSelector, setShowFeatureSelector] = useState(false);
     const [githubConnections, setGithubConnections] = useState<GitHubConnection[]>([]);
@@ -504,9 +507,14 @@ export const IntegrationsPage: React.FC = () => {
                                                                     </p>
                                                                 )}
                                                                 {awsConnection && (
-                                                                    <p className="text-xs truncate text-secondary-600 dark:text-secondary-300 sm:text-sm">
-                                                                        {awsConnection.connectionName}
-                                                                    </p>
+                                                                    <div className="space-y-0.5">
+                                                                        <p className="text-xs truncate text-secondary-600 dark:text-secondary-300 sm:text-sm font-medium">
+                                                                            {awsConnection.connectionName}
+                                                                        </p>
+                                                                        <p className="text-xs text-secondary-500 dark:text-secondary-400">
+                                                                            AWS Account ID: {awsConnection.roleArn.match(/arn:aws:iam::(\d+):role/)?.[1] || 'Unknown'}
+                                                                        </p>
+                                                                    </div>
                                                                 )}
                                                                 {regularIntegrations.length > 0 && !githubConnection && !awsConnection && (
                                                                     <p className="text-xs text-secondary-500 dark:text-secondary-400">
@@ -543,9 +551,57 @@ export const IntegrationsPage: React.FC = () => {
                                                     {/* AWS Specific Info */}
                                                     {isConnected && awsConnection && (
                                                         <div className="p-2.5 mb-3 rounded-lg border glass border-primary-200/20 dark:border-primary-500/10 sm:p-3 sm:mb-4">
-                                                            <p className="text-xs font-medium text-secondary-500 dark:text-secondary-400">
-                                                                {awsConnection.permissionMode === 'read-only' ? '🔒 Read-Only' : '✏️ Read-Write'} • {awsConnection.allowedRegions?.length || 0} Regions
-                                                            </p>
+                                                            <div className="space-y-2">
+                                                                <div className="flex items-center justify-between">
+                                                                    <p className="text-xs font-medium text-secondary-500 dark:text-secondary-400">
+                                                                        {awsConnection.environment.charAt(0).toUpperCase() + awsConnection.environment.slice(1)} Environment
+                                                                    </p>
+                                                                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${awsConnection.status === 'active'
+                                                                        ? 'bg-success-100 dark:bg-success-900/20 text-success-700 dark:text-success-300 border border-success-300 dark:border-success-700'
+                                                                        : 'bg-danger-100 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300 border border-danger-300 dark:border-danger-700'
+                                                                        }`}>
+                                                                        {awsConnection.status === 'active' ? '● Active' : '● Error'}
+                                                                    </span>
+                                                                </div>
+                                                                <p className="text-xs text-secondary-600 dark:text-secondary-300">
+                                                                    {awsConnection.permissionMode === 'read-only' ? (
+                                                                        <span className="flex items-center gap-1">
+                                                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                                            </svg>
+                                                                            Read-Only Access
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="flex items-center gap-1">
+                                                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                                            </svg>
+                                                                            Read-Write Access
+                                                                        </span>
+                                                                    )}
+                                                                </p>
+                                                                <div className="flex flex-wrap gap-2 mt-1">
+                                                                    <span className="px-2 py-0.5 text-xs bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 border border-primary-300 dark:border-primary-700 rounded-full">
+                                                                        {awsConnection.allowedServices?.length || 0} Services
+                                                                    </span>
+                                                                    <span className="px-2 py-0.5 text-xs bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 border border-primary-300 dark:border-primary-700 rounded-full">
+                                                                        {awsConnection.allowedRegions?.length || 0} Regions
+                                                                    </span>
+                                                                    {awsConnection.totalExecutions > 0 && (
+                                                                        <span className="px-2 py-0.5 text-xs bg-secondary-100 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-300 border border-secondary-300 dark:border-secondary-700 rounded-full">
+                                                                            {awsConnection.totalExecutions} Executions
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                {awsConnection.health?.lastError && (
+                                                                    <p className="text-xs text-danger-600 dark:text-danger-400 mt-1 flex items-center gap-1">
+                                                                        <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                                        </svg>
+                                                                        <span>{awsConnection.health.lastError}</span>
+                                                                    </p>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     )}
 
@@ -630,8 +686,10 @@ export const IntegrationsPage: React.FC = () => {
                                                                     <>
                                                                         <button
                                                                             onClick={() => {
-                                                                                // For now, just show a message - can add AWS management page later
-                                                                                alert('AWS Management coming soon! Use natural language commands in the dashboard chat to manage your AWS resources.');
+                                                                                if (awsConnection) {
+                                                                                    setSelectedAWSConnection(awsConnection);
+                                                                                    setShowAWSPanel(true);
+                                                                                }
                                                                             }}
                                                                             className="flex-1 px-2.5 py-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-1.5 text-xs sm:px-3 sm:py-2.5 sm:gap-2 sm:text-sm"
                                                                         >
@@ -757,7 +815,7 @@ export const IntegrationsPage: React.FC = () => {
                 )}
                 {setupModal === 'vercel' && (
                     <VercelConnector
-                        onConnect={(connectionId) => {
+                        onConnect={() => {
                             setSetupModal(null);
                             loadIntegrationData();
                         }}
@@ -810,6 +868,17 @@ export const IntegrationsPage: React.FC = () => {
                 <VercelServicePanel
                     isOpen={showVercelPanel}
                     onClose={() => setShowVercelPanel(false)}
+                />
+
+                {/* AWS Service Panel */}
+                <AWSServicePanel
+                    isOpen={showAWSPanel}
+                    onClose={() => {
+                        setShowAWSPanel(false);
+                        setSelectedAWSConnection(null);
+                    }}
+                    connection={selectedAWSConnection}
+                    onRefresh={loadIntegrationData}
                 />
 
                 {/* GitHub Feature Selector */}

@@ -44,7 +44,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     onChange,
     onSelect,
     textareaRef,
-    position
+    position: _position
 }) => {
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [autocompleteItems, setAutocompleteItems] = useState<AutocompleteItem[]>([]);
@@ -523,6 +523,38 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
                     { command: 'create-role', label: 'Create Role', description: 'Create a new role' },
                     { command: 'assign-role', label: 'Assign Role', description: 'Assign role to user' },
                     { command: 'remove-role', label: 'Remove Role', description: 'Remove role from user' }
+                ];
+            case 'aws':
+                return [
+                    // Cost Analysis
+                    { command: 'costs', label: 'View Costs', description: 'View current AWS spending and costs' },
+                    { command: 'cost-breakdown', label: 'Cost Breakdown', description: 'Detailed cost breakdown by service' },
+                    { command: 'cost-forecast', label: 'Cost Forecast', description: 'Predict future AWS costs' },
+                    { command: 'anomalies', label: 'Cost Anomalies', description: 'Detect unusual spending patterns' },
+
+                    // EC2
+                    { command: 'list-ec2', label: 'List EC2 Instances', description: 'List all EC2 instances' },
+                    { command: 'ec2-costs', label: 'EC2 Costs', description: 'View EC2 instance costs' },
+                    { command: 'stop-ec2', label: 'Stop EC2 Instance', description: 'Stop an EC2 instance' },
+                    { command: 'start-ec2', label: 'Start EC2 Instance', description: 'Start an EC2 instance' },
+
+                    // S3
+                    { command: 'list-s3', label: 'List S3 Buckets', description: 'List all S3 buckets' },
+                    { command: 's3-costs', label: 'S3 Costs', description: 'View S3 storage costs' },
+
+                    // RDS
+                    { command: 'list-rds', label: 'List RDS Instances', description: 'List all RDS databases' },
+                    { command: 'rds-costs', label: 'RDS Costs', description: 'View RDS database costs' },
+
+                    // Lambda
+                    { command: 'list-lambda', label: 'List Lambda Functions', description: 'List all Lambda functions' },
+                    { command: 'lambda-costs', label: 'Lambda Costs', description: 'View Lambda execution costs' },
+
+                    // Optimization
+                    { command: 'optimize', label: 'Get Recommendations', description: 'Get cost optimization recommendations' },
+                    { command: 'savings', label: 'Savings Opportunities', description: 'Find potential cost savings' },
+                    { command: 'reserved', label: 'Reserved Instances', description: 'Analyze reserved instance coverage' },
+                    { command: 'spot', label: 'Spot Instances', description: 'Spot instance recommendations' }
                 ];
             // Google Workspace Services
             case 'drive':

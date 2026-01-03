@@ -11,6 +11,11 @@ export interface AWSConnection {
   permissionMode: 'read-only' | 'read-write' | 'custom';
   executionMode: 'simulation' | 'live';
   allowedRegions?: string[];
+  allowedServices?: Array<{
+    service: string;
+    actions: string[];
+    regions: string[];
+  }>;
   status: 'active' | 'inactive' | 'error' | 'pending_verification';
   health?: {
     lastChecked: string;
@@ -138,6 +143,103 @@ export interface AllowedAction {
   requiresApproval: boolean;
 }
 
+// EC2 Types
+export interface EC2Instance {
+  instanceId: string;
+  instanceType: string;
+  state: string;
+  launchTime?: string;
+  tags: Record<string, string>;
+  privateIpAddress?: string;
+  publicIpAddress?: string;
+  vpcId?: string;
+  subnetId?: string;
+}
+
+// S3 Types
+export interface S3Bucket {
+  name: string;
+  creationDate?: string;
+  region?: string;
+  tags: Record<string, string>;
+}
+
+// RDS Types
+export interface RDSInstance {
+  dbInstanceId: string;
+  dbInstanceClass: string;
+  engine: string;
+  engineVersion: string;
+  status: string;
+  allocatedStorage: number;
+  multiAZ: boolean;
+  endpoint?: { address: string; port: number };
+  tags: Record<string, string>;
+}
+
+// Lambda Types
+export interface LambdaFunction {
+  functionName: string;
+  functionArn: string;
+  runtime: string;
+  memorySize: number;
+  timeout: number;
+  codeSize: number;
+  lastModified?: string;
+  handler: string;
+  description?: string;
+  tags: Record<string, string>;
+}
+
+// Cost Explorer Types
+export interface CostBreakdown {
+  service: string;
+  amount: number;
+  percentage: number;
+  currency: string;
+}
+
+export interface CostForecast {
+  timePeriod: { start: string; end: string };
+  meanValue: number;
+  predictionIntervalLowerBound?: number;
+  predictionIntervalUpperBound?: number;
+  currency: string;
+}
+
+export interface CostAnomaly {
+  anomalyId: string;
+  anomalyStartDate?: string;
+  anomalyEndDate?: string;
+  dimensionValue?: string;
+  rootCauses?: Array<{
+    service?: string;
+    region?: string;
+    linkedAccount?: string;
+    usageType?: string;
+  }>;
+  impact: {
+    maxImpact: number;
+    totalImpact: number;
+  };
+  feedback?: string;
+}
+
+export interface CostSummary {
+  total: number;
+  currency: string;
+  topServices: CostBreakdown[];
+  dailyAverage: number;
+  projectedMonthEnd: number;
+}
+
+export interface OptimizationRecommendation {
+  service: string;
+  insight: string;
+  potentialSavings?: number;
+  priority: 'high' | 'medium' | 'low';
+}
+
 // API Service
 class AWSService {
   private baseUrl = '/aws';
@@ -150,6 +252,8 @@ class AWSService {
     roleArn: string;
     permissionMode?: string;
     allowedRegions?: string[];
+    externalId?: string;
+    selectedPermissions?: Record<string, string[]>; // Granular permissions
   }): Promise<{ connection: AWSConnection & { externalId: string } }> {
     const response = await api.post(`${this.baseUrl}/connections`, data);
     return response.data;
@@ -284,6 +388,141 @@ class AWSService {
   }> {
     const response = await api.get(`${this.baseUrl}/kill-switch`);
     return response.data.state;
+  }
+
+  // ============================================================================
+  // EC2 Resources
+  // ============================================================================
+
+  async listEC2Instances(connectionId: string, region?: string): Promise<{
+    success: boolean;
+    instances: EC2Instance[];
+    count: number;
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/ec2/instances`, {
+      params: { region },
+    });
+    return response.data;
+  }
+
+  async stopEC2Instances(connectionId: string, instanceIds: string[], region?: string): Promise<{
+    success: boolean;
+    stoppedInstances: string[];
+    errors: Array<{ instanceId: string; error: string }>;
+  }> {
+    const response = await api.post(`${this.baseUrl}/connections/${connectionId}/ec2/stop`, {
+      instanceIds,
+      region,
+    });
+    return response.data;
+  }
+
+  async startEC2Instances(connectionId: string, instanceIds: string[], region?: string): Promise<{
+    success: boolean;
+    startedInstances: string[];
+    errors: Array<{ instanceId: string; error: string }>;
+  }> {
+    const response = await api.post(`${this.baseUrl}/connections/${connectionId}/ec2/start`, {
+      instanceIds,
+      region,
+    });
+    return response.data;
+  }
+
+  // ============================================================================
+  // S3 Resources
+  // ============================================================================
+
+  async listS3Buckets(connectionId: string): Promise<{
+    success: boolean;
+    buckets: S3Bucket[];
+    count: number;
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/s3/buckets`);
+    return response.data;
+  }
+
+  // ============================================================================
+  // RDS Resources
+  // ============================================================================
+
+  async listRDSInstances(connectionId: string, region?: string): Promise<{
+    success: boolean;
+    instances: RDSInstance[];
+    count: number;
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/rds/instances`, {
+      params: { region },
+    });
+    return response.data;
+  }
+
+  // ============================================================================
+  // Lambda Resources
+  // ============================================================================
+
+  async listLambdaFunctions(connectionId: string, region?: string): Promise<{
+    success: boolean;
+    functions: LambdaFunction[];
+    count: number;
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/lambda/functions`, {
+      params: { region },
+    });
+    return response.data;
+  }
+
+  // ============================================================================
+  // Cost Explorer
+  // ============================================================================
+
+  async getCosts(connectionId: string): Promise<{
+    success: boolean;
+  } & CostSummary> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/costs`);
+    return response.data;
+  }
+
+  async getCostBreakdown(connectionId: string, startDate?: string, endDate?: string): Promise<{
+    success: boolean;
+    breakdown: CostBreakdown[];
+    period: { start: string; end: string };
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/costs/breakdown`, {
+      params: { startDate, endDate },
+    });
+    return response.data;
+  }
+
+  async getCostForecast(connectionId: string, granularity?: 'DAILY' | 'MONTHLY'): Promise<{
+    success: boolean;
+    forecast: CostForecast[];
+    period: { start: string; end: string };
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/costs/forecast`, {
+      params: { granularity },
+    });
+    return response.data;
+  }
+
+  async getCostAnomalies(connectionId: string, startDate?: string, endDate?: string): Promise<{
+    success: boolean;
+    anomalies: CostAnomaly[];
+    count: number;
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/costs/anomalies`, {
+      params: { startDate, endDate },
+    });
+    return response.data;
+  }
+
+  async getOptimizationRecommendations(connectionId: string): Promise<{
+    success: boolean;
+    recommendations: OptimizationRecommendation[];
+    count: number;
+  }> {
+    const response = await api.get(`${this.baseUrl}/connections/${connectionId}/costs/optimize`);
+    return response.data;
   }
 }
 
