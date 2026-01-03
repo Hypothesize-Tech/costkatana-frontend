@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ExecutionPlan, ExecutionStep, awsService } from '../../services/aws.service';
+import { ExecutionPlan, awsService } from '../../services/aws.service';
 
 interface ExecutionApprovalProps {
   plan: ExecutionPlan;
