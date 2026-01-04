@@ -100,9 +100,11 @@ class ThreatDetectionService {
 
   private static readonly DATA_EXFILTRATION_PATTERNS = [
     /data\s+exfiltration/i,
-    /extract\s+(?:all\s+)?(?:data|information|files)/i,
-    /download\s+(?:all\s+)?(?:database|data)/i,
-    /export\s+(?:all\s+)?(?:sensitive|confidential)/i
+    /extract\s+all\s+(?:user|customer|employee|personal)\s+(?:data|information|records)/i,
+    /download\s+(?:entire|complete|full)\s+(?:database|user\s+data)/i,
+    /export\s+all\s+(?:sensitive|confidential|private)\s+(?:data|information|records)/i,
+    /steal\s+(?:data|information|credentials)/i,
+    /exfiltrate\s+(?:data|information)/i
   ];
 
   private static readonly PHISHING_PATTERNS = [
@@ -188,7 +190,10 @@ class ThreatDetectionService {
       /@drive/i,
       /@sheets/i,
       /@docs/i,
-      /@webhook/i
+      /@webhook/i,
+      /@aws/i,
+      /@calendar/i,
+      /@gmail/i
     ];
 
     // If content contains integration mentions, skip threat detection

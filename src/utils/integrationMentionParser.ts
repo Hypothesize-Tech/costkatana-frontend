@@ -42,7 +42,8 @@ export const VALID_INTEGRATIONS = [
   'docs',
   'slides',
   'forms',
-  'webhook'
+  'webhook',
+  'aws'
 ] as const;
 
 export type IntegrationMentionType = typeof VALID_INTEGRATIONS[number];

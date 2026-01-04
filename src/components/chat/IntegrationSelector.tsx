@@ -179,6 +179,11 @@ const getIntegrationGradient = (integration: string): { button: string; icon: st
                 button: 'from-green-500/90 to-green-600/90 hover:from-green-400/90 hover:to-green-500/90 border-green-400/30',
                 icon: 'from-green-400/30 to-green-500/30',
             };
+        case 'aws':
+            return {
+                button: 'from-orange-500/90 to-orange-600/90 hover:from-orange-400/90 hover:to-orange-500/90 border-orange-400/30',
+                icon: 'from-orange-400/30 to-orange-500/30',
+            };
         default:
             return {
                 button: 'from-primary-500/90 to-primary-600/90 hover:from-primary-400/90 hover:to-primary-500/90 border-primary-400/30',
