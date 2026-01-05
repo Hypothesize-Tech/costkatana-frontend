@@ -25,7 +25,7 @@ const AWS_SERVICES: AWSService[] = [
     {
         id: 'ec2',
         name: 'EC2',
-        description: 'Virtual servers - Start/stop instances, resize, view costs',
+        description: 'Virtual servers - Create/start/stop instances, resize, view costs',
         icon: <ServerIcon className="w-5 h-5" />,
         category: 'compute',
         readOnlyActions: [
@@ -34,17 +34,25 @@ const AWS_SERVICES: AWSService[] = [
             'ec2:List*',
         ],
         readWriteActions: [
+            'ec2:RunInstances',
             'ec2:StartInstances',
             'ec2:StopInstances',
             'ec2:RebootInstances',
             'ec2:ModifyInstanceAttribute',
             'ec2:ModifyInstancePlacement',
+            'ec2:CreateKeyPair',
+            'ec2:ImportKeyPair',
+            'ec2:CreateVpc',
+            'ec2:CreateSubnet',
+            'ec2:CreateSecurityGroup',
+            'ec2:AuthorizeSecurityGroupIngress',
+            'ec2:AuthorizeSecurityGroupEgress',
         ],
     },
     {
         id: 's3',
         name: 'S3',
-        description: 'Object storage - Lifecycle policies, storage class transitions',
+        description: 'Object storage - Create buckets, lifecycle policies, storage class transitions',
         icon: <CircleStackIcon className="w-5 h-5" />,
         category: 'storage',
         readOnlyActions: [
@@ -52,15 +60,20 @@ const AWS_SERVICES: AWSService[] = [
             's3:Get*',
         ],
         readWriteActions: [
+            's3:CreateBucket',
+            's3:DeleteBucket',
             's3:PutBucketLifecycleConfiguration',
             's3:PutIntelligentTieringConfiguration',
             's3:PutBucketTagging',
+            's3:PutBucketVersioning',
+            's3:PutBucketEncryption',
+            's3:PutBucketPublicAccessBlock',
         ],
     },
     {
         id: 'rds',
         name: 'RDS',
-        description: 'Managed databases - Start/stop, modify instances, backups',
+        description: 'Managed databases - Create/start/stop instances, modify, backups',
         icon: <CircleStackIcon className="w-5 h-5" />,
         category: 'database',
         readOnlyActions: [
@@ -68,16 +81,18 @@ const AWS_SERVICES: AWSService[] = [
             'rds:List*',
         ],
         readWriteActions: [
+            'rds:CreateDBInstance',
             'rds:StartDBInstance',
             'rds:StopDBInstance',
             'rds:ModifyDBInstance',
             'rds:AddTagsToResource',
+            'rds:CreateDBSubnetGroup',
         ],
     },
     {
         id: 'lambda',
         name: 'Lambda',
-        description: 'Serverless functions - Optimize memory, concurrency, timeout',
+        description: 'Serverless functions - Create functions, optimize memory, concurrency, timeout',
         icon: <CodeBracketIcon className="w-5 h-5" />,
         category: 'compute',
         readOnlyActions: [
@@ -85,6 +100,7 @@ const AWS_SERVICES: AWSService[] = [
             'lambda:Get*',
         ],
         readWriteActions: [
+            'lambda:CreateFunction',
             'lambda:UpdateFunctionConfiguration',
             'lambda:UpdateFunctionCode',
             'lambda:PutFunctionConcurrency',
@@ -94,7 +110,7 @@ const AWS_SERVICES: AWSService[] = [
     {
         id: 'dynamodb',
         name: 'DynamoDB',
-        description: 'NoSQL database - Optimize capacity, enable auto-scaling',
+        description: 'NoSQL database - Create tables, optimize capacity, enable auto-scaling',
         icon: <CircleStackIcon className="w-5 h-5" />,
         category: 'database',
         readOnlyActions: [
@@ -102,6 +118,7 @@ const AWS_SERVICES: AWSService[] = [
             'dynamodb:List*',
         ],
         readWriteActions: [
+            'dynamodb:CreateTable',
             'dynamodb:UpdateTable',
             'dynamodb:UpdateContinuousBackups',
             'dynamodb:TagResource',
@@ -110,7 +127,7 @@ const AWS_SERVICES: AWSService[] = [
     {
         id: 'ecs',
         name: 'ECS',
-        description: 'Container orchestration - Optimize task definitions, scaling',
+        description: 'Container orchestration - Create clusters, optimize task definitions, scaling',
         icon: <CpuChipIcon className="w-5 h-5" />,
         category: 'compute',
         readOnlyActions: [
@@ -118,6 +135,7 @@ const AWS_SERVICES: AWSService[] = [
             'ecs:List*',
         ],
         readWriteActions: [
+            'ecs:CreateCluster',
             'ecs:UpdateService',
             'ecs:RegisterTaskDefinition',
             'ecs:TagResource',
@@ -196,6 +214,7 @@ export const AWSConnector: React.FC<AWSConnectorProps> = ({ onConnect, onClose }
         'savingsplans': [...AWS_SERVICES.find(s => s.id === 'savingsplans')!.readOnlyActions],
     });
     const [expandedServices, setExpandedServices] = useState<string[]>([]);
+    const [fullAccessServices, setFullAccessServices] = useState<Set<string>>(new Set());
 
     // Form state
     const [connectionName, setConnectionName] = useState('');
@@ -228,6 +247,12 @@ export const AWSConnector: React.FC<AWSConnectorProps> = ({ onConnect, onClose }
                 ...prev,
                 [serviceId]: []
             }));
+            // Also remove from full access if it was enabled
+            setFullAccessServices(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(serviceId);
+                return newSet;
+            });
         } else {
             // Select all read-only permissions by default
             const service = AWS_SERVICES.find(s => s.id === serviceId);
@@ -241,6 +266,11 @@ export const AWSConnector: React.FC<AWSConnectorProps> = ({ onConnect, onClose }
     };
 
     const togglePermission = (serviceId: string, permission: string) => {
+        // Don't allow toggling individual permissions when full access is enabled
+        if (fullAccessServices.has(serviceId)) {
+            return;
+        }
+
         setSelectedPermissions(prev => {
             const currentPerms = prev[serviceId] || [];
             if (currentPerms.includes(permission)) {
@@ -266,6 +296,11 @@ export const AWSConnector: React.FC<AWSConnectorProps> = ({ onConnect, onClose }
     };
 
     const selectAllPermissions = (serviceId: string) => {
+        // If full access is enabled, this is a no-op (already has all permissions)
+        if (fullAccessServices.has(serviceId)) {
+            return;
+        }
+
         const service = AWS_SERVICES.find(s => s.id === serviceId);
         if (service) {
             const allPerms = permissionMode === 'read-only'
@@ -285,6 +320,37 @@ export const AWSConnector: React.FC<AWSConnectorProps> = ({ onConnect, onClose }
         }));
     };
 
+    const toggleFullAccess = (serviceId: string) => {
+        const service = AWS_SERVICES.find(s => s.id === serviceId);
+        if (!service) return;
+
+        setFullAccessServices(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(serviceId)) {
+                // Disabling full access - revert to read-only permissions by default
+                newSet.delete(serviceId);
+                setSelectedPermissions(prevPerms => ({
+                    ...prevPerms,
+                    [serviceId]: [...service.readOnlyActions]
+                }));
+            } else {
+                // Enabling full access - use wildcard permission for complete access
+                // This includes create, update, delete, and all other operations
+                // Backend permission boundary will still block banned actions
+                newSet.add(serviceId);
+                // Use wildcard permission: service:*
+                setSelectedPermissions(prevPerms => ({
+                    ...prevPerms,
+                    [serviceId]: [`${serviceId}:*`]
+                }));
+                // Automatically switch to read-write mode when full access is enabled
+                // Full access includes write permissions, so mode should reflect that
+                setPermissionMode('read-write');
+            }
+            return newSet;
+        });
+    };
+
     const toggleAllServices = () => {
         if (selectedServices.length === AWS_SERVICES.length) {
             setSelectedPermissions({ 'cost-explorer': [...AWS_SERVICES.find(s => s.id === 'cost-explorer')!.readOnlyActions] });
@@ -298,44 +364,43 @@ export const AWSConnector: React.FC<AWSConnectorProps> = ({ onConnect, onClose }
     };
 
     const generateCloudFormationTemplate = useCallback((mode: 'read-only' | 'read-write', permissions: Record<string, string[]>) => {
-        // Collect all selected permissions
-        const allActions: string[] = [];
+        // Separate full access services from individual permissions
+        const fullAccessServiceIds = Object.keys(permissions).filter(serviceId =>
+            fullAccessServices.has(serviceId) && permissions[serviceId].length > 0
+        );
+
+        // Collect individual permissions (non-full-access services)
+        const individualActions: string[] = [];
         Object.entries(permissions).forEach(([serviceId, perms]) => {
+            // Skip full access services - they'll use wildcards
+            if (fullAccessServices.has(serviceId)) {
+                return;
+            }
             // Ensure each action has the correct service prefix
             const prefixedActions = perms.map(action =>
                 action.includes(':') ? action : `${serviceId}:${action}`
             );
-            allActions.push(...prefixedActions);
+            individualActions.push(...prefixedActions);
         });
 
-        // Remove duplicates
-        const uniqueActions = [...new Set(allActions)];
+        // Remove duplicates from individual actions
+        const uniqueIndividualActions = [...new Set(individualActions)];
 
-        const readOnlyActions = uniqueActions.filter(a =>
-            a.includes('Describe') || a.includes('List') || a.includes('Get')
-        );
-        const writeActions = uniqueActions.filter(a =>
-            !a.includes('Describe') && !a.includes('List') && !a.includes('Get')
-        );
+        // Build full access wildcards (most efficient - single wildcard per service)
+        const fullAccessWildcards = fullAccessServiceIds.map(serviceId => `${serviceId}:*`);
 
-        const readWritePolicy = mode === 'read-write' && writeActions.length > 0 ? `
-        - PolicyName: CostKatanaOptimizationPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:${writeActions.map(a => `
-                  - ${a}`).join('')}
-                Resource: '*'
-                Condition:
-                  StringEquals:
-                    aws:RequestTag/ManagedBy: CostKatana` : '';
+        // Combine all actions into single array (more compact)
+        const allActions = [...fullAccessWildcards, ...uniqueIndividualActions];
 
-        const selectedServiceIds = Object.keys(permissions).filter(id => permissions[id].length > 0);
+        // Build compact action list (YAML format, minimal spacing)
+        const actionsList = allActions.length > 0
+            ? allActions.map(a => `- ${a}`).join('\n                  ')
+            : '[]';
 
+        // Ultra-compact template to minimize policy size
+        // Note: No tag condition to allow service-level operations like s3:ListAllMyBuckets
         return `AWSTemplateFormatVersion: '2010-09-09'
-Description: CostKatana IAM Role for AWS Cost Optimization
-
+Description: CostKatana IAM Role
 Resources:
   CostKatanaRole:
     Type: AWS::IAM::Role
@@ -354,18 +419,14 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess
       Policies:
-        - PolicyName: CostKatanaReadOnlyPolicy
+        - PolicyName: CKPolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
               - Effect: Allow
-                Action:${readOnlyActions.map(a => `
-                  - ${a}`).join('')}
+                Action:
+                  ${actionsList}
                 Resource: '*'
-        - PolicyName: CostKatanaDenyPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
               - Effect: Deny
                 Action:
                   - iam:*User*
@@ -377,24 +438,13 @@ Resources:
                   - iam:PutRolePolicy
                   - organizations:*
                   - account:*
-                Resource: '*'${readWritePolicy}
-
+                Resource: '*'
 Outputs:
-  RoleArn:
-    Description: ARN of the CostKatana IAM Role - Copy this value
-    Value: !GetAtt CostKatanaRole.Arn
-    Export:
-      Name: CostKatanaRoleArn
-  ExternalId:
-    Description: External ID for secure access
-    Value: '${generatedExternalId}'
-  SelectedServices:
-    Description: AWS Services enabled for CostKatana
-    Value: '${selectedServiceIds.join(', ')}'
-  TotalPermissions:
-    Description: Total permissions granted
-    Value: '${uniqueActions.length} (${readOnlyActions.length} read, ${writeActions.length} write)'`;
-    }, [generatedExternalId]);
+          RoleArn:
+            Value: !GetAtt CostKatanaRole.Arn
+          ExternalId:
+            Value: '${generatedExternalId}'`;
+    }, [generatedExternalId, fullAccessServices]);
 
     const handleCreateConnection = async () => {
         if (!connectionName || !roleArn) {
@@ -586,7 +636,21 @@ Outputs:
                                         {selectedServices.length} of {AWS_SERVICES.length} services selected
                                     </span>
                                     <p className="text-xs text-secondary-400 mt-1">
-                                        {Object.values(selectedPermissions).reduce((sum, perms) => sum + perms.length, 0)} total permissions granted
+                                        {Object.entries(selectedPermissions).reduce((sum, [serviceId, perms]) => {
+                                            // If full access is enabled, count all available permissions for that service
+                                            if (fullAccessServices.has(serviceId)) {
+                                                const service = AWS_SERVICES.find(s => s.id === serviceId);
+                                                if (service) {
+                                                    return sum + service.readOnlyActions.length + service.readWriteActions.length;
+                                                }
+                                            }
+                                            return sum + perms.length;
+                                        }, 0)} total permissions granted
+                                        {fullAccessServices.size > 0 && (
+                                            <span className="text-[#FF9900] ml-2">
+                                                ({fullAccessServices.size} service{fullAccessServices.size !== 1 ? 's' : ''} with full access)
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
                                 <button
@@ -641,7 +705,11 @@ Outputs:
                                                                         <div className="flex items-center gap-2">
                                                                             {isSelected && (
                                                                                 <span className="text-xs text-primary-400">
-                                                                                    {servicePermissions.length}/{availablePerms.length}
+                                                                                    {fullAccessServices.has(service.id) ? (
+                                                                                        <span className="text-[#FF9900] font-semibold">Full Access</span>
+                                                                                    ) : (
+                                                                                        `${servicePermissions.length}/${availablePerms.length}`
+                                                                                    )}
                                                                                 </span>
                                                                             )}
                                                                             <button
@@ -672,73 +740,136 @@ Outputs:
                                                         {/* Expanded Permissions */}
                                                         {isExpanded && (
                                                             <div className="border-t border-primary-500/10 p-4 bg-black/20">
+                                                                {/* Full Access Checkbox */}
+                                                                <div className="mb-4 p-3 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/30">
+                                                                    <label className="flex items-center gap-3 cursor-pointer">
+                                                                        <div className="relative flex items-center">
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                checked={fullAccessServices.has(service.id)}
+                                                                                onChange={() => toggleFullAccess(service.id)}
+                                                                                className="sr-only"
+                                                                            />
+                                                                            <div
+                                                                                className={`w-6 h-6 border-2 rounded-lg flex items-center justify-center transition-all duration-300 ${fullAccessServices.has(service.id)
+                                                                                    ? 'border-[#FF9900] bg-[#FF9900] shadow-lg shadow-[#FF9900]/30'
+                                                                                    : 'border-secondary-500 bg-dark-bg-200 hover:border-[#FF9900]/50 hover:bg-[#FF9900]/5'
+                                                                                    }`}
+                                                                            >
+                                                                                {fullAccessServices.has(service.id) && (
+                                                                                    <CheckCircleIcon className="w-4 h-4 text-white" />
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="flex-1">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <span className="text-sm font-semibold text-[#FF9900]">
+                                                                                    Full Access to {service.name}
+                                                                                </span>
+                                                                                <span className="px-2 py-0.5 text-xs bg-[#FF9900]/20 text-[#FF9900] border border-[#FF9900]/30 rounded">
+                                                                                    Master Switch
+                                                                                </span>
+                                                                            </div>
+                                                                            <p className="text-xs text-secondary-400 mt-1">
+                                                                                Enable full access to {service.name} including create, update, delete, and all operations. Individual permissions will be disabled. Backend security boundaries still apply.
+                                                                            </p>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+
                                                                 <div className="flex items-center justify-between mb-3">
                                                                     <span className="text-xs font-semibold text-secondary-300 uppercase">
                                                                         Individual Permissions
                                                                     </span>
-                                                                    <div className="flex gap-2">
-                                                                        <button
-                                                                            onClick={() => selectAllPermissions(service.id)}
-                                                                            className="text-xs text-primary-400 hover:text-primary-300 transition-colors"
-                                                                        >
-                                                                            Select All
-                                                                        </button>
-                                                                        <span className="text-secondary-600">|</span>
-                                                                        <button
-                                                                            onClick={() => deselectAllPermissions(service.id)}
-                                                                            className="text-xs text-secondary-400 hover:text-secondary-300 transition-colors"
-                                                                        >
-                                                                            Deselect All
-                                                                        </button>
-                                                                    </div>
+                                                                    {!fullAccessServices.has(service.id) && (
+                                                                        <div className="flex gap-2">
+                                                                            <button
+                                                                                onClick={() => selectAllPermissions(service.id)}
+                                                                                className="text-xs text-primary-400 hover:text-primary-300 transition-colors"
+                                                                            >
+                                                                                Select All
+                                                                            </button>
+                                                                            <span className="text-secondary-600">|</span>
+                                                                            <button
+                                                                                onClick={() => deselectAllPermissions(service.id)}
+                                                                                className="text-xs text-secondary-400 hover:text-secondary-300 transition-colors"
+                                                                            >
+                                                                                Deselect All
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
 
                                                                 {/* Permission List */}
                                                                 <div className="space-y-1 max-h-60 overflow-y-auto custom-scrollbar">
                                                                     <div className="text-xs font-semibold text-primary-400 uppercase mb-2">Read Permissions</div>
-                                                                    {service.readOnlyActions.map(permission => (
-                                                                        <label
-                                                                            key={permission}
-                                                                            className="flex items-center gap-2 p-2 rounded hover:bg-white/5 cursor-pointer transition-colors group"
-                                                                        >
-                                                                            <input
-                                                                                type="checkbox"
-                                                                                checked={servicePermissions.includes(permission)}
-                                                                                onChange={() => togglePermission(service.id, permission)}
-                                                                                className="w-4 h-4 text-primary-500 rounded border-secondary-500"
-                                                                            />
-                                                                            <div className="flex-1 flex items-center justify-between">
-                                                                                <code className="text-xs text-secondary-300 font-mono group-hover:text-white transition-colors">{permission}</code>
-                                                                                <span className="px-2 py-0.5 text-xs bg-primary-500/10 text-primary-400 border border-primary-500/20 rounded">
-                                                                                    Read
-                                                                                </span>
-                                                                            </div>
-                                                                        </label>
-                                                                    ))}
+                                                                    {service.readOnlyActions.map(permission => {
+                                                                        const isFullAccess = fullAccessServices.has(service.id);
+                                                                        // If full access is enabled, all permissions are considered checked (via wildcard)
+                                                                        const isChecked = isFullAccess || servicePermissions.includes(permission);
+                                                                        return (
+                                                                            <label
+                                                                                key={permission}
+                                                                                className={`flex items-center gap-2 p-2 rounded transition-colors group ${isFullAccess
+                                                                                    ? 'opacity-50 cursor-not-allowed'
+                                                                                    : 'hover:bg-white/5 cursor-pointer'
+                                                                                    }`}
+                                                                            >
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    checked={isChecked}
+                                                                                    onChange={() => togglePermission(service.id, permission)}
+                                                                                    disabled={isFullAccess}
+                                                                                    className={`w-4 h-4 text-primary-500 rounded border-secondary-500 ${isFullAccess ? 'cursor-not-allowed' : ''}`}
+                                                                                />
+                                                                                <div className="flex-1 flex items-center justify-between">
+                                                                                    <code className={`text-xs font-mono transition-colors ${isFullAccess
+                                                                                        ? 'text-secondary-500'
+                                                                                        : 'text-secondary-300 group-hover:text-white'
+                                                                                        }`}>{permission}</code>
+                                                                                    <span className="px-2 py-0.5 text-xs bg-primary-500/10 text-primary-400 border border-primary-500/20 rounded">
+                                                                                        Read
+                                                                                    </span>
+                                                                                </div>
+                                                                            </label>
+                                                                        );
+                                                                    })}
                                                                     {permissionMode === 'read-write' && service.readWriteActions.length > 0 && (
                                                                         <>
                                                                             <div className="my-3 border-t border-secondary-700 pt-2">
                                                                                 <span className="text-xs font-semibold text-[#FF9900] uppercase">Write Permissions</span>
                                                                             </div>
-                                                                            {service.readWriteActions.map(permission => (
-                                                                                <label
-                                                                                    key={permission}
-                                                                                    className="flex items-center gap-2 p-2 rounded hover:bg-white/5 cursor-pointer transition-colors group"
-                                                                                >
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        checked={servicePermissions.includes(permission)}
-                                                                                        onChange={() => togglePermission(service.id, permission)}
-                                                                                        className="w-4 h-4 text-[#FF9900] rounded border-secondary-500"
-                                                                                    />
-                                                                                    <div className="flex-1 flex items-center justify-between">
-                                                                                        <code className="text-xs text-secondary-300 font-mono group-hover:text-white transition-colors">{permission}</code>
-                                                                                        <span className="px-2 py-0.5 text-xs bg-[#FF9900]/10 text-[#FF9900] border border-[#FF9900]/20 rounded">
-                                                                                            Write
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </label>
-                                                                            ))}
+                                                                            {service.readWriteActions.map(permission => {
+                                                                                const isFullAccess = fullAccessServices.has(service.id);
+                                                                                // If full access is enabled, all permissions are considered checked (via wildcard)
+                                                                                const isChecked = isFullAccess || servicePermissions.includes(permission);
+                                                                                return (
+                                                                                    <label
+                                                                                        key={permission}
+                                                                                        className={`flex items-center gap-2 p-2 rounded transition-colors group ${isFullAccess
+                                                                                            ? 'opacity-50 cursor-not-allowed'
+                                                                                            : 'hover:bg-white/5 cursor-pointer'
+                                                                                            }`}
+                                                                                    >
+                                                                                        <input
+                                                                                            type="checkbox"
+                                                                                            checked={isChecked}
+                                                                                            onChange={() => togglePermission(service.id, permission)}
+                                                                                            disabled={isFullAccess}
+                                                                                            className={`w-4 h-4 text-[#FF9900] rounded border-secondary-500 ${isFullAccess ? 'cursor-not-allowed' : ''}`}
+                                                                                        />
+                                                                                        <div className="flex-1 flex items-center justify-between">
+                                                                                            <code className={`text-xs font-mono transition-colors ${isFullAccess
+                                                                                                ? 'text-secondary-500'
+                                                                                                : 'text-secondary-300 group-hover:text-white'
+                                                                                                }`}>{permission}</code>
+                                                                                            <span className="px-2 py-0.5 text-xs bg-[#FF9900]/10 text-[#FF9900] border border-[#FF9900]/20 rounded">
+                                                                                                Write
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </label>
+                                                                                );
+                                                                            })}
                                                                         </>
                                                                     )}
                                                                 </div>
@@ -810,16 +941,30 @@ Outputs:
 
                             {/* Permission Mode Selection */}
                             <div className="p-4 rounded-lg bg-dark-bg-200 border border-primary-500/15">
-                                <label className="block text-sm font-semibold text-white mb-3">
-                                    Select Permission Mode
-                                </label>
+                                <div className="flex items-center justify-between mb-3">
+                                    <label className="block text-sm font-semibold text-white">
+                                        Select Permission Mode
+                                    </label>
+                                    {fullAccessServices.size > 0 && (
+                                        <span className="px-2 py-1 text-xs bg-[#FF9900]/20 text-[#FF9900] border border-[#FF9900]/30 rounded">
+                                            Auto: Read-Write (Full Access enabled)
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <button
-                                        onClick={() => setPermissionMode('read-only')}
+                                        onClick={() => {
+                                            // If full access is enabled, prevent switching to read-only
+                                            if (fullAccessServices.size > 0) {
+                                                return;
+                                            }
+                                            setPermissionMode('read-only');
+                                        }}
+                                        disabled={fullAccessServices.size > 0}
                                         className={`p-4 rounded-lg border-2 text-left transition-all ${permissionMode === 'read-only'
                                             ? 'border-primary-500 bg-primary-500/10'
                                             : 'border-primary-500/20 hover:border-primary-500/40'
-                                            }`}
+                                            } ${fullAccessServices.size > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         <span className="text-white font-medium block mb-1">Read-Only</span>
                                         <span className="text-xs text-secondary-400">View resources, costs, and recommendations</span>
@@ -835,6 +980,13 @@ Outputs:
                                         <span className="text-xs text-secondary-400">Apply optimizations (with approval)</span>
                                     </button>
                                 </div>
+                                {fullAccessServices.size > 0 && (
+                                    <div className="mt-3 p-2 rounded bg-[#FF9900]/10 border border-[#FF9900]/20">
+                                        <p className="text-xs text-[#FF9900]">
+                                            <strong>Note:</strong> Full Access is enabled for {fullAccessServices.size} service{fullAccessServices.size !== 1 ? 's' : ''}, which includes write permissions. Permission Mode is automatically set to Read-Write.
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Step-by-step guide */}
