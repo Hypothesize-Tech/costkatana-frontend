@@ -18,6 +18,10 @@ export interface ChatMessage {
     latency?: number;
     tokenCount?: number;
   };
+  mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain';
+  integrationSelectorData?: any; 
+  mongodbIntegrationData?: any; 
+  requiresSelection?: boolean;
 }
 
 export interface Conversation {
@@ -134,6 +138,24 @@ export interface SendMessageResponse {
     type: 'document' | 'spreadsheet' | 'presentation' | 'file' | 'email' | 'calendar' | 'form';
   }>;
   metadata?: any;
+  requiresIntegrationSelector?: boolean;
+  integrationSelectorData?: {
+    parameterName: string;
+    question: string;
+    options: Array<{
+      id: string;
+      label: string;
+      value: string;
+      description?: string;
+      icon?: string;
+    }>;
+    allowCustom: boolean;
+    customPlaceholder?: string;
+    integration: string;
+    pendingAction: string;
+    collectedParams: Record<string, unknown>;
+    originalMessage?: string;
+  };
   requiresSelection?: boolean;
   selection?: {
     parameterName: string;
@@ -152,6 +174,18 @@ export interface SendMessageResponse {
     collectedParams: Record<string, unknown>;
     originalMessage?: string;
   };
+  // MongoDB integration data
+  mongodbIntegrationData?: {
+    action?: string;
+    connectionId?: string;
+    database?: string;
+    connectionAlias?: string;
+  };
+  formattedResult?: {
+    type: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'error' | 'empty' | 'text' | 'explain';
+    data: any;
+  };
+  mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain';
 }
 
 export interface ConversationHistoryResponse {
@@ -410,9 +444,38 @@ export class ChatService {
    * Normalize message data from API response
    */
   private static normalizeMessage(message: any): ChatMessage {
-    return {
+    // Map backend fields to frontend ChatMessage structure
+    const normalized: ChatMessage = {
       ...message,
       timestamp: new Date(message.timestamp),
+      // Map MongoDB integration fields
+      mongodbSelectedViewType: message.mongodbSelectedViewType,
+      // Map integrationSelectorData to selection (for backward compatibility)
+      selection: message.integrationSelectorData || message.selection,
+      // Construct mongodbResult from saved data if available
+      mongodbResult: message.formattedResult ? {
+        type: message.formattedResult.type || 'json',
+        data: message.formattedResult.data,
+        action: message.mongodbIntegrationData?.action,
+        connectionId: message.mongodbIntegrationData?.connectionId,
+        database: message.mongodbIntegrationData?.database,
+        connectionAlias: message.mongodbIntegrationData?.connectionAlias
+      } : (message.mongodbIntegrationData ? {
+        // If we have mongodbIntegrationData but no formattedResult, construct basic result
+        type: message.mongodbSelectedViewType || 'table',
+        data: message.mongodbIntegrationData, // Fallback to integrationData
+        action: message.mongodbIntegrationData?.action,
+        connectionId: message.mongodbIntegrationData?.connectionId,
+        database: message.mongodbIntegrationData?.database,
+        connectionAlias: message.mongodbIntegrationData?.connectionAlias
+      } : undefined)
     };
+
+    // Set requiresSelection if integrationSelectorData exists
+    if (message.integrationSelectorData) {
+      normalized.requiresSelection = true;
+    }
+
+    return normalized;
   }
 }

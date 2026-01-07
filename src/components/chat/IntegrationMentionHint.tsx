@@ -153,6 +153,12 @@ export const IntegrationMentionHint: React.FC<IntegrationMentionHintProps> = ({
                             </code>
                             <span className="text-xs text-secondary-600 dark:text-secondary-400">Export to Google Sheets</span>
                         </div>
+                        <div className="flex items-center gap-2">
+                            <code className="px-2 py-1 rounded bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-mono">
+                                @mongodb list all collections
+                            </code>
+                            <span className="text-xs text-secondary-600 dark:text-secondary-400">Query MongoDB databases</span>
+                        </div>
                     </div>
                 </div>
 
@@ -162,7 +168,7 @@ export const IntegrationMentionHint: React.FC<IntegrationMentionHintProps> = ({
                         Available Integrations
                     </p>
                     <div className="flex flex-wrap gap-2">
-                        {['JIRA', 'Linear', 'Slack', 'Discord', 'GitHub', 'Google Workspace', 'Webhooks'].map((integration) => (
+                        {['JIRA', 'Linear', 'Slack', 'Discord', 'GitHub', 'Google Workspace', 'MongoDB', 'Webhooks'].map((integration) => (
                             <div
                                 key={integration}
                                 className="px-2.5 py-1.5 rounded-lg bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-500/20 flex items-center gap-1.5 flex-shrink-0"
