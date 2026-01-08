@@ -22,6 +22,20 @@ export interface ChatMessage {
   integrationSelectorData?: any; 
   mongodbIntegrationData?: any; 
   requiresSelection?: boolean;
+  fileReference?: {
+    type: 'file_reference';
+    path: string;
+    relativePath: string;
+    size: number;
+    summary?: string;
+    instructions?: string;
+    metadata?: {
+      toolName?: string;
+      userId?: string;
+      requestId?: string;
+      createdAt: Date;
+    };
+  };
 }
 
 export interface Conversation {
@@ -186,6 +200,14 @@ export interface SendMessageResponse {
     data: any;
   };
   mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain';
+  fileReference?: {
+    type: 'file_reference';
+    path: string;
+    relativePath: string;
+    size: number;
+    summary?: string;
+    instructions?: string;
+  };
 }
 
 export interface ConversationHistoryResponse {
