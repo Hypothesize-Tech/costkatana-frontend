@@ -172,6 +172,8 @@ function AppContent() {
             }
           />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:conversationId" element={<Dashboard />} />
+          <Route path="/chat/:conversationId" element={<Dashboard />} />
           <Route path="/cache" element={<CachePage />} />
           <Route path="usage" element={<Usage />} />
           <Route path="requests" element={<Requests />} />

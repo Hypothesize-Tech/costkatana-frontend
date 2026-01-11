@@ -6,6 +6,9 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  messageType?: 'user' | 'assistant' | 'system' | 'governed_plan';
+  governedTaskId?: string;
+  planState?: 'SCOPE' | 'CLARIFY' | 'PLAN' | 'BUILD' | 'VERIFY' | 'DONE';
   attachedDocuments?: Array<{
     documentId: string;
     fileName: string;
@@ -47,6 +50,14 @@ export interface Conversation {
   totalCost?: number;
   isPinned?: boolean;
   isArchived?: boolean;
+  governedTasks?: {
+    count: number;
+    active?: {
+      taskId: string;
+      mode: string;
+      status: string;
+    };
+  };
   githubContext?: {
     connectionId?: string;
     repositoryId?: number;
@@ -125,6 +136,9 @@ export interface SendMessageResponse {
   // Web search metadata
   webSearchUsed?: boolean;
   quotaUsed?: number;
+  // Governed agent fields
+  governedTaskId?: string;
+  messageType?: 'user' | 'assistant' | 'system' | 'governed_plan';
   // GitHub integration data
   githubIntegrationData?: {
     integrationId?: string;
@@ -219,6 +233,33 @@ export interface ConversationHistoryResponse {
 export interface UserConversationsResponse {
   conversations: Conversation[];
   total: number;
+}
+
+// Governed Agent Types
+export interface TaskClassification {
+  type: 'simple_query' | 'complex_query' | 'cross_integration' | 'coding' | 'research' | 'data_transformation';
+  integrations: string[];
+  complexity: 'low' | 'medium' | 'high';
+  riskLevel: 'none' | 'low' | 'medium' | 'high';
+  requiresPlanning: boolean;
+  route: 'DIRECT_EXECUTION' | 'GOVERNED_WORKFLOW';
+  reasoning: string;
+  estimatedDuration?: number;
+}
+
+export interface ClassifyMessageResponse {
+  shouldUseGovernedAgent: boolean;
+  classification: TaskClassification;
+  reason: string;
+}
+
+export interface GovernedTaskInitiateResponse {
+  taskId: string;
+  conversationId?: string;
+  mode: string;
+  classification: TaskClassification;
+  status: string;
+  message: string;
 }
 
 export class ChatService {
@@ -410,38 +451,49 @@ export class ChatService {
   static categorizeConversationsByTime(conversations: Conversation[]): {
     today: Conversation[];
     yesterday: Conversation[];
+    sevenDays: Conversation[];
     thirtyDays: Conversation[];
     earlier: Conversation[];
-  } {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const thirtyDaysAgo = new Date(today);
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    } {
+    // Get the start of today in local timezone (midnight)
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    
+    // Calculate other boundaries
+    const yesterdayStart = new Date(todayStart);
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+    
+    const sevenDaysAgoStart = new Date(todayStart);
+    sevenDaysAgoStart.setDate(sevenDaysAgoStart.getDate() - 7);
+    
+    const thirtyDaysAgoStart = new Date(todayStart);
+    thirtyDaysAgoStart.setDate(thirtyDaysAgoStart.getDate() - 30);
 
     const categorized = {
       today: [] as Conversation[],
       yesterday: [] as Conversation[],
+      sevenDays: [] as Conversation[],
       thirtyDays: [] as Conversation[],
       earlier: [] as Conversation[],
     };
 
     conversations.forEach((conv) => {
       const updatedAt = new Date(conv.updatedAt);
-      const convDate = new Date(
-        updatedAt.getFullYear(),
-        updatedAt.getMonth(),
-        updatedAt.getDate()
-      );
 
-      if (convDate.getTime() === today.getTime()) {
+      if (updatedAt >= todayStart) {
+        // Today: from midnight today onwards
         categorized.today.push(conv);
-      } else if (convDate.getTime() === yesterday.getTime()) {
+      } else if (updatedAt >= yesterdayStart && updatedAt < todayStart) {
+        // Yesterday: from midnight yesterday to midnight today
         categorized.yesterday.push(conv);
-      } else if (updatedAt >= thirtyDaysAgo) {
+      } else if (updatedAt >= sevenDaysAgoStart && updatedAt < yesterdayStart) {
+        // Last 7 Days: from 7 days ago to yesterday (excluding yesterday)
+        categorized.sevenDays.push(conv);
+      } else if (updatedAt >= thirtyDaysAgoStart && updatedAt < sevenDaysAgoStart) {
+        // Last 30 Days: from 30 days ago to 7 days ago
         categorized.thirtyDays.push(conv);
       } else {
+        // Earlier: older than 30 days
         categorized.earlier.push(conv);
       }
     });
@@ -470,6 +522,10 @@ export class ChatService {
     const normalized: ChatMessage = {
       ...message,
       timestamp: new Date(message.timestamp),
+      // Map messageType, governedTaskId, and planState for governed agent messages
+      messageType: message.messageType,
+      governedTaskId: message.governedTaskId?.toString(),
+      planState: message.planState,
       // Map MongoDB integration fields
       mongodbSelectedViewType: message.mongodbSelectedViewType,
       // Map integrationSelectorData to selection (for backward compatibility)
@@ -499,5 +555,112 @@ export class ChatService {
     }
 
     return normalized;
+  }
+  
+  /**
+   * Classify a message to determine if governed agent should be used
+   */
+  static async classifyMessage(message: string): Promise<ClassifyMessageResponse> {
+    try {
+      const response = await apiClient.post(`${this.baseUrl}/classify`, { message });
+      return response.data.data;
+    } catch (error: any) {
+      console.error("Error classifying message:", error);
+      throw new Error(error.response?.data?.message || "Failed to classify message");
+    }
+  }
+
+  /**
+   * Initiate a governed agent task from chat
+   */
+  static async initiateGovernedTask(message: string, conversationId?: string): Promise<GovernedTaskInitiateResponse> {
+    try {
+      const response = await apiClient.post(`${this.baseUrl}/governed/initiate`, {
+        message,
+        conversationId
+      });
+      return response.data.data;
+    } catch (error: any) {
+      console.error("Error initiating governed task:", error);
+      throw new Error(error.response?.data?.message || "Failed to initiate governed task");
+    }
+  }
+
+  /**
+   * Stream governed agent task progress via SSE
+   */
+  static streamGovernedTaskProgress(
+    taskId: string,
+    onUpdate: (data: any) => void,
+    onComplete: () => void,
+    onError: (error: string) => void
+  ): () => void {
+    const token = localStorage.getItem('access_token');
+    const eventSource = new EventSource(
+      `${import.meta.env.VITE_API_URL + '/api'|| 'http://localhost:8000/api'}/chat/governed/${taskId}/stream?token=${token}`
+    );
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === 'connected') {
+          console.log('SSE connected for task:', data.taskId);
+        } else if (data.type === 'update') {
+          onUpdate(data);
+        } else if (data.type === 'complete') {
+          onComplete();
+          eventSource.close();
+        } else if (data.type === 'error') {
+          onError(data.message || 'Unknown error occurred');
+          eventSource.close();
+        }
+      } catch (err) {
+        console.error('Error parsing SSE data:', err);
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      onError('Connection to server lost');
+      eventSource.close();
+    };
+
+    // Return cleanup function
+    return () => {
+      eventSource.close();
+    };
+  }
+
+  /**
+   * Get clarifying questions for a governed task
+   */
+  static async getClarifyingQuestions(taskId: string): Promise<{
+    clarificationNeeded: string[];
+    ambiguities: string[];
+    hasClarifications: boolean;
+  }> {
+    try {
+      const response = await apiClient.get(`/governed-agent/${taskId}/clarify`);
+      return response.data.data;
+    } catch (error: any) {
+      console.error("Error getting clarifying questions:", error);
+      throw new Error(error.response?.data?.message || "Failed to get clarifying questions");
+    }
+  }
+
+  /**
+   * Submit answers to clarifying questions and generate plan
+   */
+  static async generatePlanWithAnswers(taskId: string, clarifyingAnswers?: Record<string, string>): Promise<any> {
+    try {
+      const response = await apiClient.post(`/governed-agent/${taskId}/generate-plan`, {
+        clarifyingAnswers
+      });
+      return response.data.data;
+    } catch (error: any) {
+      console.error("Error generating plan:", error);
+      throw new Error(error.response?.data?.message || "Failed to generate plan");
+    }
   }
 }
