@@ -3661,7 +3661,7 @@ export const ConversationalAgent: React.FC = () => {
                       chatId={currentConversationId || ''}
                       onInteract={(action, data) => {
                         // Handle plan interactions
-                        if (action === 'question_answered') {
+                        if (action === 'question_answered' && data?.question && data?.answer) {
                           // Show answer in chat
                           const answerMessage: ChatMessage = {
                             id: `answer-${Date.now()}`,
@@ -3670,11 +3670,11 @@ export const ConversationalAgent: React.FC = () => {
                             timestamp: new Date()
                           };
                           setMessages(prev => [...prev, answerMessage]);
-                        } else if (action === 'modify_plan') {
+                        } else if (action === 'modify_plan' && data?.taskId && typeof data.taskId === 'string') {
                           // Open modification dialog
                           setCurrentPlanTaskId(data.taskId);
                           setShowPlanModifyDialog(true);
-                        } else if (action === 'request_changes') {
+                        } else if (action === 'request_changes' && data?.taskId && typeof data.taskId === 'string') {
                           // Open change request dialog
                           setCurrentPlanTaskId(data.taskId);
                           setShowChangeRequestDialog(true);

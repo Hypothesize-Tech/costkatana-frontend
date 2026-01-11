@@ -125,6 +125,18 @@ export interface VerificationResult {
 export interface ExecutionResult {
   stepId: string;
   status: 'completed' | 'failed' | 'pending';
+  success?: boolean;
+  timestamp?: string;
+  error?: string;
+  output?: {
+    message?: string | React.ReactNode;
+    link?: string;
+    data?: Record<string, unknown>;
+    files?: Array<{
+      path: string;
+      content: string;
+    }>;
+  };
   result?: {
     success: boolean;
     output?: {
