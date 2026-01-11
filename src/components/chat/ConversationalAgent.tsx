@@ -66,18 +66,18 @@ import PRStatusPanel from "./PRStatusPanel";
 import { CategorizedConversations } from "./CategorizedConversations";
 import githubService, { GitHubRepository } from "../../services/github.service";
 import {
-  Send,
   Copy,
   Eye,
   EyeOff,
   Check,
+  AlertCircle,
+  AlertTriangle,
+  Send,
   Settings,
   Brain,
   MessageSquare,
   FileText,
   Zap,
-  AlertCircle,
-  AlertTriangle,
 } from "lucide-react";
 import { DocumentPreviewModal } from "./DocumentPreviewModal";
 import { IntegrationMentionHint } from "./IntegrationMentionHint";
@@ -98,6 +98,7 @@ import { googleService, GoogleConnection } from "../../services/google.service";
 import vercelService from "../../services/vercel.service";
 import { awsService, AWSConnection } from "../../services/aws.service";
 import { mongodbService, MongoDBConnection } from "../../services/mongodb.service";
+import { UniversalGovernedAgent } from "./UniversalGovernedAgent";
 import VercelConnector from "../integrations/VercelConnector";
 import { AWSConnector } from "../integrations/AWSConnector";
 import AttachFilesModal from "./AttachFilesModal";
@@ -107,6 +108,9 @@ import { IntegrationSelector, IntegrationSelectionData } from "./IntegrationSele
 import GoogleFileAttachmentService from "../../services/googleFileAttachment.service";
 import { FileLibraryPanel } from "./FileLibraryPanel";
 import { MongoDBResultViewer } from "./MongoDBResultViewer";
+import GovernedPlanCard from "./GovernedPlanCard";
+import { useChatContext } from "../../hooks/useChatContext";
+import { SourcesModal, PlanModificationDialog, ChangeRequestDialog } from "./modals";
 
 // Configure marked for security
 marked.setOptions({
@@ -121,6 +125,9 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   requestId?: string;
+  messageType?: 'user' | 'assistant' | 'system' | 'governed_plan';
+  governedTaskId?: string;
+  planState?: 'SCOPE' | 'CLARIFY' | 'PLAN' | 'BUILD' | 'VERIFY' | 'DONE';
   attachedDocuments?: Array<{
     documentId: string;
     fileName: string;
@@ -251,6 +258,12 @@ export const ConversationalAgent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessageId, setLoadingMessageId] = useState<string | null>(null);
   const [availableModels, setAvailableModels] = useState<AvailableModel[]>([]);
+
+  // Chat context for governed tasks
+  const {
+    connectToChat,
+    disconnectFromChat
+  } = useChatContext();
   const [selectedModel, setSelectedModel] = useState<AvailableModel | null>(
     null,
   );
@@ -269,6 +282,17 @@ export const ConversationalAgent: React.FC = () => {
   const [expandedThinking, setExpandedThinking] = useState<string | null>(null);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
   const [currentSources, setCurrentSources] = useState<ChatMessage['sources']>([]);
+
+  // Plan modification states
+  const [showPlanModifyDialog, setShowPlanModifyDialog] = useState(false);
+  const [currentPlanTaskId, setCurrentPlanTaskId] = useState<string | null>(null);
+  const [planModificationText, setPlanModificationText] = useState("");
+  const [isPlanModifying, setIsPlanModifying] = useState(false);
+
+  // Code change request states
+  const [showChangeRequestDialog, setShowChangeRequestDialog] = useState(false);
+  const [changeRequestText, setChangeRequestText] = useState("");
+  const [isRequestingChanges, setIsRequestingChanges] = useState(false);
 
   // File Library state
   const [fileLibraryExpanded, setFileLibraryExpanded] = useState(false);
@@ -304,6 +328,9 @@ export const ConversationalAgent: React.FC = () => {
   // Web search state
   const [webSearchEnabled, setWebSearchEnabled] = useState<boolean>(false);
   const [showAppsSubmenu, setShowAppsSubmenu] = useState<boolean>(false);
+
+  // Plan Mode (Governed Agent) state
+  const [planModeEnabled, setPlanModeEnabled] = useState<boolean>(false);
 
   // Document upload for RAG
   const [selectedDocuments, setSelectedDocuments] = useState<DocumentMetadata[]>([]);
@@ -369,6 +396,19 @@ export const ConversationalAgent: React.FC = () => {
   const [showVercelPanel, setShowVercelPanel] = useState(false);
   const [showMongoDBPanel, setShowMongoDBPanel] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
+
+  // Governed Agent state
+  const [showGovernedAgent, setShowGovernedAgent] = useState(false);
+  const [governedTaskId, setGovernedTaskId] = useState<string | null>(null);
+  const [governedClassification, setGovernedClassification] = useState<any>(null);
+  const [showGovernedPrompt, setShowGovernedPrompt] = useState(false);
+  const [pendingGovernedMessage, setPendingGovernedMessage] = useState<string | null>(null);
+  const [governedTaskProgress, setGovernedTaskProgress] = useState<{
+    mode: string;
+    status: string;
+    scopeAnalysis?: any;
+    plan?: any;
+  } | null>(null);
 
   // Confirmation dialog state for app disconnections
   const [appDisconnectDialog, setAppDisconnectDialog] = useState<{
@@ -756,6 +796,13 @@ export const ConversationalAgent: React.FC = () => {
     }
   }, []);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      disconnectFromChat();
+    };
+  }, [disconnectFromChat]);
+
   // Handle pre-attached files from navigation state
   useEffect(() => {
     if (location.state?.attachedFiles) {
@@ -798,6 +845,28 @@ export const ConversationalAgent: React.FC = () => {
       sessionStorage.removeItem('mongodb_command');
     }
   }, [location.pathname]); // Re-run when pathname changes
+
+  // Handle conversation ID from URL path (e.g., /chat/conversationId or /dashboard/conversationId)
+  useEffect(() => {
+    const pathParts = location.pathname.split('/');
+    let conversationIdFromUrl: string | null = null;
+
+    // Check for /chat/:conversationId
+    const chatIndex = pathParts.indexOf('chat');
+    if (chatIndex !== -1 && pathParts[chatIndex + 1]) {
+      conversationIdFromUrl = pathParts[chatIndex + 1];
+    }
+
+    // Check for /dashboard/:conversationId
+    const dashboardIndex = pathParts.indexOf('dashboard');
+    if (dashboardIndex !== -1 && pathParts[dashboardIndex + 1]) {
+      conversationIdFromUrl = pathParts[dashboardIndex + 1];
+    }
+
+    if (conversationIdFromUrl && conversationIdFromUrl !== currentConversationId) {
+      loadConversationHistory(conversationIdFromUrl);
+    }
+  }, [location.pathname]);
 
   const loadGitHubConnection = async () => {
     try {
@@ -1320,6 +1389,9 @@ export const ConversationalAgent: React.FC = () => {
       // Save to localStorage
       localStorage.setItem('currentConversationId', conversationId);
 
+      // Connect to chat context for governed tasks
+      connectToChat(conversationId);
+
       // Restore GitHub repository context if exists
       if (result.conversation?.githubContext && result.conversation.githubContext.connectionId && result.conversation.githubContext.repositoryFullName) {
         try {
@@ -1395,6 +1467,141 @@ export const ConversationalAgent: React.FC = () => {
   const cancelDeleteConversation = () => {
     setShowDeleteConfirmation(false);
     setConversationToDelete(null);
+  };
+
+  // Governed Agent Handlers
+  const handleUseGovernedAgent = async () => {
+    if (!pendingGovernedMessage) return;
+
+    try {
+      setShowGovernedPrompt(false);
+      setIsLoading(true);
+      setGovernedTaskProgress({ mode: 'INITIALIZING', status: 'pending' });
+
+      const response = await ChatService.initiateGovernedTask(
+        pendingGovernedMessage,
+        currentConversationId || undefined
+      );
+
+      setGovernedTaskId(response.taskId);
+      setShowGovernedAgent(true);
+      setPendingGovernedMessage(null);
+      setCurrentMessage("");
+
+      // If a new conversation was created, update the current conversation ID
+      if (response.conversationId && response.conversationId !== currentConversationId) {
+        setCurrentConversationId(response.conversationId);
+        // Also update the URL to reflect the new conversation
+        navigate(`/dashboard/${response.conversationId}`, { replace: true });
+        // Refresh conversations list to show the newly created conversation
+        loadConversations();
+      }
+
+      // Add the GovernedPlanCard message to the chat immediately
+      const governedPlanMessage: ChatMessage = {
+        id: `governed-plan-${response.taskId}`,
+        role: 'assistant',
+        content: `🤖 **Autonomous Agent Initiated**\n\nI'm creating a plan to: ${pendingGovernedMessage}\n\nExpand the card below to see the full plan and execution details.`,
+        timestamp: new Date(),
+        messageType: 'governed_plan',
+        governedTaskId: response.taskId,
+        planState: response.mode as any
+      };
+      setMessages(prev => [...prev, governedPlanMessage]);
+
+      // Start streaming progress updates
+      const cleanup = ChatService.streamGovernedTaskProgress(
+        response.taskId,
+        (data) => {
+          // Update progress state with real-time updates
+          setGovernedTaskProgress({
+            mode: data.mode || 'UNKNOWN',
+            status: data.status || 'pending',
+            scopeAnalysis: data.scopeAnalysis,
+            plan: data.plan
+          });
+
+          // Add AI messages to chat for each phase
+          if (data.mode === 'SCOPE' && data.scopeAnalysis) {
+            const scopeMessage: ChatMessage = {
+              id: `scope-${Date.now()}`,
+              role: 'assistant',
+              content: `🔍 **Scope Analysis Complete**\n\n✅ Compatible: ${data.scopeAnalysis.compatible ? 'Yes' : 'No'}\n📊 Complexity: ${data.scopeAnalysis.estimatedComplexity}\n🔌 Required Integrations: ${data.scopeAnalysis.requiredIntegrations?.join(', ') || 'None'}`,
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, scopeMessage]);
+          }
+
+          if (data.mode === 'PLAN' && data.plan) {
+            const planMessage: ChatMessage = {
+              id: `plan-${Date.now()}`,
+              role: 'assistant',
+              content: `📋 **Execution Plan Generated**\n\n🎯 Phases: ${data.plan.phases?.length || 0}\n⏱️ Estimated Duration: ${data.plan.estimatedDuration}s\n⚠️ Risk Level: ${data.plan.riskAssessment?.level || 'unknown'}\n\n${data.plan.phases?.map((phase: any, idx: number) =>
+                `**Phase ${idx + 1}:** ${phase.name} (${phase.steps?.length || 0} steps)`
+              ).join('\n')}`,
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, planMessage]);
+          }
+
+          if (data.mode === 'BUILD') {
+            const buildMessage: ChatMessage = {
+              id: `build-${Date.now()}`,
+              role: 'assistant',
+              content: `🔨 **Build Mode Active**\n\nExecuting the plan...`,
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, buildMessage]);
+          }
+
+          if (data.mode === 'VERIFY') {
+            const verifyMessage: ChatMessage = {
+              id: `verify-${Date.now()}`,
+              role: 'assistant',
+              content: `✅ **Verification Mode**\n\nVerifying execution results...`,
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, verifyMessage]);
+          }
+        },
+        () => {
+          // On complete
+          setIsLoading(false);
+          const completeMessage: ChatMessage = {
+            id: `complete-${Date.now()}`,
+            role: 'assistant',
+            content: `✨ **Task Complete!**\n\nThe governed agent has successfully completed your request.`,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, completeMessage]);
+        },
+        (error) => {
+          // On error
+          setIsLoading(false);
+          setError(error);
+        }
+      );
+
+      // Cleanup on unmount
+      return () => cleanup();
+
+    } catch (error: any) {
+      console.error("Failed to initiate governed task:", error);
+      setError(error.message || "Failed to start governed agent");
+      setIsLoading(false);
+    }
+  };
+
+  const handleUseNormalChat = () => {
+    setShowGovernedPrompt(false);
+    setPendingGovernedMessage(null);
+    // Allow user to edit and resend
+  };
+
+  const closeGovernedAgent = () => {
+    setShowGovernedAgent(false);
+    setGovernedTaskId(null);
+    setGovernedClassification(null);
   };
 
   // GitHub integration handlers
@@ -1618,6 +1825,35 @@ export const ConversationalAgent: React.FC = () => {
     if (!selectedModel) {
       setError("Please select a model first");
       return;
+    }
+
+    // GOVERNED AGENT: Check if plan mode is enabled
+    if (planModeEnabled) {
+      try {
+        // Show loading state while classifying
+        setIsLoading(true);
+        setLoadingMessageId('classifying');
+
+        const classification = await ChatService.classifyMessage(messageContent);
+
+        if (classification.shouldUseGovernedAgent) {
+          // Show prompt to user asking if they want to use governed agent
+          setPendingGovernedMessage(messageContent);
+          setGovernedClassification(classification);
+          setShowGovernedPrompt(true);
+          setIsLoading(false);
+          setLoadingMessageId(null);
+          return; // Don't send yet, wait for user confirmation
+        }
+
+        setIsLoading(false);
+        setLoadingMessageId(null);
+      } catch (classifyError) {
+        console.warn("Failed to classify message, proceeding with normal chat:", classifyError);
+        setIsLoading(false);
+        setLoadingMessageId(null);
+        // Continue with normal chat flow if classification fails
+      }
     }
 
     setCurrentMessage("");
@@ -2051,16 +2287,68 @@ export const ConversationalAgent: React.FC = () => {
             // Add new conversation to the top
             const newConversation: Conversation = {
               id: response.conversationId,
-              title: messageContent.slice(0, 50) + (messageContent.length > 50 ? '...' : ''),
+              title: response.messageType === 'governed_plan'
+                ? `🤖 ${messageContent.slice(0, 40)}...`
+                : messageContent.slice(0, 50) + (messageContent.length > 50 ? '...' : ''),
               modelId: selectedModel.id,
               messageCount: 2, // user message + assistant message
               updatedAt: new Date(),
               totalCost: response.cost || 0,
+              // Add governed task indicator if it's a governed plan
+              ...(response.governedTaskId && {
+                governedTaskId: response.governedTaskId,
+                isGovernedPlan: true
+              })
             };
             return [newConversation, ...prevConversations];
           }
         });
       }
+
+      // Handle governed plan response
+      if (response.messageType === 'governed_plan' && response.governedTaskId) {
+        console.log('🤖 Governed plan created:', {
+          taskId: response.governedTaskId,
+          conversationId: response.conversationId
+        });
+
+        // Update the assistant message to include governed plan metadata
+        setMessages((prev) => {
+          const lastMessage = prev[prev.length - 1];
+          if (lastMessage && lastMessage.role === 'assistant') {
+            return [
+              ...prev.slice(0, -1),
+              {
+                ...lastMessage,
+                messageType: 'governed_plan',
+                governedTaskId: response.governedTaskId,
+                planState: 'SCOPE'
+              }
+            ];
+          }
+          return prev;
+        });
+
+        // Connect to chat context for governed tasks
+        if (response.conversationId) {
+          connectToChat(response.conversationId);
+        }
+
+        // Navigate to the conversation if it's new
+        if (!currentConversationId || currentConversationId !== response.conversationId) {
+          setCurrentConversationId(response.conversationId);
+          localStorage.setItem('currentConversationId', response.conversationId);
+
+          // Load the conversation history to show the governed plan
+          setTimeout(() => {
+            loadConversationHistory(response.conversationId);
+          }, 100);
+        }
+
+        // Refresh conversations to show the governed task indicator
+        loadConversations();
+      }
+
     } catch (error: any) {
       console.error("Error sending message:", error);
 
@@ -2295,6 +2583,72 @@ export const ConversationalAgent: React.FC = () => {
   const openSourcesModal = (sources: ChatMessage['sources']) => {
     setCurrentSources(sources || []);
     setShowSourcesModal(true);
+  };
+
+  // Plan modification handlers
+  const handleModifyPlan = async () => {
+    if (!currentPlanTaskId || !planModificationText.trim()) return;
+
+    try {
+      setIsPlanModifying(true);
+      const response = await apiClient.post(`/chat/${currentConversationId}/plan/${currentPlanTaskId}/modify`, {
+        modifications: planModificationText
+      });
+
+      if (response.data.success) {
+        // Add the modification as a message in chat
+        const modificationMessage: ChatMessage = {
+          id: `mod-${Date.now()}`,
+          role: 'assistant',
+          content: `✏️ **Plan Modified**\n\nYour modification request has been processed. The plan has been updated based on your feedback:\n\n"${planModificationText}"`,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, modificationMessage]);
+
+        // Close dialog and reset
+        setShowPlanModifyDialog(false);
+        setPlanModificationText("");
+        setCurrentPlanTaskId(null);
+      }
+    } catch (error) {
+      console.error('Failed to modify plan:', error);
+      setError('Failed to modify plan. Please try again.');
+    } finally {
+      setIsPlanModifying(false);
+    }
+  };
+
+  // Code change request handlers
+  const handleRequestCodeChanges = async () => {
+    if (!currentPlanTaskId || !changeRequestText.trim()) return;
+
+    try {
+      setIsRequestingChanges(true);
+      const response = await apiClient.post(`/chat/${currentConversationId}/plan/${currentPlanTaskId}/redeploy`, {
+        changeRequest: changeRequestText
+      });
+
+      if (response.data.success) {
+        // Add the change request as a message in chat
+        const changeMessage: ChatMessage = {
+          id: `change-${Date.now()}`,
+          role: 'assistant',
+          content: `🔄 **Code Change Request**\n\nProcessing your change request:\n\n"${changeRequestText}"\n\nThe code will be updated and redeployed based on your requirements.`,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, changeMessage]);
+
+        // Close dialog and reset
+        setShowChangeRequestDialog(false);
+        setChangeRequestText("");
+        setCurrentPlanTaskId(null);
+      }
+    } catch (error) {
+      console.error('Failed to request code changes:', error);
+      setError('Failed to request code changes. Please try again.');
+    } finally {
+      setIsRequestingChanges(false);
+    }
   };
 
   const getSourceIcon = (type: string) => {
@@ -2884,112 +3238,6 @@ export const ConversationalAgent: React.FC = () => {
     );
   }, [expandedThinking, showPreviews, copiedCode, handleMongoViewTypeChange, convertUrlsToMarkdown, togglePreview, copyToClipboard, linkifyText]);
 
-  const SourcesModal = () => {
-    if (!showSourcesModal) return null;
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-        <div className="glass max-w-2xl w-full max-h-[80vh] overflow-hidden rounded-2xl shadow-2xl animate-scale-in">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-primary-200/30">
-            <h3 className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary inline-flex items-center gap-2">
-              <BookOpenIcon className="w-5 h-5" />
-              Sources & References
-            </h3>
-            <button
-              onClick={() => setShowSourcesModal(false)}
-              className="p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 transition-all duration-300"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Content */}
-          <div className="p-6 max-h-[60vh] overflow-y-auto scrollbar-hide">
-            {(currentSources || []).length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-light-text-secondary dark:text-dark-text-secondary">
-                  No sources available for this response.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {(currentSources || []).map((source, index) => (
-                  <div
-                    key={index}
-                    className="glass p-4 rounded-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 group"
-                  >
-                    <div className="flex items-start gap-3">
-                      {/* Source Icon */}
-                      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-accent/20 flex items-center justify-center text-lg">
-                        {getSourceIcon(source.type)}
-                      </div>
-
-                      {/* Source Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
-                              {source.title}
-                            </h4>
-                            {source.description && (
-                              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2 line-clamp-2">
-                                {source.description}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-2 text-xs text-light-text-muted dark:text-dark-text-muted">
-                              <span className={`px-2 py-1 rounded-full font-medium ${source.type === 'web' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' :
-                                source.type === 'document' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' :
-                                  source.type === 'api' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' :
-                                    'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400'
-                                }`}>
-                                {source.type.toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Action Button */}
-                          <button
-                            onClick={() => window.open(source.url, '_blank')}
-                            className="flex-shrink-0 p-2 rounded-lg bg-gradient-primary text-white hover:scale-105 transition-all duration-300 shadow-lg glow-primary"
-                            title="Open source in new tab"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </button>
-                        </div>
-
-                        {/* URL */}
-                        <div className="mt-2 p-2 bg-primary-50/50 dark:bg-primary-900/30 rounded-lg border border-primary-200/20">
-                          <p className="text-xs font-mono text-light-text-muted dark:text-dark-text-muted break-all">
-                            {source.url}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="flex justify-end p-6 border-t border-primary-200/30">
-            <button
-              onClick={() => setShowSourcesModal(false)}
-              className="btn-primary px-6 py-2"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="flex h-full light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-0 w-full animate-fade-in relative">
       {/* Mobile Conversations Drawer */}
@@ -3405,357 +3653,389 @@ export const ConversationalAgent: React.FC = () => {
 
             return (
               <React.Fragment key={message.id}>
-                <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-                  <div className={`max-w-4xl ${message.role === 'user'
-                    ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-xl glow-primary'
-                    : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50'
-                    } p-5 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'} transition-all hover:shadow-2xl`}>
-                    {renderMessageContent(message.content, message)}
+                {/* Render GovernedPlanCard for governed_plan messages */}
+                {message.messageType === 'governed_plan' && message.governedTaskId ? (
+                  <div className="my-4">
+                    <GovernedPlanCard
+                      taskId={message.governedTaskId}
+                      chatId={currentConversationId || ''}
+                      onInteract={(action, data) => {
+                        // Handle plan interactions
+                        if (action === 'question_answered') {
+                          // Show answer in chat
+                          const answerMessage: ChatMessage = {
+                            id: `answer-${Date.now()}`,
+                            role: 'assistant',
+                            content: `**Question:** ${data.question}\n\n**Answer:** ${data.answer}`,
+                            timestamp: new Date()
+                          };
+                          setMessages(prev => [...prev, answerMessage]);
+                        } else if (action === 'modify_plan') {
+                          // Open modification dialog
+                          setCurrentPlanTaskId(data.taskId);
+                          setShowPlanModifyDialog(true);
+                        } else if (action === 'request_changes') {
+                          // Open change request dialog
+                          setCurrentPlanTaskId(data.taskId);
+                          setShowChangeRequestDialog(true);
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  // Regular message rendering
+                  <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                    <div className={`max-w-4xl ${message.role === 'user'
+                      ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-xl glow-primary'
+                      : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50'
+                      } p-5 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'} transition-all hover:shadow-2xl`}>
+                      {renderMessageContent(message.content, message)}
 
-                    {/* Integration Selection UI */}
-                    {message.role === 'assistant' && (
-                      <>
-                        {message.requiresSelection && message.selection && (
-                          <div className="mt-4 pt-4 border-t border-gray-700/30">
-                            <IntegrationSelector
-                              selection={message.selection as IntegrationSelectionData}
-                              onSelect={(value) => handleIntegrationSelection(message.selection, value)}
-                              disabled={isLoading}
-                            />
-                          </div>
-                        )}
-                      </>
-                    )}
-
-                    {/* Attached Documents Display */}
-                    {message.attachedDocuments && message.attachedDocuments.length > 0 && (
-                      <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
-                        {message.attachedDocuments.map((doc) => (
-                          <div
-                            key={doc.documentId}
-                            className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-sm border transition-all hover:scale-105 ${message.role === 'user'
-                              ? 'border-white/30 bg-white/20 hover:bg-white/30'
-                              : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50'
-                              }`}
-                          >
-                            <div className={`p-1.5 rounded-lg ${message.role === 'user'
-                              ? 'bg-white/20'
-                              : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
-                              }`}>
-                              <DocumentTextIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
+                      {/* Integration Selection UI */}
+                      {message.role === 'assistant' && (
+                        <>
+                          {message.requiresSelection && message.selection && (
+                            <div className="mt-4 pt-4 border-t border-gray-700/30">
+                              <IntegrationSelector
+                                selection={message.selection as IntegrationSelectionData}
+                                onSelect={(value) => handleIntegrationSelection(message.selection, value)}
+                                disabled={isLoading}
+                              />
                             </div>
-                            <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
-                              {doc.fileName}
-                            </span>
-                            <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
-                              ? 'bg-white/20 text-white/90'
-                              : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
-                              }`}>
-                              {doc.chunksCount} chunks
-                            </span>
-                            <button
-                              onClick={() => setPreviewDocument({ documentId: doc.documentId, fileName: doc.fileName })}
-                              className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
-                                ? 'hover:bg-white/30 text-white/90 hover:text-white'
-                                : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
-                                }`}
-                              title="Preview document"
-                              aria-label="Preview document"
-                            >
-                              <EyeIcon className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          )}
+                        </>
+                      )}
 
-                    {/* File Attachments Display */}
-                    {message.attachments && message.attachments.length > 0 && (
-                      <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
-                        {message.attachments.map((attachment, idx) => {
-                          // Get Google file metadata for enhanced display
-                          const googleMetadata = attachment.type === 'google'
-                            ? GoogleFileAttachmentService.getFileMetadata(attachment)
-                            : null;
-
-                          return (
+                      {/* Attached Documents Display */}
+                      {message.attachedDocuments && message.attachedDocuments.length > 0 && (
+                        <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
+                          {message.attachedDocuments.map((doc) => (
                             <div
-                              key={`${attachment.fileId}-${idx}`}
-                              className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${message.role === 'user'
-                                ? 'border-white/30 bg-white/20 hover:bg-white/30 hover:shadow-white/20'
-                                : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50 hover:shadow-primary/20'
+                              key={doc.documentId}
+                              className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-sm border transition-all hover:scale-105 ${message.role === 'user'
+                                ? 'border-white/30 bg-white/20 hover:bg-white/30'
+                                : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50'
                                 }`}
                             >
                               <div className={`p-1.5 rounded-lg ${message.role === 'user'
                                 ? 'bg-white/20'
-                                : attachment.type === 'google'
-                                  ? 'bg-gradient-primary glow-primary'
-                                  : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
+                                : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
                                 }`}>
-                                {attachment.type === 'google' ? (
-                                  googleMetadata?.icon ? (
-                                    <img
-                                      src={googleMetadata.icon}
-                                      alt={googleMetadata.displayType}
-                                      className="w-4 h-4 object-contain"
-                                    />
-                                  ) : (
-                                    <DocumentTextIcon className="w-4 h-4 text-white" />
-                                  )
-                                ) : (
-                                  <PaperClipIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
-                                )}
+                                <DocumentTextIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
                               </div>
-                              <div className="flex flex-col min-w-0">
-                                <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
-                                  {attachment.fileName}
-                                </span>
-                                {googleMetadata && (
-                                  <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/70' : 'text-secondary-500 dark:text-secondary-400'}`}>
-                                    {googleMetadata.formattedSize} • {googleMetadata.lastModified}
-                                  </span>
-                                )}
-                              </div>
+                              <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
+                                {doc.fileName}
+                              </span>
                               <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
                                 ? 'bg-white/20 text-white/90'
-                                : attachment.type === 'google'
-                                  ? 'bg-gradient-primary text-white glow-primary'
-                                  : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                                : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
                                 }`}>
-                                {attachment.type === 'google' ? googleMetadata?.displayType || 'Google' : 'Uploaded'}
+                                {doc.chunksCount} chunks
                               </span>
-                              {attachment.url && (
-                                <a
-                                  href={attachment.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
-                                    ? 'hover:bg-white/30 text-white/90 hover:text-white'
-                                    : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
-                                    }`}
-                                  title="Open file"
-                                  aria-label="Open file"
-                                >
-                                  <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                                </a>
-                              )}
+                              <button
+                                onClick={() => setPreviewDocument({ documentId: doc.documentId, fileName: doc.fileName })}
+                                className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
+                                  ? 'hover:bg-white/30 text-white/90 hover:text-white'
+                                  : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
+                                  }`}
+                                title="Preview document"
+                                aria-label="Preview document"
+                              >
+                                <EyeIcon className="w-4 h-4" />
+                              </button>
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-primary-200/30">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
-                          {formatTimestamp(message.timestamp)}
-                        </span>
-                        {(message.metadata?.templateId || message.metadata?.templateUsed) && (
-                          <span className={`glass px-2.5 py-1 rounded-lg border inline-flex items-center gap-1.5 ${message.role === 'user'
-                            ? 'border-white/30 bg-white/20 text-white'
-                            : 'border-purple-200/30 bg-gradient-to-br from-purple-500/20 to-purple-600/20 text-purple-600 dark:text-purple-400'
-                            } font-display font-semibold text-xs`}>
-                            <SparklesIcon className="w-3.5 h-3.5" />
-                            {message.metadata?.templateName || message.metadata?.templateUsed?.name || 'Template'}
-                          </span>
-                        )}
-                        {message.metadata?.cost && (
-                          <span className={`glass px-2.5 py-1 rounded-lg border ${message.role === 'user'
-                            ? 'border-white/30 bg-white/20 text-white'
-                            : 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
-                            } font-display font-bold text-xs`}>
-                            ${message.metadata.cost.toFixed(4)}
-                          </span>
-                        )}
-                        {message.metadata?.webSearchUsed && (
-                          <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs inline-flex items-center gap-1">
-                            <MagnifyingGlassIcon className="w-3.5 h-3.5" />
-                            Web Search
-                          </span>
-                        )}
-                        {message.cacheHit && (
-                          <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs animate-pulse inline-flex items-center gap-1">
-                            <Zap className="w-3 h-3" />
-                            Cached
-                          </span>
-                        )}
-                        {message.riskLevel && message.riskLevel !== 'low' && (
-                          <span className={`glass px-2.5 py-1 rounded-lg border font-display font-bold text-xs inline-flex items-center gap-1 ${message.riskLevel === 'high'
-                            ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
-                            : 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400'
-                            }`}>
-                            {message.riskLevel === 'high' ? <AlertCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
-                            {message.riskLevel.toUpperCase()} RISK
-                          </span>
-                        )}
-                        {message.sources && message.sources.length > 0 && (
-                          <button
-                            onClick={() => openSourcesModal(message.sources)}
-                            className="glass px-2.5 py-1 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 hover:from-accent-500/30 hover:to-accent-600/30 transition-all duration-300 font-display font-semibold text-xs inline-flex items-center gap-1"
-                          >
-                            <BookOpenIcon className="w-3 h-3" />
-                            {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
-                          </button>
-                        )}
-                      </div>
-
-                      {message.role === "assistant" && message.requestId && (
-                        <FeedbackButton
-                          requestId={message.requestId}
-                          onFeedbackSubmit={handleFeedbackSubmit}
-                          size="sm"
-                          className="ml-2"
-                        />
-                      )}
-                    </div>
-
-                    {/* Enhanced Multi-Agent Display */}
-                    {showOptimizations && message.role === "assistant" && (
-                      (message.optimizationsApplied && message.optimizationsApplied.length > 0) ||
-                      (message.agentPath && message.agentPath.length > 0) ||
-                      message.cacheHit ||
-                      message.riskLevel
-                    ) && (
-                        <div className="mt-4 p-5 glass rounded-xl border border-primary-200/30 backdrop-blur-xl animate-fade-in shadow-lg bg-gradient-to-br from-primary-50/20 to-transparent dark:from-primary-900/10">
-                          {/* Cache Hit Indicator */}
-                          {message.cacheHit && (
-                            <div className="mb-4">
-                              <span className="glass border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 px-3 py-1.5 rounded-lg text-xs font-display font-bold animate-pulse shadow-md inline-flex items-center gap-1.5">
-                                <Zap className="w-3.5 h-3.5" />
-                                Semantic Cache Hit - Instant Response
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Optimizations Applied */}
-                          {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
-                            <div className="mb-3">
-                              <div className="mb-2">
-                                <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary inline-flex items-center gap-1.5">
-                                  <Settings className="w-4 h-4" />
-                                  Optimizations Applied:
-                                </span>
-                              </div>
-                              <div className="flex flex-wrap gap-2">
-                                {message.optimizationsApplied.map((opt, idx) => {
-                                  // Determine color and icon based on optimization type
-                                  let borderClass = 'border-primary-200/30';
-                                  let bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
-                                  let textClass = 'text-primary-600 dark:text-primary-400';
-                                  let IconComponent = Settings;
-
-                                  if (opt.includes('cache')) {
-                                    borderClass = 'border-success-200/30';
-                                    bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
-                                    textClass = 'text-success-600 dark:text-success-400';
-                                    IconComponent = Zap;
-                                  } else if (opt.includes('prompt') || opt.includes('system')) {
-                                    borderClass = 'border-warning-200/30';
-                                    bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
-                                    textClass = 'text-warning-600 dark:text-warning-400';
-                                    IconComponent = Brain;
-                                  } else if (opt.includes('multi_turn') || opt.includes('context')) {
-                                    borderClass = 'border-primary-200/30';
-                                    bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
-                                    textClass = 'text-primary-600 dark:text-primary-400';
-                                    IconComponent = MessageSquare;
-                                  } else if (opt.includes('summarization')) {
-                                    borderClass = 'border-accent-200/30';
-                                    bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
-                                    textClass = 'text-accent-600 dark:text-accent-400';
-                                    IconComponent = FileText;
-                                  }
-
-                                  return (
-                                    <span key={idx} className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm inline-flex items-center gap-1.5`} title={opt}>
-                                      <IconComponent className="w-3 h-3" />
-                                      {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                    </span>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Agent Processing Flow */}
-                          {message.agentPath && message.agentPath.length > 1 && (
-                            <div className="mb-3">
-                              <div className="mb-2">
-                                <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
-                                  🤖 Agent Processing Flow:
-                                </span>
-                              </div>
-                              <div className="flex flex-wrap items-center gap-2">
-                                {message.agentPath.map((agent, idx) => {
-                                  let borderClass = 'border-accent-200/30';
-                                  let bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
-                                  let textClass = 'text-accent-600 dark:text-accent-400';
-
-                                  if (agent.includes('master')) {
-                                    borderClass = 'border-primary-200/30';
-                                    bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
-                                    textClass = 'text-primary-600 dark:text-primary-400';
-                                  } else if (agent.includes('cost')) {
-                                    borderClass = 'border-warning-200/30';
-                                    bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
-                                    textClass = 'text-warning-600 dark:text-warning-400';
-                                  } else if (agent.includes('quality')) {
-                                    borderClass = 'border-success-200/30';
-                                    bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
-                                    textClass = 'text-success-600 dark:text-success-400';
-                                  }
-
-                                  return (
-                                    <div key={idx} className="flex items-center gap-2">
-                                      <span className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm`}>
-                                        {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                      </span>
-                                      {idx < message.agentPath!.length - 1 && (
-                                        <span className="text-primary-500 font-bold">→</span>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Performance Metrics */}
-                          <div className="flex flex-wrap gap-2 pt-4 border-t border-primary-200/30">
-                            {message.riskLevel && (
-                              <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${message.riskLevel === 'high'
-                                ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400' :
-                                message.riskLevel === 'medium'
-                                  ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
-                                  'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
-                                }`}>
-                                📊 Risk: {message.riskLevel.toUpperCase()}
-                              </span>
-                            )}
-
-                            {message.metadata?.qualityScore && (
-                              <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${getQualityLevel(message.metadata.qualityScore) === 'excellent'
-                                ? 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400' :
-                                getQualityLevel(message.metadata.qualityScore) === 'good'
-                                  ? 'border-primary-200/30 bg-gradient-to-br from-primary-500/20 to-primary-600/20 text-primary-600 dark:text-primary-400' :
-                                  getQualityLevel(message.metadata.qualityScore) === 'fair'
-                                    ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
-                                    'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
-                                }`}>
-                                ⭐ Quality: {message.metadata.qualityScore}/10
-                              </span>
-                            )}
-
-                            {message.metadata?.processingTime && (
-                              <span className="glass px-3 py-1.5 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 text-xs font-display font-bold shadow-sm">
-                                ⏱️ {message.metadata.processingTime}ms
-                              </span>
-                            )}
-                          </div>
+                          ))}
                         </div>
                       )}
+
+                      {/* File Attachments Display */}
+                      {message.attachments && message.attachments.length > 0 && (
+                        <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
+                          {message.attachments.map((attachment, idx) => {
+                            // Get Google file metadata for enhanced display
+                            const googleMetadata = attachment.type === 'google'
+                              ? GoogleFileAttachmentService.getFileMetadata(attachment)
+                              : null;
+
+                            return (
+                              <div
+                                key={`${attachment.fileId}-${idx}`}
+                                className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${message.role === 'user'
+                                  ? 'border-white/30 bg-white/20 hover:bg-white/30 hover:shadow-white/20'
+                                  : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50 hover:shadow-primary/20'
+                                  }`}
+                              >
+                                <div className={`p-1.5 rounded-lg ${message.role === 'user'
+                                  ? 'bg-white/20'
+                                  : attachment.type === 'google'
+                                    ? 'bg-gradient-primary glow-primary'
+                                    : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
+                                  }`}>
+                                  {attachment.type === 'google' ? (
+                                    googleMetadata?.icon ? (
+                                      <img
+                                        src={googleMetadata.icon}
+                                        alt={googleMetadata.displayType}
+                                        className="w-4 h-4 object-contain"
+                                      />
+                                    ) : (
+                                      <DocumentTextIcon className="w-4 h-4 text-white" />
+                                    )
+                                  ) : (
+                                    <PaperClipIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
+                                  )}
+                                </div>
+                                <div className="flex flex-col min-w-0">
+                                  <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
+                                    {attachment.fileName}
+                                  </span>
+                                  {googleMetadata && (
+                                    <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/70' : 'text-secondary-500 dark:text-secondary-400'}`}>
+                                      {googleMetadata.formattedSize} • {googleMetadata.lastModified}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
+                                  ? 'bg-white/20 text-white/90'
+                                  : attachment.type === 'google'
+                                    ? 'bg-gradient-primary text-white glow-primary'
+                                    : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                                  }`}>
+                                  {attachment.type === 'google' ? googleMetadata?.displayType || 'Google' : 'Uploaded'}
+                                </span>
+                                {attachment.url && (
+                                  <a
+                                    href={attachment.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
+                                      ? 'hover:bg-white/30 text-white/90 hover:text-white'
+                                      : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
+                                      }`}
+                                    title="Open file"
+                                    aria-label="Open file"
+                                  >
+                                    <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                                  </a>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-primary-200/30">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
+                            {formatTimestamp(message.timestamp)}
+                          </span>
+                          {(message.metadata?.templateId || message.metadata?.templateUsed) && (
+                            <span className={`glass px-2.5 py-1 rounded-lg border inline-flex items-center gap-1.5 ${message.role === 'user'
+                              ? 'border-white/30 bg-white/20 text-white'
+                              : 'border-purple-200/30 bg-gradient-to-br from-purple-500/20 to-purple-600/20 text-purple-600 dark:text-purple-400'
+                              } font-display font-semibold text-xs`}>
+                              <SparklesIcon className="w-3.5 h-3.5" />
+                              {message.metadata?.templateName || message.metadata?.templateUsed?.name || 'Template'}
+                            </span>
+                          )}
+                          {message.metadata?.cost && (
+                            <span className={`glass px-2.5 py-1 rounded-lg border ${message.role === 'user'
+                              ? 'border-white/30 bg-white/20 text-white'
+                              : 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
+                              } font-display font-bold text-xs`}>
+                              ${message.metadata.cost.toFixed(4)}
+                            </span>
+                          )}
+                          {message.metadata?.webSearchUsed && (
+                            <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs inline-flex items-center gap-1">
+                              <MagnifyingGlassIcon className="w-3.5 h-3.5" />
+                              Web Search
+                            </span>
+                          )}
+                          {message.cacheHit && (
+                            <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs animate-pulse inline-flex items-center gap-1">
+                              <Zap className="w-3 h-3" />
+                              Cached
+                            </span>
+                          )}
+                          {message.riskLevel && message.riskLevel !== 'low' && (
+                            <span className={`glass px-2.5 py-1 rounded-lg border font-display font-bold text-xs inline-flex items-center gap-1 ${message.riskLevel === 'high'
+                              ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
+                              : 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400'
+                              }`}>
+                              {message.riskLevel === 'high' ? <AlertCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
+                              {message.riskLevel.toUpperCase()} RISK
+                            </span>
+                          )}
+                          {message.sources && message.sources.length > 0 && (
+                            <button
+                              onClick={() => openSourcesModal(message.sources)}
+                              className="glass px-2.5 py-1 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 hover:from-accent-500/30 hover:to-accent-600/30 transition-all duration-300 font-display font-semibold text-xs inline-flex items-center gap-1"
+                            >
+                              <BookOpenIcon className="w-3 h-3" />
+                              {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
+                            </button>
+                          )}
+                        </div>
+
+                        {message.role === "assistant" && message.requestId && (
+                          <FeedbackButton
+                            requestId={message.requestId}
+                            onFeedbackSubmit={handleFeedbackSubmit}
+                            size="sm"
+                            className="ml-2"
+                          />
+                        )}
+                      </div>
+
+                      {/* Enhanced Multi-Agent Display */}
+                      {showOptimizations && message.role === "assistant" && (
+                        (message.optimizationsApplied && message.optimizationsApplied.length > 0) ||
+                        (message.agentPath && message.agentPath.length > 0) ||
+                        message.cacheHit ||
+                        message.riskLevel
+                      ) && (
+                          <div className="mt-4 p-5 glass rounded-xl border border-primary-200/30 backdrop-blur-xl animate-fade-in shadow-lg bg-gradient-to-br from-primary-50/20 to-transparent dark:from-primary-900/10">
+                            {/* Cache Hit Indicator */}
+                            {message.cacheHit && (
+                              <div className="mb-4">
+                                <span className="glass border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 px-3 py-1.5 rounded-lg text-xs font-display font-bold animate-pulse shadow-md inline-flex items-center gap-1.5">
+                                  <Zap className="w-3.5 h-3.5" />
+                                  Semantic Cache Hit - Instant Response
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Optimizations Applied */}
+                            {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
+                              <div className="mb-3">
+                                <div className="mb-2">
+                                  <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary inline-flex items-center gap-1.5">
+                                    <Settings className="w-4 h-4" />
+                                    Optimizations Applied:
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {message.optimizationsApplied.map((opt, idx) => {
+                                    // Determine color and icon based on optimization type
+                                    let borderClass = 'border-primary-200/30';
+                                    let bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                    let textClass = 'text-primary-600 dark:text-primary-400';
+                                    let IconComponent = Settings;
+
+                                    if (opt.includes('cache')) {
+                                      borderClass = 'border-success-200/30';
+                                      bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
+                                      textClass = 'text-success-600 dark:text-success-400';
+                                      IconComponent = Zap;
+                                    } else if (opt.includes('prompt') || opt.includes('system')) {
+                                      borderClass = 'border-warning-200/30';
+                                      bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
+                                      textClass = 'text-warning-600 dark:text-warning-400';
+                                      IconComponent = Brain;
+                                    } else if (opt.includes('multi_turn') || opt.includes('context')) {
+                                      borderClass = 'border-primary-200/30';
+                                      bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                      textClass = 'text-primary-600 dark:text-primary-400';
+                                      IconComponent = MessageSquare;
+                                    } else if (opt.includes('summarization')) {
+                                      borderClass = 'border-accent-200/30';
+                                      bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
+                                      textClass = 'text-accent-600 dark:text-accent-400';
+                                      IconComponent = FileText;
+                                    }
+
+                                    return (
+                                      <span key={idx} className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm inline-flex items-center gap-1.5`} title={opt}>
+                                        <IconComponent className="w-3 h-3" />
+                                        {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Agent Processing Flow */}
+                            {message.agentPath && message.agentPath.length > 1 && (
+                              <div className="mb-3">
+                                <div className="mb-2">
+                                  <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
+                                    🤖 Agent Processing Flow:
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  {message.agentPath.map((agent, idx) => {
+                                    let borderClass = 'border-accent-200/30';
+                                    let bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
+                                    let textClass = 'text-accent-600 dark:text-accent-400';
+
+                                    if (agent.includes('master')) {
+                                      borderClass = 'border-primary-200/30';
+                                      bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                      textClass = 'text-primary-600 dark:text-primary-400';
+                                    } else if (agent.includes('cost')) {
+                                      borderClass = 'border-warning-200/30';
+                                      bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
+                                      textClass = 'text-warning-600 dark:text-warning-400';
+                                    } else if (agent.includes('quality')) {
+                                      borderClass = 'border-success-200/30';
+                                      bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
+                                      textClass = 'text-success-600 dark:text-success-400';
+                                    }
+
+                                    return (
+                                      <div key={idx} className="flex items-center gap-2">
+                                        <span className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm`}>
+                                          {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                        </span>
+                                        {idx < message.agentPath!.length - 1 && (
+                                          <span className="text-primary-500 font-bold">→</span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Performance Metrics */}
+                            <div className="flex flex-wrap gap-2 pt-4 border-t border-primary-200/30">
+                              {message.riskLevel && (
+                                <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${message.riskLevel === 'high'
+                                  ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400' :
+                                  message.riskLevel === 'medium'
+                                    ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
+                                    'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
+                                  }`}>
+                                  📊 Risk: {message.riskLevel.toUpperCase()}
+                                </span>
+                              )}
+
+                              {message.metadata?.qualityScore && (
+                                <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${getQualityLevel(message.metadata.qualityScore) === 'excellent'
+                                  ? 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400' :
+                                  getQualityLevel(message.metadata.qualityScore) === 'good'
+                                    ? 'border-primary-200/30 bg-gradient-to-br from-primary-500/20 to-primary-600/20 text-primary-600 dark:text-primary-400' :
+                                    getQualityLevel(message.metadata.qualityScore) === 'fair'
+                                      ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
+                                      'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
+                                  }`}>
+                                  ⭐ Quality: {message.metadata.qualityScore}/10
+                                </span>
+                              )}
+
+                              {message.metadata?.processingTime && (
+                                <span className="glass px-3 py-1.5 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 text-xs font-display font-bold shadow-sm">
+                                  ⏱️ {message.metadata.processingTime}ms
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Show shimmer right after the user message that triggered loading */}
                 {shouldShowShimmer && (
@@ -3764,6 +4044,90 @@ export const ConversationalAgent: React.FC = () => {
               </React.Fragment>
             );
           })}
+
+          {/* Classification Loading Indicator */}
+          {isLoading && loadingMessageId === 'classifying' && (
+            <div className="flex justify-start animate-fade-in">
+              <div className="max-w-4xl glass shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50 p-5 rounded-2xl rounded-bl-sm transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary-200 dark:border-primary-700/30 border-t-primary-600 dark:border-t-primary-400"></div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-display font-semibold text-primary-900 dark:text-primary-100">
+                      Analyzing your request...
+                    </p>
+                    <p className="text-xs text-secondary-600 dark:text-secondary-400">
+                      Determining if structured planning is beneficial
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Governed Agent Progress Indicator */}
+          {governedTaskProgress && isLoading && (
+            <div className="flex justify-start animate-fade-in mb-4">
+              <div className="max-w-4xl glass shadow-2xl backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50 p-5 rounded-2xl rounded-bl-sm transition-all hover:shadow-2xl">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg glow-primary animate-pulse">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-display font-bold text-secondary-900 dark:text-white mb-3">
+                      🤖 Governed Agent Working
+                    </h4>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">Mode:</span>
+                        <span className={`glass px-3 py-1 rounded-lg border font-display font-semibold text-xs ${governedTaskProgress.mode === 'SCOPE' ? 'border-blue-200/30 bg-gradient-to-br from-blue-500/20 to-blue-600/20 text-blue-600 dark:text-blue-400' :
+                          governedTaskProgress.mode === 'PLAN' ? 'border-yellow-200/30 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 text-yellow-600 dark:text-yellow-400' :
+                            governedTaskProgress.mode === 'BUILD' ? 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400' :
+                              governedTaskProgress.mode === 'VERIFY' ? 'border-primary-200/30 bg-gradient-to-br from-primary-500/20 to-primary-600/20 text-primary-600 dark:text-primary-400' :
+                                'border-secondary-200/30 bg-gradient-to-br from-secondary-500/20 to-secondary-600/20 text-secondary-600 dark:text-secondary-400'
+                          }`}>
+                          {governedTaskProgress.mode}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">Status:</span>
+                        <span className="text-sm text-light-text-primary dark:text-dark-text-primary font-body capitalize">{governedTaskProgress.status}</span>
+                      </div>
+                      {governedTaskProgress.mode === 'SCOPE' && (
+                        <div className="glass px-3 py-2 rounded-lg border border-blue-200/30 dark:border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-blue-600/10 backdrop-blur-sm">
+                          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            📊 Analyzing task requirements and compatibility...
+                          </p>
+                        </div>
+                      )}
+                      {governedTaskProgress.mode === 'PLAN' && (
+                        <div className="glass px-3 py-2 rounded-lg border border-yellow-200/30 dark:border-yellow-500/20 bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 backdrop-blur-sm">
+                          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            🧠 Using Claude 4 Sonnet to generate execution plan...
+                          </p>
+                        </div>
+                      )}
+                      {governedTaskProgress.mode === 'BUILD' && (
+                        <div className="glass px-3 py-2 rounded-lg border border-success-200/30 dark:border-success-500/20 bg-gradient-to-br from-success-500/10 to-success-600/10 backdrop-blur-sm">
+                          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            🔨 Executing the plan step by step...
+                          </p>
+                        </div>
+                      )}
+                      {governedTaskProgress.mode === 'VERIFY' && (
+                        <div className="glass px-3 py-2 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-primary-500/10 to-primary-600/10 backdrop-blur-sm">
+                          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            ✅ Verifying execution and results...
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div ref={messagesEndRef} />
         </div>
@@ -4059,6 +4423,30 @@ export const ConversationalAgent: React.FC = () => {
                               <GlobeAltIcon className={`w-4 h-4 ${webSearchEnabled ? 'text-primary-600 dark:text-primary-400' : 'text-secondary-600 dark:text-secondary-400'}`} />
                               <span className="text-sm font-medium text-secondary-900 dark:text-white">Web Search</span>
                               {webSearchEnabled && (
+                                <Check className="w-4 h-4 ml-auto text-primary-600 dark:text-primary-400" />
+                              )}
+                            </button>
+                          </div>
+
+                          {/* Plan Mode (Governed Agent) */}
+                          <div className="mb-2">
+                            <button
+                              onClick={() => {
+                                setShowAttachmentsPopover(false);
+                                setPlanModeEnabled(!planModeEnabled);
+                              }}
+                              className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors ${planModeEnabled ? 'bg-primary-500/10 dark:bg-primary-500/20' : ''}`}
+                            >
+                              <svg
+                                className={`w-4 h-4 ${planModeEnabled ? 'text-primary-600 dark:text-primary-400' : 'text-secondary-600 dark:text-secondary-400'}`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                              <span className="text-sm font-medium text-secondary-900 dark:text-white">Plan Mode</span>
+                              {planModeEnabled && (
                                 <Check className="w-4 h-4 ml-auto text-primary-600 dark:text-primary-400" />
                               )}
                             </button>
@@ -4599,6 +4987,34 @@ export const ConversationalAgent: React.FC = () => {
                   </button>
                 )}
 
+                {/* Plan Mode Enabled Indicator */}
+                {planModeEnabled && (
+                  <button
+                    onClick={() => setPlanModeEnabled(false)}
+                    className="h-8 sm:h-9 md:h-9 flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 md:px-4 rounded-full glass backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-50/80 to-primary-100/60 dark:from-primary-900/30 dark:to-primary-800/20 hover:from-primary-100/90 hover:to-primary-200/70 dark:hover:from-primary-800/40 dark:hover:to-primary-700/30 transition-all duration-200 shrink-0 animate-fade-in group relative shadow-sm hover:shadow-md"
+                    title="Plan Mode Enabled - Structured planning and verification - Click to disable"
+                  >
+                    {/* Icon container - maintains position */}
+                    <div className="relative w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0">
+                      {/* Default: Plan icon */}
+                      <svg
+                        className="absolute inset-0 w-full h-full text-primary-600 dark:text-primary-400 group-hover:opacity-0 transition-opacity duration-200"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      {/* Hover: X */}
+                      <XMarkIcon className="absolute inset-0 w-full h-full text-primary-600 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    </div>
+
+                    <span className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors whitespace-nowrap">
+                      Plan
+                    </span>
+                  </button>
+                )}
+
                 {/* Model Selector */}
                 <div className="relative">
                   <button
@@ -4963,7 +5379,39 @@ export const ConversationalAgent: React.FC = () => {
       </div>
 
       {/* Sources Modal */}
-      <SourcesModal />
+      <SourcesModal
+        isOpen={showSourcesModal}
+        onClose={() => setShowSourcesModal(false)}
+        sources={currentSources || []}
+      />
+
+      {/* Plan Modification Dialog */}
+      <PlanModificationDialog
+        isOpen={showPlanModifyDialog}
+        onClose={() => {
+          setShowPlanModifyDialog(false);
+          setPlanModificationText("");
+          setCurrentPlanTaskId(null);
+        }}
+        onSubmit={handleModifyPlan}
+        value={planModificationText}
+        onChange={setPlanModificationText}
+        isLoading={isPlanModifying}
+      />
+
+      {/* Code Change Request Dialog */}
+      <ChangeRequestDialog
+        isOpen={showChangeRequestDialog}
+        onClose={() => {
+          setShowChangeRequestDialog(false);
+          setChangeRequestText("");
+          setCurrentPlanTaskId(null);
+        }}
+        onSubmit={handleRequestCodeChanges}
+        value={changeRequestText}
+        onChange={setChangeRequestText}
+        isLoading={isRequestingChanges}
+      />
 
       {/* Document Preview Modal */}
       {previewDocument && (
@@ -5294,6 +5742,143 @@ export const ConversationalAgent: React.FC = () => {
         onConfirm={appDisconnectDialog.onConfirm}
         onCancel={() => setAppDisconnectDialog(prev => ({ ...prev, isOpen: false }))}
       />
+
+      {/* Governed Agent Prompt Modal */}
+      {showGovernedPrompt && governedClassification && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="glass max-w-2xl w-full rounded-2xl shadow-2xl animate-scale-in border border-primary-500/30 bg-black/90 backdrop-blur-xl">
+            {/* Header */}
+            <div className="flex items-center gap-3 p-6 border-b border-primary-500/30">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/50">
+                <svg className="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-display font-bold text-primary-500">
+                  Use Autonomous Agent Mode?
+                </h3>
+                <p className="text-sm text-primary-300/80">
+                  This task may benefit from structured planning
+                </p>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              <div className="bg-gradient-to-br from-primary-900/30 to-black/50 border border-primary-500/20 rounded-xl p-4 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-primary-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-sm font-display font-semibold text-primary-400 mb-1">
+                      Task Classification
+                    </p>
+                    <p className="text-sm text-primary-300/90">
+                      {governedClassification.classification.reasoning}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-black/60 border border-primary-600/20 rounded-lg p-3 hover:border-primary-500/40 transition-all">
+                  <p className="text-xs text-primary-400/70 mb-1 font-display font-medium">Type</p>
+                  <p className="text-sm font-display font-semibold text-primary-300 capitalize">
+                    {governedClassification.classification.type.replace('_', ' ')}
+                  </p>
+                </div>
+                <div className="bg-black/60 border border-primary-600/20 rounded-lg p-3 hover:border-primary-500/40 transition-all">
+                  <p className="text-xs text-primary-400/70 mb-1 font-display font-medium">Complexity</p>
+                  <p className="text-sm font-display font-semibold text-primary-300 capitalize">
+                    {governedClassification.classification.complexity}
+                  </p>
+                </div>
+                <div className="bg-black/60 border border-primary-600/20 rounded-lg p-3 hover:border-primary-500/40 transition-all">
+                  <p className="text-xs text-primary-400/70 mb-1 font-display font-medium">Risk Level</p>
+                  <p className="text-sm font-display font-semibold text-primary-300 capitalize">
+                    {governedClassification.classification.riskLevel}
+                  </p>
+                </div>
+                <div className="bg-black/60 border border-primary-600/20 rounded-lg p-3 hover:border-primary-500/40 transition-all">
+                  <p className="text-xs text-primary-400/70 mb-1 font-display font-medium">Integrations</p>
+                  <p className="text-sm font-display font-semibold text-primary-300">
+                    {governedClassification.classification.integrations.length || 'None'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="glass bg-gradient-to-br from-primary-900/40 to-black/60 border border-primary-500/30 rounded-xl p-4 shadow-sm shadow-primary-500/20">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-primary-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0121 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2c2.31 0 4.438.793 6.118 2.016m0 0L12 9m5.618-4.016L14 9" />
+                  </svg>
+                  <p className="text-sm text-primary-300 font-medium">
+                    <strong className="font-display font-bold text-primary-400">Autonomous Agent</strong> will plan, verify, and execute this task with approval gates for risky actions.
+                    You'll see the plan before anything is executed.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-primary-500/30 bg-black/70">
+              <button
+                onClick={handleUseNormalChat}
+                className="px-5 py-2.5 rounded-xl border border-primary-500/30 bg-black/50 text-primary-300 hover:bg-primary-900/30 hover:text-primary-200 hover:border-primary-500/50 transition-all duration-300 font-display font-semibold text-sm hover:scale-105 hover:shadow-md"
+              >
+                Use Normal Chat
+              </button>
+              <button
+                onClick={handleUseGovernedAgent}
+                disabled={isLoading}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 text-black hover:from-primary-400 hover:to-primary-500 transition-all duration-300 font-display font-semibold text-sm hover:scale-105 hover:shadow-xl shadow-lg shadow-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                {isLoading ? 'Starting...' : 'Use Autonomous Agent'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Governed Agent Modal */}
+      {showGovernedAgent && governedTaskId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="glass max-w-7xl w-full h-[90vh] rounded-2xl shadow-2xl animate-scale-in border border-primary-200/30 dark:border-primary-500/20 bg-white/95 dark:bg-dark-card/95 backdrop-blur-xl overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-secondary-50/50 to-transparent dark:from-secondary-900/30 dark:to-transparent">
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg glow-primary">
+                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-display font-bold gradient-text-primary">
+                    Autonomous Agent
+                  </h3>
+                  <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-mono">
+                    Task ID: {governedTaskId.substring(0, 8)}...
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={closeGovernedAgent}
+                className="p-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-all duration-200 hover:scale-110 group"
+                title="Close Autonomous Agent"
+              >
+                <XMarkIcon className="w-6 h-6 text-secondary-600 dark:text-secondary-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-hidden">
+              <UniversalGovernedAgent taskId={governedTaskId} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,11 @@ import {
     TrashIcon,
     ArchiveBoxIcon,
     PencilIcon,
-    ArchiveBoxArrowDownIcon
+    ArchiveBoxArrowDownIcon,
+    CogIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+    ClockIcon
 } from '@heroicons/react/24/outline';
 import { ChatService, Conversation } from '@/services/chat.service';
 import { PinIcon, MoreVertical, Loader2 } from 'lucide-react';
@@ -90,6 +94,7 @@ export const CategorizedConversations: React.FC<CategorizedConversationsProps> =
         if (diffMins < 60) return `${diffMins}m ago`;
         if (diffHours < 24) return `${diffHours}h ago`;
         if (diffDays === 1) return 'Yesterday';
+        if (diffDays < 7) return `${diffDays}d ago`;
         if (diffDays < 30) return `${diffDays}d ago`;
         return new Date(date).toLocaleDateString();
     };
@@ -238,6 +243,22 @@ export const CategorizedConversations: React.FC<CategorizedConversationsProps> =
                                     <ArchiveBoxIcon className="w-3.5 h-3.5 text-light-text-muted dark:text-dark-text-muted flex-shrink-0" />
                                 )}
                                 <span className="truncate">{conversation.title}</span>
+                                {conversation.governedTasks && conversation.governedTasks.count > 0 && (
+                                    <span className="ml-2 inline-flex items-center gap-1">
+                                        {conversation.governedTasks.active?.status === 'completed' ? (
+                                            <CheckCircleIcon className="w-4 h-4 text-green-500" />
+                                        ) : conversation.governedTasks.active?.status === 'failed' ? (
+                                            <XCircleIcon className="w-4 h-4 text-red-500" />
+                                        ) : conversation.governedTasks.active?.status === 'in_progress' ? (
+                                            <CogIcon className="w-4 h-4 text-blue-500 animate-spin" />
+                                        ) : (
+                                            <ClockIcon className="w-4 h-4 text-gray-400" />
+                                        )}
+                                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                                            {conversation.governedTasks.count} plan{conversation.governedTasks.count > 1 ? 's' : ''}
+                                        </span>
+                                    </span>
+                                )}
                             </h4>
                         )}
                         <div className="flex items-center gap-2 text-xs font-medium text-light-text-muted dark:text-dark-text-muted">
@@ -375,6 +396,7 @@ export const CategorizedConversations: React.FC<CategorizedConversationsProps> =
                     {renderCategory('Pinned', categorized.pinned, true)}
                     {renderCategory('Today', categorized.today)}
                     {renderCategory('Yesterday', categorized.yesterday)}
+                    {renderCategory('Last 7 Days', categorized.sevenDays)}
                     {renderCategory('Last 30 Days', categorized.thirtyDays)}
                     {renderCategory('Earlier', categorized.earlier)}
 
