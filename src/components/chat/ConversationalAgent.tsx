@@ -46,6 +46,7 @@ import {
   DocumentIcon,
   ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
+import { FileTypeIcon } from '../common/FileTypeIcon';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
 import { FeedbackButton } from "../feedback/FeedbackButton";
@@ -4177,7 +4178,7 @@ export const ConversationalAgent: React.FC = () => {
                     key={doc.documentId}
                     className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-secondary-50 dark:bg-secondary-800/30 rounded-lg border border-secondary-200/50 dark:border-secondary-700/50 text-xs hover:shadow-sm transition-all"
                   >
-                    <DocumentTextIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                    <FileTypeIcon fileName={doc.fileName} className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
                     <span className="text-secondary-700 dark:text-secondary-300 font-medium max-w-[120px] truncate">
                       {doc.fileName}
                     </span>
@@ -4347,7 +4348,7 @@ export const ConversationalAgent: React.FC = () => {
                             <input
                               ref={hiddenFileInputRef}
                               type="file"
-                              accept=".pdf,.txt,.md,.json,.csv,.doc,.docx,.ts,.js,.py,.java,.cpp,.go,.rs,.rb"
+                              accept=".pdf,.txt,.md,.json,.csv,.doc,.docx,.rtf,.xlsx,.xls,.xml,.ts,.js,.jsx,.tsx,.py,.java,.cpp,.c,.go,.rs,.rb,.php,.swift,.kt,.scala,.r,.sql,.sh,.bash,.yaml,.yml,.toml,.ini,.cfg,.conf,.html,.htm,.png,.jpg,.jpeg,.webp,.pptx,.ppt,.log"
                               onChange={async (e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
@@ -5346,7 +5347,7 @@ export const ConversationalAgent: React.FC = () => {
                           key={idx}
                           className="inline-flex items-center gap-2 px-3 py-1 bg-primary-50 dark:bg-primary-900/20 border border-primary-200/30 dark:border-primary-500/20 rounded-lg"
                         >
-                          <DocumentIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                          <FileTypeIcon fileName={att.fileName} className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                           <span className="text-xs font-display text-secondary-900 dark:text-white truncate max-w-[120px]">
                             {att.fileName}
                           </span>

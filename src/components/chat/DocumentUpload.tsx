@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { PaperClipIcon, XMarkIcon, DocumentTextIcon, EyeIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { PaperClipIcon, XMarkIcon, EyeIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { FileTypeIcon } from '../common/FileTypeIcon';
 import { useNavigate } from 'react-router-dom';
 import { documentService, DocumentMetadata } from '@/services/document.service';
 import { DocumentPreviewModal } from './DocumentPreviewModal';
@@ -114,7 +115,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
                             key={doc.documentId}
                             className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-secondary-50 dark:bg-secondary-800/30 rounded-lg border border-secondary-200/50 dark:border-secondary-700/50 text-xs hover:shadow-sm transition-all"
                         >
-                            <DocumentTextIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                            <FileTypeIcon fileName={doc.fileName} className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
                             <span className="text-secondary-700 dark:text-secondary-300 font-medium max-w-[120px] truncate">
                                 {doc.fileName}
                             </span>
@@ -171,7 +172,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
                 <input
                     ref={fileInputRef}
                     type="file"
-                    accept=".pdf,.txt,.md,.json,.csv,.doc,.docx,.ts,.js,.py,.java,.cpp,.go,.rs,.rb"
+                    accept=".pdf,.txt,.md,.json,.csv,.doc,.docx,.rtf,.xlsx,.xls,.xml,.ts,.js,.jsx,.tsx,.py,.java,.cpp,.c,.go,.rs,.rb,.php,.swift,.kt,.scala,.r,.sql,.sh,.bash,.yaml,.yml,.toml,.ini,.cfg,.conf,.html,.htm,.png,.jpg,.jpeg,.webp,.pptx,.ppt,.log"
                     onChange={handleFileSelect}
                     disabled={uploading}
                     className="hidden"
