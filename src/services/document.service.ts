@@ -118,6 +118,11 @@ class DocumentService {
                             detailedMessage = `Batch ${progress.currentBatch}/${progress.totalBatches}: ${progress.message}`;
                         }
                         
+                        // Handle OCR stage specifically
+                        if (progress.stage === 'ocr') {
+                            detailedMessage = `Extracting text from image... ${progress.message}`;
+                        }
+                        
                         if (options?.onProgress) {
                             // Pass progress percentage (0-100) and detailed message
                             options.onProgress(progress.progress || 0, detailedMessage);
@@ -271,27 +276,43 @@ class DocumentService {
      * Validate file before upload
      */
     validateFile(file: File): { valid: boolean; error?: string } {
-        const maxSize = 10 * 1024 * 1024; // 10MB
+        // Different max sizes for images vs documents
+        const extension = file.name.split('.').pop()?.toLowerCase();
+        const isImage = ['png', 'jpg', 'jpeg', 'webp'].includes(extension || '');
+        const maxSize = isImage ? 25 * 1024 * 1024 : 10 * 1024 * 1024; // 25MB for images, 10MB for others
+        
         const allowedExtensions = [
-            'pdf', 'txt', 'md', 'json', 'csv',
-            'doc', 'docx', 'ts', 'js', 'py',
-            'java', 'cpp', 'go', 'rs', 'rb'
+            // Documents
+            'pdf', 'txt', 'md', 'doc', 'docx', 'rtf',
+            // Data
+            'json', 'csv', 'xlsx', 'xls', 'xml',
+            // Code
+            'ts', 'js', 'jsx', 'tsx', 'py', 'java', 'cpp', 'c', 'go', 'rs', 'rb', 'php', 'swift', 'kt', 'scala', 'r', 'sql', 'sh', 'bash',
+            // Config
+            'yaml', 'yml', 'toml', 'ini', 'cfg', 'conf',
+            // Web
+            'html', 'htm',
+            // Images (for OCR)
+            'png', 'jpg', 'jpeg', 'webp',
+            // Presentations
+            'pptx', 'ppt',
+            // Logs
+            'log'
         ];
 
         // Check file size
         if (file.size > maxSize) {
             return {
                 valid: false,
-                error: 'File size exceeds 10MB limit'
+                error: `File size exceeds ${isImage ? 25 : 10}MB limit`
             };
         }
 
         // Check file extension
-        const extension = file.name.split('.').pop()?.toLowerCase();
         if (!extension || !allowedExtensions.includes(extension)) {
             return {
                 valid: false,
-                error: `File type not supported. Allowed: ${allowedExtensions.join(', ')}`
+                error: `File type not supported. Allowed: documents (pdf, docx, txt, md, rtf), data (csv, json, xlsx), code (js, ts, py, java, etc.), web (html), images (png, jpg, jpeg, webp)`
             };
         }
 
