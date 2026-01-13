@@ -2074,8 +2074,7 @@ export const ConversationalAgent: React.FC = () => {
         // Integration selection data (map from backend naming to frontend naming)
         requiresSelection: requiresIntegrationSelector || response.requiresSelection,
         selection: integrationSelectorData || response.selection,
-        // MongoDB result data
-        mongodbResult: response.formattedResult ? {
+        mongodbResult: (response.formattedResult && response.formattedResult.data && Object.keys(response.formattedResult.data).length > 0) ? {
           type: response.formattedResult.type || 'json',
           data: response.formattedResult.data,
           action: response.mongodbIntegrationData?.action,
@@ -5578,7 +5577,6 @@ export const ConversationalAgent: React.FC = () => {
           </div>
         </div>
       )}
-
 
       {/* Google Service Panel */}
       <GoogleServicePanel
