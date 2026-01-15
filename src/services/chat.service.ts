@@ -21,9 +21,39 @@ export interface ChatMessage {
     latency?: number;
     tokenCount?: number;
   };
-  mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain';
+  mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain' | 'list';
   integrationSelectorData?: any; 
   mongodbIntegrationData?: any; 
+  // Generic integration data
+  githubIntegrationData?: any;
+  vercelIntegrationData?: any;
+  slackIntegrationData?: any;
+  discordIntegrationData?: any;
+  jiraIntegrationData?: any;
+  linearIntegrationData?: any;
+  googleIntegrationData?: any;
+  awsIntegrationData?: any;
+  formattedResult?: {
+    type: 'table' | 'json' | 'list' | 'text';
+    data: any;
+  };
+  agentPath?: string[];
+  optimizationsApplied?: string[];
+  cacheHit?: boolean;
+  riskLevel?: string;
+  integrationResult?: {
+    type: 'table' | 'json' | 'list' | 'text';
+    data: any;
+    integration: string;
+  };
+  mongodbResult?: {
+    type: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'error' | 'empty' | 'text' | 'explain' | 'list';
+    data: any;
+    action?: string;
+    connectionId?: string;
+    database?: string;
+    connectionAlias?: string;
+  };
   requiresSelection?: boolean;
   fileReference?: {
     type: 'file_reference';
@@ -210,10 +240,10 @@ export interface SendMessageResponse {
     connectionAlias?: string;
   };
   formattedResult?: {
-    type: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'error' | 'empty' | 'text' | 'explain';
+    type: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'error' | 'empty' | 'text' | 'explain' | 'list';
     data: any;
   };
-  mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain';
+  mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain' | 'list';
   fileReference?: {
     type: 'file_reference';
     path: string;
@@ -264,6 +294,7 @@ export interface GovernedTaskInitiateResponse {
 
 export class ChatService {
   private static baseUrl = "/chat";
+  private static activeRequests = new Map<string, AbortController>();
 
   /**
    * Get available models for chat
@@ -283,12 +314,64 @@ export class ChatService {
    */
   static async sendMessage(
     request: SendMessageRequest,
+    retryCount: number = 0
   ): Promise<SendMessageResponse> {
+    const maxRetries = 2;
+    
+    // Create a unique request ID to prevent duplicates
+    const requestId = `${(request.message || 'msg').substring(0, 50)}-${Date.now()}`;
+    
+    // Cancel any existing request with the same message content
+    const existingController = this.activeRequests.get(requestId);
+    if (existingController) {
+      console.log('🔄 Canceling duplicate request');
+      existingController.abort();
+      this.activeRequests.delete(requestId);
+    }
+    
+    // Create new AbortController for this request
+    const controller = new AbortController();
+    this.activeRequests.set(requestId, controller);
+    
     try {
-      const response = await chatApiClient.post(`${this.baseUrl}/message`, request);
+      const response = await chatApiClient.post(`${this.baseUrl}/message`, request, {
+        signal: controller.signal
+      });
+      
+      // Clean up successful request
+      this.activeRequests.delete(requestId);
       return response.data.data;
     } catch (error: any) {
+      // Clean up failed request
+      this.activeRequests.delete(requestId);
+      
       console.error("Error sending message:", error);
+      
+      // Don't retry if request was intentionally canceled
+      if (error.code === 'ERR_CANCELED' || error.message?.includes('cancel')) {
+        console.log('⏹️ Request was canceled, not retrying');
+        throw new Error('Request was canceled');
+      }
+      
+      // Check if this is a connection error that can be retried
+      const isRetryableError = 
+        error.code === 'ERR_NETWORK' ||
+        error.code === 'ECONNRESET' ||
+        error.code === 'ECONNABORTED' ||
+        error.message?.includes('Network Error') ||
+        error.message?.includes('connection closed') ||
+        (error.response?.status >= 500 && error.response?.status < 600);
+      
+      // Retry logic for connection issues (but not for canceled requests)
+      if (isRetryableError && retryCount < maxRetries) {
+        console.log(`🔄 Retrying request (attempt ${retryCount + 1}/${maxRetries})...`);
+        
+        // Exponential backoff: 1s, 2s
+        const backoffMs = Math.pow(2, retryCount) * 1000;
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+        
+        return this.sendMessage(request, retryCount + 1);
+      }
       
       // Preserve error code and details for better handling
       if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
@@ -298,7 +381,7 @@ export class ChatService {
       }
       
       if (error.code === 'ERR_NETWORK') {
-        const networkError = new Error("Network error. Please check your internet connection.");
+        const networkError = new Error("Network error. Please check your internet connection and try again.");
         (networkError as any).code = 'ERR_NETWORK';
         throw networkError;
       }
@@ -530,8 +613,23 @@ export class ChatService {
       mongodbSelectedViewType: message.mongodbSelectedViewType,
       // Map integrationSelectorData to selection (for backward compatibility)
       selection: message.integrationSelectorData || message.selection,
+      // Map all integration data fields
+      agentPath: message.agentPath,
+      optimizationsApplied: message.optimizationsApplied,
+      cacheHit: message.cacheHit,
+      riskLevel: message.riskLevel,
+      formattedResult: message.formattedResult,
+      // Map specific integration data
+      githubIntegrationData: message.githubIntegrationData,
+      vercelIntegrationData: message.vercelIntegrationData,
+      slackIntegrationData: message.slackIntegrationData,
+      discordIntegrationData: message.discordIntegrationData,
+      jiraIntegrationData: message.jiraIntegrationData,
+      linearIntegrationData: message.linearIntegrationData,
+      googleIntegrationData: message.googleIntegrationData,
+      awsIntegrationData: message.awsIntegrationData,
       // Construct mongodbResult from saved data if available
-      mongodbResult: message.formattedResult ? {
+      mongodbResult: message.formattedResult && message.agentPath?.[1] === 'mongodb' ? {
         type: message.formattedResult.type || 'json',
         data: message.formattedResult.data,
         action: message.mongodbIntegrationData?.action,
@@ -546,7 +644,13 @@ export class ChatService {
         connectionId: message.mongodbIntegrationData?.connectionId,
         database: message.mongodbIntegrationData?.database,
         connectionAlias: message.mongodbIntegrationData?.connectionAlias
-      } : undefined)
+      } : undefined),
+      // Construct integrationResult for non-MongoDB integrations
+      integrationResult: message.formattedResult && message.agentPath?.[1] && message.agentPath[1] !== 'mongodb' ? {
+        type: message.formattedResult.type || 'list',
+        data: message.formattedResult.data,
+        integration: message.agentPath[1]
+      } : undefined
     };
 
     // Set requiresSelection if integrationSelectorData exists

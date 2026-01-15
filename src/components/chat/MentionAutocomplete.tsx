@@ -11,6 +11,7 @@ import googleService, { GoogleConnection } from '@/services/google.service';
 import vercelService from '@/services/vercel.service';
 import { awsService } from '@/services/aws.service';
 import { mongodbService } from '@/services/mongodb.service';
+import githubService from '@/services/github.service';
 import { useTheme } from '@/contexts/ThemeContext';
 import type { Integration } from '@/types/integration.types';
 import linearIcon from '@/assets/linear-app-icon-seeklogo.svg';
@@ -54,6 +55,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const [integrations, setIntegrations] = useState<Integration[]>([]);
     const [googleConnections, setGoogleConnections] = useState<GoogleConnection[]>([]);
     const [vercelConnected, setVercelConnected] = useState(false);
+    const [githubConnected, setGithubConnected] = useState(false);
     const [awsConnected, setAwsConnected] = useState(false);
     const [mongodbConnected, setMongodbConnected] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -67,6 +69,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
         loadIntegrations();
         loadGoogleConnections();
         loadVercelConnection();
+        loadGitHubConnection();
         loadAWSConnection();
         loadMongoDBConnection();
     }, []);
@@ -99,6 +102,15 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             setVercelConnected(connections.length > 0 && connections[0].isActive);
         } catch (error) {
             // Silently fail - Vercel connection will just be false
+        }
+    };
+
+    const loadGitHubConnection = async () => {
+        try {
+            const connections = await githubService.listConnections();
+            setGithubConnected(connections.length > 0 && connections.some((c: any) => c.isActive));
+        } catch (error) {
+            // Silently fail - GitHub connection will just be false
         }
     };
 
@@ -170,6 +182,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
                 return <img src={googleDriveLogo} alt="Google Drive" className="w-5 h-5" />;
             case 'sheets':
                 return <img src={googleSheetsLogo} alt="Google Sheets" className="w-5 h-5" />;
+            case 'docs':
             case 'gdocs':
                 return <img src={googleDocsLogo} alt="Google Docs" className="w-5 h-5" />;
             case 'google':
@@ -235,6 +248,11 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             connectedNames.add('vercel');
         }
 
+        // Check GitHub connection
+        if (githubConnected) {
+            connectedNames.add('github');
+        }
+
         // Check AWS connection
         if (awsConnected) {
             connectedNames.add('aws');
@@ -246,7 +264,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
         }
 
         return Array.from(connectedNames) as Array<typeof VALID_INTEGRATIONS[number]>;
-    }, [integrations, googleConnections, vercelConnected, awsConnected, mongodbConnected, getIntegrationNameFromType]);
+    }, [integrations, googleConnections, vercelConnected, githubConnected, awsConnected, mongodbConnected, getIntegrationNameFromType]);
 
     const showIntegrationList = useCallback((filter?: string) => {
         // Only show integrations that the user has connected
@@ -580,43 +598,25 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             // Google Workspace Services
             case 'drive':
                 return [
-                    { command: 'select', label: 'Select Files', description: 'Open file picker to select files' },
-                    { command: 'list', label: 'List Files', description: 'List accessible files' },
-                    { command: 'search', label: 'Search Files', description: 'Search accessible files by name' },
-                    { command: 'upload', label: 'Upload File', description: 'Upload a file' },
-                    { command: 'share', label: 'Share File', description: 'Share a file with team' },
+                    { command: 'upload', label: 'Upload File', description: 'Upload a file to Drive' },
                     { command: 'folder', label: 'Create Folder', description: 'Create a new folder' },
-                    { command: 'delete', label: 'Delete File', description: 'Delete a file or folder' },
-                    { command: 'move', label: 'Move File', description: 'Move file to another folder' },
-                    { command: 'copy', label: 'Copy File', description: 'Create a copy of a file' },
-                    { command: 'rename', label: 'Rename File', description: 'Rename a file or folder' }
+                    { command: 'share', label: 'Share File', description: 'Share a file with team' },
                 ];
 
             case 'sheets':
                 return [
-                    { command: 'select', label: 'Select Spreadsheet', description: 'Open file picker to select sheets' },
-                    { command: 'list', label: 'List Sheets', description: 'Show accessible spreadsheets' },
-                    { command: 'read', label: 'Read Sheet', description: 'Read spreadsheet data' },
                     { command: 'create', label: 'Create Sheet', description: 'Create a new spreadsheet' },
                     { command: 'export', label: 'Export Data', description: 'Export cost data to Google Sheets' },
                     { command: 'update', label: 'Update Sheet', description: 'Update spreadsheet data' },
                     { command: 'append', label: 'Append Data', description: 'Append rows to spreadsheet' },
-                    { command: 'budget', label: 'Budget Tracker', description: 'Create budget tracking sheet' },
-                    { command: 'costs', label: 'Cost Analysis', description: 'Export detailed cost analysis' }
                 ];
 
             case 'docs':
             case 'gdocs':
                 return [
-                    { command: 'select', label: 'Select Document', description: 'Open file picker to select documents' },
-                    { command: 'list', label: 'List Documents', description: 'Show accessible documents' },
-                    { command: 'read', label: 'Read Document', description: 'Read document content for Q&A' },
                     { command: 'create', label: 'Create Document', description: 'Create a new document' },
-                    { command: 'update', label: 'Update Document', description: 'Update existing document' },
                     { command: 'report', label: 'Cost Report', description: 'Generate cost analysis report' },
-                    { command: 'summary', label: 'Cost Summary', description: 'Create monthly cost summary' },
-                    { command: 'analysis', label: 'Anomaly Analysis', description: 'Document cost anomalies' },
-                    { command: 'delete', label: 'Delete Document', description: 'Delete a document' }
+                    { command: 'update', label: 'Update Document', description: 'Update existing document' },
                 ];
 
             case 'mongodb':

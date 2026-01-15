@@ -12,7 +12,7 @@ import {
 interface MongoDBResultViewerProps {
     messageId: string; // messageId is part of props
     data: any;
-    initialViewType: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain';
+    initialViewType: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain' | 'list';
     onViewTypeChange: (
         newType:
             | 'table'
@@ -24,6 +24,7 @@ interface MongoDBResultViewerProps {
             | 'error'
             | 'empty'
             | 'explain'
+            | 'list'
     ) => void;
 }
 
@@ -324,11 +325,10 @@ export const MongoDBResultViewer: React.FC<MongoDBResultViewerProps> = ({
                                     )}
                                     {value.nullable !== undefined && (
                                         <span
-                                            className={`px-2 py-0.5 text-xs font-medium rounded ${
-                                                value.nullable
+                                            className={`px-2 py-0.5 text-xs font-medium rounded ${value.nullable
                                                     ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
                                                     : 'bg-green-500/10 text-green-600 dark:text-green-400'
-                                            }`}
+                                                }`}
                                         >
                                             {value.nullable ? 'nullable' : 'required'}
                                         </span>
@@ -385,8 +385,8 @@ export const MongoDBResultViewer: React.FC<MongoDBResultViewerProps> = ({
                             {typeof value === 'number' && value > 1024 * 1024
                                 ? `${(value / 1024 / 1024).toFixed(2)} MB`
                                 : typeof value === 'number' && value > 1024
-                                ? `${(value / 1024).toFixed(2)} KB`
-                                : (value as string | number).toLocaleString()}
+                                    ? `${(value / 1024).toFixed(2)} KB`
+                                    : (value as string | number).toLocaleString()}
                         </p>
                     </div>
                 ))}
@@ -438,11 +438,10 @@ export const MongoDBResultViewer: React.FC<MongoDBResultViewerProps> = ({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => handleViewTypeChange('table')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            viewType === 'table'
+                        className={`p-2 rounded-lg transition-colors ${viewType === 'table'
                                 ? 'bg-primary-600 text-white'
                                 : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
-                        }`}
+                            }`}
                         title="Table View"
                         data-message-id={messageId}
                     >
@@ -450,11 +449,10 @@ export const MongoDBResultViewer: React.FC<MongoDBResultViewerProps> = ({
                     </button>
                     <button
                         onClick={() => handleViewTypeChange('json')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            viewType === 'json'
+                        className={`p-2 rounded-lg transition-colors ${viewType === 'json'
                                 ? 'bg-primary-600 text-white'
                                 : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
-                        }`}
+                            }`}
                         title="JSON View"
                         data-message-id={messageId}
                     >
@@ -462,11 +460,10 @@ export const MongoDBResultViewer: React.FC<MongoDBResultViewerProps> = ({
                     </button>
                     <button
                         onClick={() => handleViewTypeChange('schema')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            viewType === 'schema'
+                        className={`p-2 rounded-lg transition-colors ${viewType === 'schema'
                                 ? 'bg-primary-600 text-white'
                                 : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
-                        }`}
+                            }`}
                         title="Schema View"
                         data-message-id={messageId}
                     >
@@ -474,11 +471,10 @@ export const MongoDBResultViewer: React.FC<MongoDBResultViewerProps> = ({
                     </button>
                     <button
                         onClick={() => handleViewTypeChange('stats')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            viewType === 'stats'
+                        className={`p-2 rounded-lg transition-colors ${viewType === 'stats'
                                 ? 'bg-primary-600 text-white'
                                 : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
-                        }`}
+                            }`}
                         title="Stats View"
                         data-message-id={messageId}
                     >
