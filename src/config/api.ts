@@ -23,6 +23,8 @@ const chatApi: AxiosInstance = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    // Add connection monitoring
+    validateStatus: (status) => status < 500, // Don't throw on 4xx errors
 });
 
 // Create optimized instance for analytics operations (shorter timeout, faster failure)
@@ -60,16 +62,28 @@ const addRefreshSubscriber = (callback: (token: string) => void) => {
 
 // Function to add auth interceptors to an axios instance
 const addAuthInterceptors = (instance: AxiosInstance) => {
-    // Request interceptor to add auth token
+    // Request interceptor to add auth token and logging
     instance.interceptors.request.use(
         (config: InternalAxiosRequestConfig) => {
             const token = authService.getToken();
             if (token && config.headers) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
+            
+            // Log chat requests for debugging network issues
+            if (config.url?.includes('/message')) {
+                console.log('🚀 Chat request initiated:', {
+                    url: config.url,
+                    method: config.method,
+                    timeout: config.timeout,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
             return config;
         },
         (error: AxiosError) => {
+            console.error('❌ Request interceptor error:', error);
             return Promise.reject(error);
         }
     );
