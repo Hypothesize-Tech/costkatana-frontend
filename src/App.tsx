@@ -88,7 +88,6 @@ import { AdminDiscountManagement } from './pages/AdminDiscountManagement';
 import { AdminBrainDashboard } from './pages/AdminBrainDashboard';
 import Brain from './pages/Brain';
 import Logs from './pages/Logs';
-import Automation from './pages/Automation';
 import CostIntelligence from './pages/CostIntelligence';
 import CostIntelligenceConfig from './pages/CostIntelligenceConfig';
 import { AgentGovernance } from './pages/AgentGovernance';
@@ -272,10 +271,6 @@ function AppContent() {
           <Route
             path="webhooks"
             element={<Webhooks />}
-          />
-          <Route
-            path="automation"
-            element={<Automation />}
           />
           <Route
             path="sessions"
