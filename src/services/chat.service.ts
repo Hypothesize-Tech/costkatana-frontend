@@ -340,6 +340,22 @@ export class ChatService {
       
       // Clean up successful request
       this.activeRequests.delete(requestId);
+      
+      // Handle 403 security blocks explicitly (chatApiClient doesn't throw on 4xx)
+      if (response.status === 403 && response.data?.error === 'SECURITY_BLOCK') {
+        const securityError = new Error(response.data.message || "Message blocked by security system");
+        (securityError as any).response = response;
+        (securityError as any).code = 'SECURITY_BLOCK';
+        throw securityError;
+      }
+      
+      // Handle other non-successful responses
+      if (!response.data?.success && response.status >= 400) {
+        const error = new Error(response.data?.message || "Failed to send message");
+        (error as any).response = response;
+        throw error;
+      }
+      
       return response.data.data;
     } catch (error: any) {
       // Clean up failed request
@@ -384,6 +400,14 @@ export class ChatService {
         const networkError = new Error("Network error. Please check your internet connection and try again.");
         (networkError as any).code = 'ERR_NETWORK';
         throw networkError;
+      }
+      
+      // Handle 403 security blocks explicitly
+      if (error.response?.status === 403 && error.response?.data?.error === 'SECURITY_BLOCK') {
+        const securityError = new Error(error.response.data.message || "Message blocked by security system");
+        (securityError as any).response = error.response;
+        (securityError as any).code = 'SECURITY_BLOCK';
+        throw securityError;
       }
       
       // Preserve response error details

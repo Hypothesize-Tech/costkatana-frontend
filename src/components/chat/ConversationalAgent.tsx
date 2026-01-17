@@ -2385,26 +2385,27 @@ export const ConversationalAgent: React.FC = () => {
           reason: error.response.data.message || 'Message blocked by security system',
           confidence: error.response.data.confidence || 0.8
         });
-        setError(errorMessage);
+        toast.error(errorMessage, { duration: 6000 });
       } else if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
         // Handle timeout errors
-        setError(
+        toast.error(
           attachments.length > 0 || attachedLinks.length > 0
             ? "Request timed out. Large files or complex requests may take longer. Please try again with smaller files or a simpler question."
-            : "Request timed out. Please try again with a simpler question or check your internet connection."
+            : "Request timed out. Please try again with a simpler question or check your internet connection.",
+          { duration: 6000 }
         );
       } else if (error.code === 'ERR_NETWORK' || error.message?.includes('Network Error')) {
         // Handle network errors
-        setError("Network error. Please check your internet connection and try again.");
+        toast.error("Network error. Please check your internet connection and try again.", { duration: 6000 });
       } else if (error.response?.status === 413) {
         // Handle payload too large
-        setError("File is too large. Please try uploading a smaller file (max 10MB).");
+        toast.error("File is too large. Please try uploading a smaller file (max 10MB).", { duration: 6000 });
       } else {
         // Generic error handling
         const errorMessage = error.response?.data?.message
           || error.message
           || "Failed to send message. Please try again.";
-        setError(errorMessage);
+        toast.error(errorMessage, { duration: 6000 });
       }
 
       setIsLoading(false);
