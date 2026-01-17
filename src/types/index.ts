@@ -6,7 +6,6 @@ export * from "./intelligence.types";
 export * from "./project.types";
 export * from "./webhook.types";
 export * from "./cortex.types";
-export * from "./automation.types";
 
 // AI Provider types
 export enum AIProvider {
@@ -17,7 +16,7 @@ export enum AIProvider {
   Cohere = 'cohere',
   Gemini = 'gemini',
   DeepSeek = 'deepseek',
-  Grok = 'groq',
+  Grok = 'grok',
   HuggingFace = 'huggingface',
   Ollama = 'ollama',
   Replicate = 'replicate',

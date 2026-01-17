@@ -5,6 +5,7 @@ import {
   pricingService,
   ProviderPricing,
   PricingComparison,
+  ModelDiscoveryInfo,
 } from "../../services/pricing.service";
 import { PriceComparisonShimmer } from "../shimmer/PriceComparisonShimmer";
 
@@ -95,6 +96,8 @@ export const PriceComparison: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [discoveryInfo, setDiscoveryInfo] = useState<ModelDiscoveryInfo | null>(null);
+  const [triggeringDiscovery, setTriggeringDiscovery] = useState(false);
 
   // Form state for comparison
   const [task, setTask] = useState("Generate a 500-word article");
@@ -134,25 +137,33 @@ export const PriceComparison: React.FC = () => {
   const loadInitialData = async () => {
     try {
       console.log("📊 Loading initial pricing data...");
-      const result = await pricingService.getAllPricing();
-      console.log("📊 API result:", result);
+      const [pricingResult, discoveryResult] = await Promise.all([
+        pricingService.getAllPricing(),
+        pricingService.getModelDiscoveryInfo()
+      ]);
 
-      if (result.success && result.data && componentMountedRef.current) {
+      console.log("📊 API results:", { pricingResult, discoveryResult });
+
+      if (pricingResult.success && pricingResult.data && componentMountedRef.current) {
         console.log(
           "✅ Setting pricing data:",
-          result.data.pricing.length,
+          pricingResult.data.pricing.length,
           "providers",
         );
-        setAllPricing(result.data.pricing);
-        setLastUpdate(new Date(result.data.lastUpdate));
+        setAllPricing(pricingResult.data.pricing);
+        setLastUpdate(new Date(pricingResult.data.lastUpdate));
         setLoading(false);
         setRefreshing(false);
         setError(null);
       } else if (componentMountedRef.current) {
-        console.error("❌ API call failed:", result.error);
-        setError(result.error || "Failed to load pricing data");
+        console.error("❌ API call failed:", pricingResult.error);
+        setError(pricingResult.error || "Failed to load pricing data");
         setLoading(false);
         setRefreshing(false);
+      }
+
+      if (discoveryResult.success && discoveryResult.data && componentMountedRef.current) {
+        setDiscoveryInfo(discoveryResult.data);
       }
     } catch (error) {
       console.error("❌ Exception in loadInitialData:", error);
@@ -193,6 +204,33 @@ export const PriceComparison: React.FC = () => {
     setRefreshing(true);
     setError(null);
     await loadInitialData();
+  };
+
+  const handleTriggerDiscovery = async () => {
+    setTriggeringDiscovery(true);
+    setError(null);
+
+    try {
+      console.log("🔍 Triggering model discovery...");
+      const result = await pricingService.triggerModelDiscovery();
+
+      if (result.success) {
+        console.log("✅ Model discovery triggered successfully");
+        // Reload data after a delay to allow discovery to complete
+        setTimeout(async () => {
+          await loadInitialData();
+          setTriggeringDiscovery(false);
+        }, 5000); // Wait 5 seconds before refreshing
+      } else {
+        console.error("❌ Failed to trigger discovery:", result.error);
+        setError(result.error || "Failed to trigger model discovery");
+        setTriggeringDiscovery(false);
+      }
+    } catch (error) {
+      console.error("❌ Error triggering discovery:", error);
+      setError("Failed to trigger model discovery");
+      setTriggeringDiscovery(false);
+    }
   };
 
   const getFilteredModels = () => {
@@ -245,19 +283,25 @@ export const PriceComparison: React.FC = () => {
       return "N/A";
     }
 
-    // Price is per million tokens, convert appropriately
+    // Price is per million tokens, always show /M
     if (pricePerMToken >= 1000) {
-      // Very expensive models - show per K tokens
-      return `$${(pricePerMToken / 1000).toFixed(2)}/K`;
-    } else if (pricePerMToken >= 1) {
-      // Regular pricing - show per million tokens
+      // Very expensive models - show in K format (e.g., $2.50/M for 2500)
+      return `$${(pricePerMToken / 1000).toFixed(2)}/M`;
+    } else if (pricePerMToken >= 100) {
+      // Expensive models - show with no decimals (e.g., $150/M)
+      return `$${pricePerMToken.toFixed(0)}/M`;
+    } else if (pricePerMToken >= 10) {
+      // Medium pricing - show with 2 decimals (e.g., $15.00/M)
       return `$${pricePerMToken.toFixed(2)}/M`;
-    } else if (pricePerMToken >= 0.001) {
-      // Low pricing - show per million tokens with more decimals
+    } else if (pricePerMToken >= 1) {
+      // Low pricing - show with 2 decimals (e.g., $2.50/M)
+      return `$${pricePerMToken.toFixed(2)}/M`;
+    } else if (pricePerMToken >= 0.01) {
+      // Very low pricing - show with 3 decimals (e.g., $0.075/M)
       return `$${pricePerMToken.toFixed(3)}/M`;
     } else {
-      // Very low pricing - show per K tokens
-      return `$${(pricePerMToken * 1000).toFixed(3)}/K`;
+      // Extremely low pricing - show with 4 decimals (e.g., $0.0001/M)
+      return `$${pricePerMToken.toFixed(4)}/M`;
     }
   };
 
@@ -298,6 +342,19 @@ export const PriceComparison: React.FC = () => {
               <p className="text-base sm:text-lg text-light-text-secondary dark:text-dark-text-secondary">
                 Compare costs across leading AI providers in real-time
               </p>
+              {discoveryInfo && (
+                <div className="mt-2 text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <span className="inline-flex items-center gap-1">
+                    <CircleIcon className="w-2 h-2 text-green-500" />
+                    {discoveryInfo.totalModels} models tracked
+                    {discoveryInfo.lastDiscovery && (
+                      <span className="ml-2">
+                        • Last discovery: {new Date(discoveryInfo.lastDiscovery).toLocaleDateString()}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center w-full sm:w-auto">
               {lastUpdate && (
@@ -316,6 +373,17 @@ export const PriceComparison: React.FC = () => {
                 <span className="hidden sm:inline">Model Comparison</span>
                 <span className="sm:hidden">Comparison</span>
               </button>
+              {discoveryInfo && discoveryInfo.totalModels === 0 && (
+                <button
+                  onClick={handleTriggerDiscovery}
+                  disabled={triggeringDiscovery}
+                  className="flex gap-2 items-center justify-center px-3 sm:px-4 py-2 text-sm sm:text-base rounded-xl btn btn-primary bg-gradient-to-r from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 text-white"
+                  title="Discover AI models from providers"
+                >
+                  <RefreshIcon className={`w-4 h-4 ${triggeringDiscovery ? 'animate-spin' : ''}`} />
+                  {triggeringDiscovery ? "Discovering..." : "Discover Models"}
+                </button>
+              )}
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}

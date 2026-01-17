@@ -79,6 +79,20 @@ export interface CostCalculationResult {
   taskTypes: ('chat' | 'code' | 'vision')[];
 }
 
+export interface ModelDiscoveryInfo {
+  lastDiscovery: Date | null;
+  nextScheduled: Date | null;
+  totalModels: number;
+  providerStats: Record<string, {
+    total: number;
+    verified: number;
+    pending: number;
+    failed: number;
+    lastUpdated: Date | null;
+  }>;
+  isRunning: boolean;
+}
+
 class PricingService {
   private baseUrl = "/pricing";
 
@@ -163,6 +177,24 @@ class PricingService {
       return {
         success: false,
         error: error.response?.data?.error || "Failed to update pricing",
+      };
+    }
+  }
+
+  /**
+   * Trigger model discovery for all providers
+   */
+  async triggerModelDiscovery(): Promise<PricingApiResponse<{ message: string }>> {
+    try {
+      console.log("🔍 Triggering model discovery...");
+      const response = await apiClient.post("/model-discovery/trigger");
+      console.log("✅ Model discovery triggered:", response.status);
+      return response.data;
+    } catch (error: any) {
+      console.error("❌ Model discovery error:", error);
+      return {
+        success: false,
+        error: error.response?.data?.error || "Failed to trigger model discovery",
       };
     }
   }
@@ -363,19 +395,47 @@ class PricingService {
    */
   formatPricePer1M(price: number): string {
     if (price === 0 || price === null || price === undefined) {
-      return "$0.00";
+      return "$0.00/M";
     }
 
+    // All prices are per million tokens, format appropriately
     if (price >= 1000) {
-      return `$${(price / 1000).toFixed(2)}K`;
+      // Very expensive models (e.g., 2500 -> $2.50/M)
+      return `$${(price / 1000).toFixed(2)}/M`;
+    } else if (price >= 100) {
+      // Expensive models (e.g., 150 -> $150/M)
+      return `$${price.toFixed(0)}/M`;
+    } else if (price >= 10) {
+      // Medium pricing (e.g., 15 -> $15.00/M)
+      return `$${price.toFixed(2)}/M`;
     } else if (price >= 1) {
-      return `$${price.toFixed(2)}`;
+      // Low pricing (e.g., 2.5 -> $2.50/M)
+      return `$${price.toFixed(2)}/M`;
     } else if (price >= 0.01) {
-      return `$${price.toFixed(3)}`;
-    } else if (price >= 0.001) {
-      return `$${price.toFixed(4)}`;
+      // Very low pricing (e.g., 0.075 -> $0.075/M)
+      return `$${price.toFixed(3)}/M`;
     } else {
-      return `$${(price * 1000).toFixed(3)}m`;
+      // Extremely low pricing (e.g., 0.0001 -> $0.0001/M)
+      return `$${price.toFixed(4)}/M`;
+    }
+  }
+
+  /**
+   * Get model discovery information
+   */
+  async getModelDiscoveryInfo(): Promise<PricingApiResponse<ModelDiscoveryInfo>> {
+    try {
+      const response = await apiClient.get('/model-discovery/status');
+      return {
+        success: true,
+        data: response.data.data
+      };
+    } catch (error: any) {
+      console.error("❌ Error fetching model discovery info:", error);
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Failed to fetch model discovery info'
+      };
     }
   }
 }
