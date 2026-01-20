@@ -93,6 +93,7 @@ import ThreatDetectionService from "@/services/threatDetection.service";
 import { SuggestionsShimmer } from "../shimmer/SuggestionsShimmer";
 import { ConversationsShimmer } from "../shimmer/ConversationsShimmer";
 import { MessageShimmer } from "../shimmer/MessageShimmer";
+import { ChatMessagesShimmer } from "../shimmer/ChatMessagesShimmer";
 import { GoogleServicePanel } from "./GoogleServicePanel";
 import { VercelServicePanel } from "./VercelServicePanel";
 import { AWSServicePanel } from "../integrations/AWSServicePanel";
@@ -282,6 +283,7 @@ export const ConversationalAgent: React.FC = () => {
   const [conversationsOffset, setConversationsOffset] = useState(0);
   const [conversationsHasMore, setConversationsHasMore] = useState(false);
   const [conversationsLoadingMore, setConversationsLoadingMore] = useState(false);
+  const [messagesLoading, setMessagesLoading] = useState(false); // Loading state for conversation messages
   const [currentConversationId, setCurrentConversationId] = useState<
     string | null
   >(null);
@@ -1400,6 +1402,7 @@ export const ConversationalAgent: React.FC = () => {
 
   const loadConversationHistory = async (conversationId: string) => {
     try {
+      setMessagesLoading(true); // Start loading
       const result = await ChatService.getConversationHistory(conversationId);
       setMessages(result.messages);
       setCurrentConversationId(conversationId);
@@ -1449,6 +1452,8 @@ export const ConversationalAgent: React.FC = () => {
     } catch (error) {
       console.error("Error loading conversation:", error);
       setError("Failed to load conversation history");
+    } finally {
+      setMessagesLoading(false); // End loading
     }
   };
 
@@ -3727,7 +3732,12 @@ export const ConversationalAgent: React.FC = () => {
             </div>
           )}
 
-          {messages.length === 0 && !isLoading && (
+          {/* Show shimmer when loading conversation messages */}
+          {messagesLoading && (
+            <ChatMessagesShimmer count={3} />
+          )}
+
+          {!messagesLoading && messages.length === 0 && !isLoading && (
             <div className="text-center max-w-4xl mx-auto animate-fade-in">
               <div className="mb-12">
                 <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-5 rounded-3xl w-20 h-20 mx-auto mb-6 glow-primary animate-pulse shadow-2xl flex items-center justify-center">
@@ -3787,7 +3797,7 @@ export const ConversationalAgent: React.FC = () => {
             </div>
           )}
 
-          {messages.map((message, index) => {
+          {!messagesLoading && messages.map((message, index) => {
             const isLastMessage = index === messages.length - 1;
             const shouldShowShimmer = isLoading && loadingMessageId === message.id && message.role === 'user' && isLastMessage;
 
