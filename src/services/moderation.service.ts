@@ -23,7 +23,7 @@ interface ModerationConfig {
     enableBasicFirewall: boolean;
     enableAdvancedFirewall: boolean;
     promptGuardThreshold: number;
-    llamaGuardThreshold: number;
+    openaiSafeguardThreshold: number;
   };
   outputModeration: {
     enableOutputModeration: boolean;
@@ -167,7 +167,7 @@ class ModerationService {
   getModerationStages() {
     return [
       { value: 'prompt-guard', label: 'Prompt Guard (Fast Detection)' },
-      { value: 'llama-guard', label: 'Llama Guard (Deep Analysis)' },
+      { value: 'openai-safeguard', label: 'OpenAI Safeguard (Deep Analysis)' },
       { value: 'output-guard', label: 'Output Guard (Response Filtering)' },
     ];
   }
@@ -220,7 +220,7 @@ class ModerationService {
         enableBasicFirewall: true,
         enableAdvancedFirewall: true,
         promptGuardThreshold: 0.7,
-        llamaGuardThreshold: 0.7,
+        openaiSafeguardThreshold: 0.7,
       },
       outputModeration: {
         enableOutputModeration: false, // Disabled by default
