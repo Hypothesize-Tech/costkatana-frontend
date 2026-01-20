@@ -68,7 +68,7 @@ interface FirewallConfig {
   enableRAGSecurity: boolean;
   enableToolSecurity: boolean;
   promptGuardThreshold: number;
-  llamaGuardThreshold: number;
+  openaiSafeguardThreshold: number;
   ragSecurityThreshold: number;
   toolSecurityThreshold: number;
   sandboxHighRisk: boolean;
@@ -258,7 +258,7 @@ class SecurityService {
   getSecurityStages() {
     return [
       { value: 'prompt-guard', label: 'Prompt Guard (Fast Detection)' },
-      { value: 'llama-guard', label: 'Llama Guard (Deep Analysis)' },
+      { value: 'openai-safeguard', label: 'OpenAI Safeguard (Deep Analysis)' },
       { value: 'rag-guard', label: 'RAG Guard (Context Security)' },
       { value: 'tool-guard', label: 'Tool Guard (Tool Validation)' },
       { value: 'output-guard', label: 'Output Guard (Response Filtering)' }
@@ -330,7 +330,7 @@ class SecurityService {
       enableRAGSecurity: true,
       enableToolSecurity: true,
       promptGuardThreshold: 0.5,
-      llamaGuardThreshold: 0.8,
+      openaiSafeguardThreshold: 0.8,
       ragSecurityThreshold: 0.6,
       toolSecurityThreshold: 0.7,
       sandboxHighRisk: true,

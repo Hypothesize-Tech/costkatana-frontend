@@ -168,7 +168,7 @@ export const Moderation: React.FC = () => {
         switch (stage) {
             case 'prompt-guard':
                 return <ShieldCheckIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />;
-            case 'llama-guard':
+            case 'openai-safeguard':
                 return <ShieldExclamationIcon className="w-4 h-4 text-warning-600 dark:text-warning-400" />;
             case 'output-guard':
                 return <EyeIcon className="w-4 h-4 text-success-600 dark:text-success-400" />;
@@ -433,7 +433,7 @@ export const Moderation: React.FC = () => {
                                 >
                                     <option value="all">All Stages</option>
                                     <option value="prompt-guard">Prompt Guard</option>
-                                    <option value="llama-guard">Llama Guard</option>
+                                    <option value="openai-safeguard">OpenAI Safeguard</option>
                                     <option value="output-guard">Output Guard</option>
                                 </select>
                             </div>
