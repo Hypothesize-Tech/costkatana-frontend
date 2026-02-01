@@ -31,6 +31,7 @@ import {
     GlobeAltIcon,
     WalletIcon,
     SquaresPlusIcon,
+    BeakerIcon,
 } from '@heroicons/react/24/outline';
 import {
     ChartBarIcon as ChartBarIconSolid,
@@ -44,11 +45,13 @@ import {
     WalletIcon as WalletIconSolid,
     SquaresPlusIcon as SquaresPlusIconSolid,
     SparklesIcon as SparklesIconSolid,
+    BeakerIcon as BeakerIconSolid,
 } from '@heroicons/react/24/solid';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { AdminDashboardShimmer } from '../components/shimmer/AdminDashboardShimmer';
 import { useNotification } from '../contexts/NotificationContext';
 import { VectorizationDashboardComponent } from '../components/admin/VectorizationDashboard';
+import { RAGEvalDashboardComponent } from '../components/admin/RAGEvalDashboard';
 import {
     AdminDashboardService,
     EngagementMetrics,
@@ -125,7 +128,7 @@ ChartJS.register(
 export const AdminDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<
         'overview' | 'growth' | 'alerts' | 'models' | 'features' | 'projects' | 'activity' | 'users' |
-        'revenue' | 'api-keys' | 'endpoints' | 'geographic' | 'budget' | 'integrations' | 'vectorization'
+        'revenue' | 'api-keys' | 'endpoints' | 'geographic' | 'budget' | 'integrations' | 'vectorization' | 'rag-eval'
     >('overview');
 
     const [engagementMetrics, setEngagementMetrics] = useState<EngagementMetrics | null>(null);
@@ -364,6 +367,7 @@ export const AdminDashboard: React.FC = () => {
         { id: 'budget', name: 'Budget', icon: WalletIcon, activeIcon: WalletIconSolid, description: 'Budget management and tracking' },
         { id: 'integrations', name: 'Integrations', icon: SquaresPlusIcon, activeIcon: SquaresPlusIconSolid, description: 'Integration analytics and health' },
         { id: 'vectorization', name: 'Vectorization', icon: SparklesIcon, activeIcon: SparklesIconSolid, description: 'Memory vectorization health and statistics' },
+        { id: 'rag-eval', name: 'RAG Evaluation', icon: BeakerIcon, activeIcon: BeakerIconSolid, description: 'RAGAS-aligned RAG evaluation metrics' },
     ];
 
     const handleDateRangeChange = (startDate?: string, endDate?: string) => {
@@ -458,7 +462,8 @@ export const AdminDashboard: React.FC = () => {
                                                                                 tab.id === 'endpoints' ? 'Endpoints' :
                                                                                     tab.id === 'geographic' ? 'Geo' :
                                                                                         tab.id === 'budget' ? 'Budget' :
-                                                                                            tab.id === 'integrations' ? 'Integrations' : tab.name}
+                                                                                            tab.id === 'integrations' ? 'Integrations' :
+                                                                                                tab.id === 'rag-eval' ? 'RAG Eval' : tab.name}
                                     </span>
                                 </button>
                             );
@@ -1274,6 +1279,12 @@ export const AdminDashboard: React.FC = () => {
                 {activeTab === 'vectorization' && (
                     <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
                         <VectorizationDashboardComponent />
+                    </div>
+                )}
+
+                {activeTab === 'rag-eval' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <RAGEvalDashboardComponent />
                     </div>
                 )}
             </div>

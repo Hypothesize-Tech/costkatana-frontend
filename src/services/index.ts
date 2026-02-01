@@ -4,7 +4,6 @@ export { userService } from "./user.service";
 export { usageService } from "./usage.service";
 export { analyticsService } from "./analytics.service";
 export { optimizationService } from "./optimization.service";
-export { logsService } from "./logs.service";
 export { default as ExperimentationService } from "./experimentation.service";
 
 // Re-export types from services if needed
@@ -14,4 +13,3 @@ export * from "./intelligence.service";
 export * from "./project.service";
 export * from "./promptTemplate.service";
 export { default as AdvancedMonitoringService } from "./advancedMonitoring.service";
-export * from "./unexplainedCost.service";

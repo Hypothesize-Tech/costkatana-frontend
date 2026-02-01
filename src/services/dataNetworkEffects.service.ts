@@ -285,7 +285,7 @@ export class DataNetworkEffectsService {
     limit?: number;
   }): Promise<ModelPerformanceFingerprint[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/models/best', { params });
+      const response = await apiClient.get('/admin/data-network-effects/models/best', { params });
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to query best models:', error);
@@ -301,7 +301,7 @@ export class DataNetworkEffectsService {
     metric: 'latency' | 'cost' | 'failure_rate' | 'quality' = 'cost'
   ): Promise<PerformanceTrend | null> {
     try {
-      const response = await apiClient.get(`/data-network-effects/models/${modelId}/trend`, {
+      const response = await apiClient.get(`/admin/data-network-effects/models/${modelId}/trend`, {
         params: { metric }
       });
       return response.data.data;
@@ -326,7 +326,7 @@ export class DataNetworkEffectsService {
     reason?: string;
   }): Promise<boolean> {
     try {
-      await apiClient.post('/data-network-effects/learning-loop/interaction', params);
+      await apiClient.post('/admin/data-network-effects/learning-loop/interaction', params);
       return true;
     } catch (error) {
       console.error('Failed to record recommendation interaction:', error);
@@ -339,7 +339,7 @@ export class DataNetworkEffectsService {
    */
   static async getUserLearningStats(userId: string): Promise<LearningStats | null> {
     try {
-      const response = await apiClient.get(`/data-network-effects/learning-loop/stats/${userId}`);
+      const response = await apiClient.get(`/admin/data-network-effects/learning-loop/stats/${userId}`);
       return response.data.data;
     } catch (error) {
       console.error('Failed to get learning stats:', error);
@@ -352,7 +352,7 @@ export class DataNetworkEffectsService {
    */
   static async getLearningStats(): Promise<LearningStatsResponse | null> {
     try {
-      const response = await apiClient.get('/data-network-effects/learning-loop/stats');
+      const response = await apiClient.get('/admin/data-network-effects/learning-loop/stats');
       return response.data.data || response.data;
     } catch (error) {
       console.error('Failed to get learning stats:', error);
@@ -365,7 +365,7 @@ export class DataNetworkEffectsService {
    */
   static async getRecentOutcomes(params?: { limit?: number }): Promise<RecommendationOutcome[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/learning-loop/outcomes/recent', { params });
+      const response = await apiClient.get('/admin/data-network-effects/learning-loop/outcomes/recent', { params });
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to get recent outcomes:', error);
@@ -388,7 +388,7 @@ export class DataNetworkEffectsService {
     endDate?: string;
   }): Promise<AgentEfficiencyMetrics[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/agents/efficiency', { params });
+      const response = await apiClient.get('/admin/data-network-effects/agents/efficiency', { params });
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to get agent efficiency metrics:', error);
@@ -407,7 +407,7 @@ export class DataNetworkEffectsService {
     minOccurrences?: number;
   }): Promise<DetectedPattern[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/agents/patterns', { params });
+      const response = await apiClient.get('/admin/data-network-effects/agents/patterns', { params });
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to detect agent patterns:', error);
@@ -420,7 +420,7 @@ export class DataNetworkEffectsService {
    */
   static async getTopInefficientAgents(limit: number = 10): Promise<AgentEfficiencyMetrics[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/agents/inefficient', {
+      const response = await apiClient.get('/admin/data-network-effects/agents/inefficient', {
         params: { limit }
       });
       return response.data.data || [];
@@ -435,7 +435,7 @@ export class DataNetworkEffectsService {
    */
   static async getAgentAnalytics(): Promise<AgentAnalyticsResponse | null> {
     try {
-      const response = await apiClient.get('/data-network-effects/agents/analytics');
+      const response = await apiClient.get('/admin/data-network-effects/agents/analytics');
       return response.data.data || response.data;
     } catch (error) {
       console.error('Failed to get agent analytics:', error);
@@ -465,7 +465,7 @@ export class DataNetworkEffectsService {
     numClusters?: number;
   }): Promise<SemanticCluster[]> {
     try {
-      const response = await apiClient.post('/data-network-effects/semantic/cluster', params);
+      const response = await apiClient.post('/admin/data-network-effects/semantic/cluster', params);
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to run clustering analysis:', error);
@@ -478,7 +478,7 @@ export class DataNetworkEffectsService {
    */
   static async getHighCostClusters(limit: number = 10): Promise<SemanticCluster[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/semantic/high-cost', {
+      const response = await apiClient.get('/admin/data-network-effects/semantic/high-cost', {
         params: { limit }
       });
       return response.data.data || [];
@@ -493,7 +493,7 @@ export class DataNetworkEffectsService {
    */
   static async getClustersWithOptimizationPotential(limit: number = 10): Promise<SemanticCluster[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/semantic/optimization-potential', {
+      const response = await apiClient.get('/admin/data-network-effects/semantic/optimization-potential', {
         params: { limit }
       });
       return response.data.data || [];
@@ -508,7 +508,7 @@ export class DataNetworkEffectsService {
    */
   static async getSemanticClusters(): Promise<SemanticCluster[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/semantic/clusters');
+      const response = await apiClient.get('/admin/data-network-effects/semantic/clusters');
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to get semantic clusters:', error);
@@ -525,7 +525,7 @@ export class DataNetworkEffectsService {
    */
   static async getLatestGlobalBenchmark(): Promise<GlobalBenchmark | null> {
     try {
-      const response = await apiClient.get('/data-network-effects/benchmarks/global');
+      const response = await apiClient.get('/admin/data-network-effects/benchmarks/global');
       return response.data.data;
     } catch (error) {
       console.error('Failed to get global benchmark:', error);
@@ -538,7 +538,7 @@ export class DataNetworkEffectsService {
    */
   static async getModelBenchmark(modelId: string): Promise<GlobalBenchmark | null> {
     try {
-      const response = await apiClient.get(`/data-network-effects/benchmarks/model/${modelId}`);
+      const response = await apiClient.get(`/admin/data-network-effects/benchmarks/model/${modelId}`);
       return response.data.data;
     } catch (error) {
       console.error('Failed to get model benchmark:', error);
@@ -551,7 +551,7 @@ export class DataNetworkEffectsService {
    */
   static async generateBenchmarks(): Promise<boolean> {
     try {
-      await apiClient.post('/data-network-effects/benchmarks/generate');
+      await apiClient.post('/admin/data-network-effects/benchmarks/generate');
       return true;
     } catch (error) {
       console.error('Failed to generate benchmarks:', error);
@@ -564,7 +564,7 @@ export class DataNetworkEffectsService {
    */
   static async getGlobalBenchmarks(): Promise<GlobalBenchmark[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/benchmarks/global');
+      const response = await apiClient.get('/admin/data-network-effects/benchmarks/global');
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to get global benchmarks:', error);
@@ -577,7 +577,7 @@ export class DataNetworkEffectsService {
    */
   static async getBestPractices(): Promise<BestPractice[]> {
     try {
-      const response = await apiClient.get('/data-network-effects/benchmarks/best-practices');
+      const response = await apiClient.get('/admin/data-network-effects/benchmarks/best-practices');
       return response.data.data || [];
     } catch (error) {
       console.error('Failed to get best practices:', error);
@@ -590,7 +590,7 @@ export class DataNetworkEffectsService {
    */
   static async compareModels(): Promise<ModelComparisonResponse | null> {
     try {
-      const response = await apiClient.get('/data-network-effects/benchmarks/compare');
+      const response = await apiClient.get('/admin/data-network-effects/benchmarks/compare');
       return response.data.data || response.data;
     } catch (error) {
       console.error('Failed to compare models:', error);
@@ -610,7 +610,7 @@ export class DataNetworkEffectsService {
     checks: Record<string, boolean>;
   }> {
     try {
-      const response = await apiClient.get('/data-network-effects/health');
+      const response = await apiClient.get('/admin/data-network-effects/health');
       return {
         healthy: response.data.healthy,
         checks: response.data.checks

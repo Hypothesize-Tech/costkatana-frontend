@@ -34,7 +34,7 @@ const ModelPerformance: React.FC = () => {
         {/* Header */}
         <div className="mb-6">
           <Link
-            to="/data-network-effects"
+            to="/admin/data-network-effects"
             className="inline-flex items-center gap-2 text-sm text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 dark:hover:text-primary-400 mb-4 transition-colors"
           >
             <ArrowLeftIcon className="w-4 h-4" />
