@@ -45,7 +45,7 @@ const LearningLoop: React.FC = () => {
     <div className="min-h-screen relative bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <Link
-          to="/data-network-effects"
+          to="/admin/data-network-effects"
           className="inline-flex items-center gap-2 text-sm text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 dark:hover:text-primary-400 mb-4 transition-colors"
         >
           <ArrowLeftIcon className="w-4 h-4" />

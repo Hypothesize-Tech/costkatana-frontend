@@ -149,7 +149,7 @@ const Dashboard: React.FC = () => {
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Model Performance */}
-          <Link to="/data-network-effects/models" className="block group">
+          <Link to="/admin/data-network-effects/models" className="block group">
             <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-primary-400/50">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 bg-gradient-to-br from-primary-500/20 to-primary-600/20 dark:from-primary-500/30 dark:to-primary-600/30 rounded-lg glow-primary/50">
@@ -169,7 +169,7 @@ const Dashboard: React.FC = () => {
           </Link>
 
           {/* Learning Loop */}
-          <Link to="/data-network-effects/learning-loop" className="block group">
+          <Link to="/admin/data-network-effects/learning-loop" className="block group">
             <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-primary-400/50">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 bg-gradient-to-br from-accent-500/20 to-accent-600/20 dark:from-accent-500/30 dark:to-accent-600/30 rounded-lg glow-accent/50">
@@ -189,7 +189,7 @@ const Dashboard: React.FC = () => {
           </Link>
 
           {/* Agent Analytics */}
-          <Link to="/data-network-effects/agents" className="block group">
+          <Link to="/admin/data-network-effects/agents" className="block group">
             <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-primary-400/50">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 dark:from-highlight-500/30 dark:to-highlight-600/30 rounded-lg glow-highlight/50">
@@ -209,7 +209,7 @@ const Dashboard: React.FC = () => {
           </Link>
 
           {/* Semantic Patterns */}
-          <Link to="/data-network-effects/patterns" className="block group">
+          <Link to="/admin/data-network-effects/patterns" className="block group">
             <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-primary-400/50">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 bg-gradient-to-br from-success-500/20 to-success-600/20 dark:from-success-500/30 dark:to-success-600/30 rounded-lg glow-success/50">
@@ -229,7 +229,7 @@ const Dashboard: React.FC = () => {
           </Link>
 
           {/* Global Benchmarks */}
-          <Link to="/data-network-effects/benchmarks" className="block group">
+          <Link to="/admin/data-network-effects/benchmarks" className="block group">
             <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-primary-400/50">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 bg-gradient-to-br from-primary-500/20 to-primary-600/20 dark:from-primary-500/30 dark:to-primary-600/30 rounded-lg glow-primary/50">

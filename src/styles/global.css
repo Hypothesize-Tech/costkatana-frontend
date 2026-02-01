@@ -923,6 +923,37 @@
     }
   }
 
+  /* Skeleton light variant - for use on dark/colored backgrounds like primary buttons */
+  .skeleton-light {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.15) 40%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.15) 60%,
+      rgba(255, 255, 255, 0.15) 100%
+    );
+    background-size: 200% 100%;
+    border-radius: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    animation: skeleton-pulse-light 1.5s ease-in-out infinite;
+  }
+
+  /* Shimmer animation for user messages */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
   /* Ambient glow utilities */
   .ambient-glow {
     position: relative;
