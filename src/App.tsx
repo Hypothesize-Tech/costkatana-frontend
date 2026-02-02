@@ -66,7 +66,7 @@ import ModelComparison from './pages/ModelComparison';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
 import Gateway from './pages/Gateway';
-import Workflows from './pages/Workflows';
+import AgentTrace from './pages/AgentTrace';
 import KeyVault from './pages/KeyVault';
 import PredictiveIntelligence from './pages/PredictiveIntelligence';
 import Memory from './pages/Memory';
@@ -228,8 +228,12 @@ function AppContent() {
             element={<Gateway />}
           />
           <Route
+            path="agent-trace"
+            element={<AgentTrace />}
+          />
+          <Route
             path="workflows"
-            element={<Workflows />}
+            element={<Navigate to="/agent-trace" replace />}
           />
           <Route
             path="key-vault"

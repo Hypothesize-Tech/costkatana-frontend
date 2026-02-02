@@ -5,7 +5,7 @@ export interface UsageMetrics {
     requests: number;
     logs: number;
     projects: number;
-    workflows: number;
+    agentTraces: number;
     cost: number;
     period: 'daily' | 'monthly';
 }
@@ -15,7 +15,7 @@ export interface PlanLimits {
     requestsPerMonth: number;
     logsPerMonth: number;
     projects: number;
-    workflows: number;
+    agentTraces: number;
     seats: number;
     models: string[];
     features: string[];
@@ -29,7 +29,7 @@ export interface UsageStats {
         requests: number;
         logs: number;
         projects: number;
-        workflows: number;
+        agentTraces: number;
     };
     plan: string;
     recommendations: string[];

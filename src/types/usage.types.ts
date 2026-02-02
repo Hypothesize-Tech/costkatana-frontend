@@ -38,7 +38,10 @@ export interface Usage {
     isServerError?: boolean;
     ipAddress?: string;
     userAgent?: string;
-    // Workflow tracking fields
+    traceId?: string;
+    traceName?: string;
+    traceStep?: string;
+    traceSequence?: number;
     workflowId?: string;
     workflowName?: string;
     workflowStep?: string;

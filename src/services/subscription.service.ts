@@ -220,10 +220,10 @@ export class SubscriptionService {
           dates: data.logs?.dates || [],
           trend: data.logs?.trend || [],
         },
-        workflows: {
-          used: data.workflows?.used || 0,
-          limit: data.workflows?.limit ?? -1,
-          percentage: data.workflows?.percentage || 0,
+        agentTraces: {
+          used: (data.agentTraces?.used ?? data.workflows?.used) ?? 0,
+          limit: (data.agentTraces?.limit ?? data.workflows?.limit) ?? -1,
+          percentage: (data.agentTraces?.percentage ?? data.workflows?.percentage) ?? 0,
         },
         cortex: {
           used: data.cortex?.used || 0,

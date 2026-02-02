@@ -58,7 +58,7 @@ export const SUBSCRIPTION_PLANS = {
       requestsPerMonth: 5_000,
       logsPerMonth: 5_000,
       projects: 1,
-      workflows: 10,
+      agentTraces: 10,
       seats: 1,
       cortexDailyUsage: 0,
     },
@@ -71,7 +71,7 @@ export const SUBSCRIPTION_PLANS = {
       "5K requests/month",
       "5K logs/month",
       "1 project",
-      "10 workflows",
+      "10 agent traces",
     ],
   },
   plus: {
@@ -86,7 +86,7 @@ export const SUBSCRIPTION_PLANS = {
       requestsPerMonth: 10_000,
       logsPerMonth: -1, // Unlimited
       projects: -1, // Unlimited
-      workflows: 100,
+      agentTraces: 100,
       seats: 1,
       cortexDailyUsage: 0,
     },
@@ -96,7 +96,7 @@ export const SUBSCRIPTION_PLANS = {
       "Unlimited logs & projects",
       "2M tokens/month",
       "10K requests/month",
-      "100 workflows",
+      "100 agent traces",
       "All AI models",
       "Priority support",
       "Overage: $5/1M tokens",
@@ -119,7 +119,7 @@ export const SUBSCRIPTION_PLANS = {
       requestsPerMonth: 50_000,
       logsPerMonth: -1, // Unlimited
       projects: -1, // Unlimited
-      workflows: 100, // Per user
+      agentTraces: 100, // Per user
       seats: 20,
       cortexDailyUsage: 0,
     },
@@ -150,7 +150,7 @@ export const SUBSCRIPTION_PLANS = {
       requestsPerMonth: -1, // Unlimited
       logsPerMonth: -1, // Unlimited
       projects: -1, // Unlimited
-      workflows: -1, // Unlimited
+      agentTraces: -1, // Unlimited
       seats: -1, // Custom
       cortexDailyUsage: -1, // Unlimited
     },
