@@ -1,6 +1,10 @@
 // src/services/usage.service.ts
 import { apiClient } from '../config/api';
-import { Usage, UsageFilters } from '../types';
+import { 
+    Usage, 
+    UsageFilters, 
+    DetailedUsageContext
+} from '../types';
 
 class UsageService {
     async getUsage(params?: {
@@ -33,8 +37,18 @@ class UsageService {
         };
         summary: {
             totalCost: number;
+            totalTokens: number;
+            totalPromptTokens: number;
+            totalCompletionTokens: number;
             totalCalls: number;
+            avgResponseTime: number;
             avgCostPerCall: number;
+            chartData: Array<{
+                cost: number;
+                calls: number;
+                tokens: number;
+                date: string;
+            }>;
         };
     }> {
         try {
@@ -93,6 +107,9 @@ class UsageService {
             const totalItems = pagination?.total || transformedUsage.length;
             const totalPages = pagination?.pages || Math.ceil(totalItems / itemsPerPage);
 
+            // Extract summary from backend response if available, otherwise calculate from current page
+            const backendSummary = responseData.summary || {};
+            
             return {
                 usage: transformedUsage,
                 total: totalItems,
@@ -107,9 +124,14 @@ class UsageService {
                     hasPrev: pagination?.hasPrev || currentPage > 1
                 },
                 summary: {
-                    totalCost: transformedUsage.reduce((sum: number, item: Usage) => sum + item.cost, 0),
-                    totalCalls: transformedUsage.length,
-                    avgCostPerCall: transformedUsage.length > 0 ? transformedUsage.reduce((sum: number, item: Usage) => sum + item.cost, 0) / transformedUsage.length : 0
+                    totalCost: backendSummary.totalCost || transformedUsage.reduce((sum: number, item: Usage) => sum + item.cost, 0),
+                    totalTokens: backendSummary.totalTokens || transformedUsage.reduce((sum: number, item: Usage) => sum + (item.totalTokens || item.promptTokens + item.completionTokens), 0),
+                    totalPromptTokens: backendSummary.totalPromptTokens || transformedUsage.reduce((sum: number, item: Usage) => sum + item.promptTokens, 0),
+                    totalCompletionTokens: backendSummary.totalCompletionTokens || transformedUsage.reduce((sum: number, item: Usage) => sum + item.completionTokens, 0),
+                    totalCalls: backendSummary.totalCalls || transformedUsage.length,
+                    avgResponseTime: backendSummary.avgResponseTime || (transformedUsage.length > 0 ? transformedUsage.reduce((sum: number, item: Usage) => sum + (item.responseTime || 0), 0) / transformedUsage.length : 0),
+                    avgCostPerCall: backendSummary.avgCostPerCall || (transformedUsage.length > 0 ? transformedUsage.reduce((sum: number, item: Usage) => sum + item.cost, 0) / transformedUsage.length : 0),
+                    chartData: backendSummary.chartData || []
                 }
             };
         } catch (error) {
@@ -842,6 +864,157 @@ class UsageService {
             return response.data;
         } catch (error) {
             console.error('Error fetching usage analytics:', error);
+            throw error;
+        }
+    }
+
+    // Enhanced context methods for detailed usage analysis
+    async getDetailedUsageContext(usageId: string, params?: {
+        includeTemplateUsage?: boolean;
+        includeWorkflowTrace?: boolean;
+        includeAnalytics?: boolean;
+        includePerformanceMetrics?: boolean;
+    }): Promise<DetailedUsageContext> {
+        try {
+            // Get the basic usage record first with context
+            const usage = await this.getUsageById(usageId);
+
+            // Initialize detailed context
+            const detailedContext: DetailedUsageContext = {
+                usage,
+                templateUsage: undefined,
+                workflowTrace: undefined,
+                performanceAnalysis: undefined,
+                businessContext: undefined,
+                historicalTrends: undefined,
+                relatedRequests: undefined,
+            };
+
+            // Prepare additional data fetching with lazy loading
+            const enhancementPromises: Promise<any>[] = [];
+
+            // Add analytics if requested
+            if (params?.includeAnalytics) {
+                enhancementPromises.push(
+                    this.getUsageAnalytics({
+                        projectId: usage.projectId as string,
+                        timeRange: '7d',
+                        model: usage.model,
+                        service: usage.service,
+                    }).catch(error => {
+                        console.warn('Failed to fetch analytics for detailed context:', error);
+                        return null;
+                    })
+                );
+            }
+
+            // Fetch related requests based on trace or workflow ID with caching
+            if (usage.traceId || usage.workflowId) {
+                const searchParams: any = {
+                    limit: 20,
+                };
+                
+                if (usage.traceId) {
+                    searchParams.q = usage.traceId;
+                }
+                
+                enhancementPromises.push(
+                    this.getUsage(searchParams).catch(error => {
+                        console.warn('Failed to fetch related requests:', error);
+                        return null;
+                    })
+                );
+            }
+
+            // Execute additional data fetching in parallel
+            const results = await Promise.allSettled(enhancementPromises);
+            let resultIndex = 0;
+
+            // Process analytics if requested
+            if (params?.includeAnalytics && results[resultIndex]) {
+                const analyticsResult = results[resultIndex];
+                if (analyticsResult.status === 'fulfilled' && analyticsResult.value) {
+                    detailedContext.historicalTrends = {
+                        requests: analyticsResult.value.data.requests,
+                        stats: analyticsResult.value.data.stats,
+                    };
+                }
+                resultIndex++;
+            }
+
+            // Process related requests
+            if ((usage.traceId || usage.workflowId) && results[resultIndex]) {
+                const relatedResult = results[resultIndex];
+                if (relatedResult.status === 'fulfilled' && relatedResult.value) {
+                    detailedContext.relatedRequests = relatedResult.value.usage.filter(
+                        (u: Usage) => u._id !== usageId
+                    );
+                }
+            }
+
+            // Extract business context from metadata and fields (cached calculation)
+            detailedContext.businessContext = {
+                department: usage.metadata?.department,
+                team: usage.metadata?.team,
+                purpose: usage.metadata?.purpose,
+                client: usage.metadata?.client,
+                userEmail: usage.userEmail,
+                customerEmail: usage.customerEmail,
+                projectContext: usage.projectId,
+            };
+
+            // Extract workflow/template context
+            if (usage.traceId || usage.traceName) {
+                detailedContext.workflowTrace = {
+                    traceId: usage.traceId,
+                    traceName: usage.traceName,
+                    traceStep: usage.traceStep,
+                    traceSequence: usage.traceSequence,
+                    workflowId: usage.workflowId,
+                    workflowName: usage.workflowName,
+                    workflowStep: usage.workflowStep,
+                    workflowSequence: usage.workflowSequence,
+                };
+            }
+
+            // Calculate performance analysis (cached computation)
+            detailedContext.performanceAnalysis = {
+                tokenBreakdown: {
+                    promptTokens: usage.promptTokens,
+                    completionTokens: usage.completionTokens,
+                    totalTokens: usage.totalTokens,
+                    costPerToken: usage.cost / usage.totalTokens,
+                },
+                responseMetrics: {
+                    responseTime: usage.responseTime,
+                    status: usage.errorOccurred ? 'error' : 'success',
+                    errorType: usage.errorType,
+                    httpStatusCode: usage.httpStatusCode,
+                },
+                costAnalysis: {
+                    totalCost: usage.cost,
+                    costBreakdown: {
+                        inputCost: (usage.promptTokens / usage.totalTokens) * usage.cost,
+                        outputCost: (usage.completionTokens / usage.totalTokens) * usage.cost,
+                    },
+                    optimizationApplied: usage.optimizationApplied,
+                    optimizationId: usage.optimizationId,
+                },
+            };
+
+            // Extract template context from metadata
+            if (usage.metadata?.templateId || usage.metadata?.templateName) {
+                detailedContext.templateUsage = {
+                    templateId: usage.metadata.templateId,
+                    templateName: usage.metadata.templateName,
+                    variableResolution: usage.metadata.templateVariables,
+                    templateVersion: usage.metadata.templateVersion,
+                };
+            }
+
+            return detailedContext;
+        } catch (error) {
+            console.error('Error fetching detailed usage context:', error);
             throw error;
         }
     }

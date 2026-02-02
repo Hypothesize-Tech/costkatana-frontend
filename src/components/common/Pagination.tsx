@@ -14,6 +14,11 @@ export const Pagination = ({
   onPageChange,
   className,
 }: PaginationProps) => {
+  // Don't render pagination if totalPages is 0 or less
+  if (totalPages <= 0) {
+    return null;
+  }
+
   const pages = generatePaginationArray(currentPage, totalPages);
 
   return (

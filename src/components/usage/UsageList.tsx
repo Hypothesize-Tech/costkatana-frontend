@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRightIcon, XMarkIcon, ClipboardIcon, CheckIcon, BeakerIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ClipboardIcon, CheckIcon, BeakerIcon, ChevronRightIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Usage } from '@/types';
 import { Pagination } from '@/components/common/Pagination';
@@ -17,6 +17,7 @@ import {
 } from '@/utils/formatters';
 import { WhatIfSimulationModal, HighCostSuggestions } from '../experimentation';
 import { ServiceIcon } from '../common/ServiceIcon';
+import { DetailBreakdownModal } from './DetailBreakdownModal';
 
 // Helper function to get project name
 const getProjectName = (projectId: string | { _id: string; name: string } | undefined): string => {
@@ -37,6 +38,8 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
   const [copiedPrompt, setCopiedPrompt] = useState(false);
   const [simulationModalOpen, setSimulationModalOpen] = useState(false);
   const [usageForSimulation, setUsageForSimulation] = useState<Usage | null>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [usageForDetails, setUsageForDetails] = useState<Usage | null>(null);
 
   const copyPromptToClipboard = async (prompt: string) => {
     try {
@@ -74,16 +77,16 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
   return (
     <>
       <div className="overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="px-6 py-4 border-b border-primary-200/30 dark:border-primary-700/30">
+        <div className="px-6 py-3 border-b border-primary-200/30 dark:border-primary-700/30">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-bold font-display gradient-text-primary">
-              Usage History
+            <h3 className="text-base font-semibold text-secondary-900 dark:text-white">
+              API Usage
             </h3>
             <button
               onClick={onRefresh}
-              className="p-2 rounded-xl border transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:scale-105 active:scale-95"
+              className="p-1.5 rounded-lg border transition-all duration-300 border-primary-200/30 dark:border-primary-700/30 text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:scale-105 active:scale-95"
             >
-              <ArrowPathIcon className="w-5 h-5" />
+              <ArrowPathIcon className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -122,8 +125,8 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Time
                 </th>
-                <th className="relative px-6 py-4">
-                  <span className="sr-only">Actions</span>
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-right uppercase text-secondary-600 dark:text-secondary-400">
+                  Details
                 </th>
               </tr>
             </thead>
@@ -436,6 +439,17 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                       <div className="flex justify-end items-center space-x-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUsageForDetails(item);
+                            setDetailModalOpen(true);
+                          }}
+                          className="p-2 text-primary-500 rounded-xl border transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-md hover:scale-105 active:scale-95"
+                          title="View Details"
+                        >
+                          <EyeIcon className="w-4 h-4" />
+                        </button>
                         {(item.cost > 0.01 || item.totalTokens > 500) && (
                           <button
                             onClick={(e) => {
@@ -887,6 +901,16 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
           setUsageForSimulation(null);
         }}
         usage={usageForSimulation}
+      />
+
+      {/* Detail Breakdown Modal */}
+      <DetailBreakdownModal
+        isOpen={detailModalOpen}
+        onClose={() => {
+          setDetailModalOpen(false);
+          setUsageForDetails(null);
+        }}
+        usage={usageForDetails}
       />
     </>
   );
