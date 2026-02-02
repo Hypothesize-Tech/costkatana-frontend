@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { MongoDBConnectionSelector } from './MongoDBConnectionSelector';
 import { useNavigate } from 'react-router-dom';
+import { mongodbService } from '../../services/mongodb.service';
 
 interface MongoDBConnection {
     _id: string;
@@ -64,21 +65,11 @@ export const MongoDBIntegrationPanel: React.FC<MongoDBIntegrationPanelProps> = (
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch('/api/mcp/mongodb/connections', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to load MongoDB connections');
-            }
-
-            const data = await response.json();
-            setConnections(data.data || []);
+            const list = await mongodbService.listConnections();
+            setConnections(list);
 
             // Auto-select first active connection
-            const activeConnection = data.data?.find((c: MongoDBConnection) => c.isActive);
+            const activeConnection = list.find((c: MongoDBConnection) => c.isActive);
             if (activeConnection) {
                 setSelectedConnection(activeConnection);
             }
@@ -154,19 +145,11 @@ export const MongoDBIntegrationPanel: React.FC<MongoDBIntegrationPanelProps> = (
             setSaving(true);
             setError(null);
 
-            const response = await fetch('/api/mcp/mongodb/connections', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                },
-                body: JSON.stringify(connectionForm),
+            await mongodbService.createConnection({
+                alias: connectionForm.alias,
+                connectionString: connectionForm.connectionString,
+                database: connectionForm.database || undefined,
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to create connection');
-            }
 
             // Reload connections
             await loadConnections();
