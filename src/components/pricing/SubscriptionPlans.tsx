@@ -173,10 +173,10 @@ export const SubscriptionPlans: React.FC = () => {
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-light-text-secondary dark:text-dark-text-secondary">
-                                            Workflows
+                                            Agent Traces
                                         </span>
                                         <span className="font-semibold text-light-text dark:text-dark-text">
-                                            {formatLimit(plan.limits.workflows)}
+                                            {formatLimit((plan.limits as { agentTraces?: number; workflows?: number }).agentTraces ?? (plan.limits as { workflows?: number }).workflows ?? -1)}
                                         </span>
                                     </div>
                                     {plan.limits.cortexDailyUsage > 0 && (
@@ -400,20 +400,22 @@ export const SubscriptionPlans: React.FC = () => {
                                 </tr>
                                 <tr>
                                     <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
-                                        Number of Workflows
+                                        Number of Agent Traces
                                     </td>
-                                    {plans.map((plan) => (
+                                    {plans.map((plan) => {
+                                        const agentTraces = (plan.limits as { agentTraces?: number; workflows?: number }).agentTraces ?? (plan.limits as { workflows?: number }).workflows;
+                                        return (
                                         <td
                                             key={plan.name}
                                             className={`text-center py-4 px-6 ${(plan as any).popular ? 'bg-primary-500/5' : ''
                                                 }`}
                                         >
                                             <span className="font-semibold text-light-text dark:text-dark-text">
-                                                {plan.limits.workflows === -1 ? 'Unlimited' : formatLimit(plan.limits.workflows)}
-                                                {plan.limits.workflows === 100 && plan.limits.seats > 1 && ' /user'}
+                                                {agentTraces === -1 ? 'Unlimited' : formatLimit(agentTraces ?? -1)}
+                                                {agentTraces === 100 && plan.limits.seats > 1 && ' /user'}
                                             </span>
                                         </td>
-                                    ))}
+                                    );})}
                                 </tr>
                                 <tr>
                                     <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">

@@ -8,7 +8,7 @@ export interface SubscriptionLimits {
   requestsPerMonth: number;
   logsPerMonth: number;
   projects: number;
-  workflows: number;
+  agentTraces: number;
   seats: number;
   cortexDailyUsage: number;
 }
@@ -18,7 +18,7 @@ export interface SubscriptionUsage {
   requestsUsed: number;
   logsUsed: number;
   projectsUsed: number;
-  workflowsUsed: number;
+  agentTracesUsed: number;
   cortexDailyUsage: number;
   lastResetDate: string;
 }
@@ -186,7 +186,7 @@ export interface UsageAnalytics {
     trend: number[];
     dates: string[];
   };
-  workflows: {
+  agentTraces: {
     used: number;
     limit: number;
     percentage: number;
@@ -205,7 +205,7 @@ export interface UsageAnalytics {
 }
 
 export interface UsageAlert {
-  metric: 'tokens' | 'requests' | 'logs' | 'workflows' | 'cortex';
+  metric: 'tokens' | 'requests' | 'logs' | 'agent_traces' | 'cortex';
   threshold: number;
   currentUsage: number;
   limit: number;

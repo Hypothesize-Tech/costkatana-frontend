@@ -93,7 +93,7 @@ const navCategories: NavCategory[] = [
     id: 'optimize',
     label: 'Optimize',
     items: [
-      { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Multi-step AI operations' },
+      { name: 'Agent Trace', href: '/agent-trace', icon: QueueListIcon, description: 'Monitor and optimize agent traces' },
       { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Performance insights' },
       { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'A/B testing' },
     ],

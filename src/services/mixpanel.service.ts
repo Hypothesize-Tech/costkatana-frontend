@@ -724,7 +724,7 @@ export class MixpanelService {
         if (page.includes('/alerts')) return 'alerts';
         if (page.includes('/templates')) return 'templates';
         if (page.includes('/training')) return 'training';
-        if (page.includes('/workflows')) return 'workflows';
+        if (page.includes('/agent-trace') || page.includes('/workflows')) return 'agent_trace';
         return 'other';
     }
 

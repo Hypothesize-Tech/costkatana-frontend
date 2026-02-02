@@ -300,15 +300,15 @@ export const SubscriptionDashboard: React.FC = () => {
                                 }
                             />
                         )}
-                        {usage.workflows && (
+                        {usage.agentTraces && (
                             <UsageMeter
-                                label="Workflows"
-                                used={usage.workflows.used}
-                                limit={usage.workflows.limit}
+                                label="Agent Traces"
+                                used={usage.agentTraces.used}
+                                limit={usage.agentTraces.limit}
                                 color={
-                                    usage.workflows.percentage >= 90
+                                    usage.agentTraces.percentage >= 90
                                         ? 'danger'
-                                        : usage.workflows.percentage >= 75
+                                        : usage.agentTraces.percentage >= 75
                                             ? 'warning'
                                             : 'primary'
                                 }

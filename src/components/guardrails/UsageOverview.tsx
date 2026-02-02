@@ -20,48 +20,12 @@ import {
     Lightbulb,
     ArrowRight
 } from 'lucide-react';
+import type { UsageStats as GuardrailsUsageStats } from '../../services/guardrails.service';
 import { guardrailsService } from '../../services/guardrails.service';
 import { formatNumber } from '../../utils/formatters';
 
-interface UsageMetrics {
-    tokens: number;
-    requests: number;
-    logs: number;
-    projects: number;
-    workflows: number;
-    cost: number;
-}
-
-interface PlanLimits {
-    tokensPerMonth: number;
-    requestsPerMonth: number;
-    logsPerMonth: number;
-    projects: number;
-    workflows: number;
-    models?: string[];
-}
-
-interface UsageStats {
-    current: UsageMetrics;
-    limits: PlanLimits;
-    percentages: {
-        tokens: number;
-        requests: number;
-        logs: number;
-        projects: number;
-        workflows: number;
-    };
-    plan: string;
-    recommendations: string[];
-    predictions: {
-        tokens: number;
-        requests: number;
-        logs: number;
-    };
-}
-
 export const UsageOverview: React.FC = () => {
-    const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
+    const [usageStats, setUsageStats] = useState<GuardrailsUsageStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -262,27 +226,27 @@ export const UsageOverview: React.FC = () => {
                         </p>
                     </div>
 
-                    {/* Workflows */}
+                    {/* Agent Traces */}
                     <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-warning-200/30 dark:border-warning-700/30 from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20 hover:scale-105">
                         <div className="flex justify-between items-center mb-3 sm:mb-4">
                             <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
                                 <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                Workflows
+                                Agent Traces
                             </span>
-                            {getStatusIcon(percentages.workflows)}
+                            {getStatusIcon(percentages.agentTraces)}
                         </div>
                         <div className="overflow-hidden mb-3 w-full h-3 rounded-full bg-warning-200/30 dark:bg-warning-800/30">
                             <div
-                                className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.workflows)}`}
-                                style={{ width: `${limits.workflows === -1 ? 0 : percentages.workflows}%` }}
+                                className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.agentTraces)}`}
+                                style={{ width: `${limits.agentTraces === -1 ? 0 : percentages.agentTraces}%` }}
                             />
                         </div>
                         <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                            <span>{current.workflows}</span>
-                            <span>{formatLimit(limits.workflows)}</span>
+                            <span>{current.agentTraces}</span>
+                            <span>{formatLimit(limits.agentTraces)}</span>
                         </div>
-                        <p className={`text-sm font-display font-bold ${getStatusColor(percentages.workflows)}`}>
-                            {limits.workflows === -1 ? 'Unlimited' : `${percentages.workflows.toFixed(1)}% used`}
+                        <p className={`text-sm font-display font-bold ${getStatusColor(percentages.agentTraces)}`}>
+                            {limits.agentTraces === -1 ? 'Unlimited' : `${percentages.agentTraces.toFixed(1)}% used`}
                         </p>
                     </div>
 

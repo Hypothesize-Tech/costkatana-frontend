@@ -99,7 +99,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                   Project
                 </th>
                 <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
-                  Workflow
+                  Trace
                 </th>
                 <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Email Information
@@ -156,25 +156,25 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {item.workflowId ? (
+                      {(item.traceId ?? item.workflowId) ? (
                         <div>
                           <div className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
-                            {item.workflowName || 'Unnamed Workflow'}
+                            {item.traceName ?? item.workflowName ?? 'Unnamed Trace'}
                           </div>
                           <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
-                            {item.workflowStep && (
-                              <span className="mr-2">{item.workflowStep}</span>
+                            {(item.traceStep ?? item.workflowStep) && (
+                              <span className="mr-2">{item.traceStep ?? item.workflowStep}</span>
                             )}
-                            {item.workflowSequence && (
+                            {(item.traceSequence ?? item.workflowSequence) != null && (
                               <span className="inline-flex items-center px-2 py-1 text-xs font-medium font-display text-primary-600 bg-gradient-to-r rounded-xl border glass border-primary-300/30 from-primary-400/20 to-primary-500/20 dark:text-primary-400">
-                                #{item.workflowSequence}
+                                #{item.traceSequence ?? item.workflowSequence}
                               </span>
                             )}
                           </div>
                         </div>
                       ) : (
                         <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                          No workflow
+                          No trace
                         </div>
                       )}
                     </td>
@@ -511,38 +511,38 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                   </div>
                 </div>
 
-                {/* Workflow Information */}
-                {selectedUsage.workflowId && (
+                {/* Trace Information */}
+                {(selectedUsage.traceId ?? selectedUsage.workflowId) && (
                   <div className="p-4 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/10 dark:bg-gradient-primary/5">
                     <h5 className="mb-2 text-sm font-medium font-display gradient-text-primary">
-                      Workflow Information
+                      Agent Trace Information
                     </h5>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Workflow Name</p>
+                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Trace Name</p>
                         <p className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
-                          {selectedUsage.workflowName || 'Unnamed Workflow'}
+                          {selectedUsage.traceName ?? selectedUsage.workflowName ?? 'Unnamed Trace'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Workflow ID</p>
+                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Trace ID</p>
                         <p className="font-mono text-sm text-light-text-primary dark:text-dark-text-primary">
-                          {selectedUsage.workflowId}
+                          {selectedUsage.traceId ?? selectedUsage.workflowId}
                         </p>
                       </div>
-                      {selectedUsage.workflowStep && (
+                      {(selectedUsage.traceStep ?? selectedUsage.workflowStep) && (
                         <div>
                           <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Step</p>
                           <p className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
-                            {selectedUsage.workflowStep}
+                            {selectedUsage.traceStep ?? selectedUsage.workflowStep}
                           </p>
                         </div>
                       )}
-                      {selectedUsage.workflowSequence && (
+                      {(selectedUsage.traceSequence ?? selectedUsage.workflowSequence) != null && (
                         <div>
                           <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Sequence</p>
                           <p className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
-                            #{selectedUsage.workflowSequence}
+                            #{selectedUsage.traceSequence ?? selectedUsage.workflowSequence}
                           </p>
                         </div>
                       )}

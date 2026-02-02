@@ -56,7 +56,7 @@ export interface Subscription {
     requestsPerMonth: number;
     logsPerMonth: number;
     projects: number;
-    workflows: number;
+    agentTraces: number;
     seats: number;
     cortexDailyUsage: number;
   };
@@ -65,7 +65,7 @@ export interface Subscription {
     requestsUsed: number;
     logsUsed: number;
     projectsUsed: number;
-    workflowsUsed: number;
+    agentTracesUsed: number;
     cortexDailyUsage: number;
   };
   status?: "active" | "trialing" | "past_due" | "canceled" | "unpaid" | "incomplete" | "paused";
