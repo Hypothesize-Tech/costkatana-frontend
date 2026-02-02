@@ -84,8 +84,6 @@ import { GoogleIntegrations } from './pages/GoogleIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminDiscountManagement } from './pages/AdminDiscountManagement';
-import CostIntelligence from './pages/CostIntelligence';
-import CostIntelligenceConfig from './pages/CostIntelligenceConfig';
 import {
   Dashboard as DataNetworkEffectsDashboard,
   ModelPerformance,
@@ -280,14 +278,6 @@ function AppContent() {
           <Route
             path="cost-lake"
             element={<CostLake />}
-          />
-          <Route
-            path="cost-intelligence"
-            element={<CostIntelligence />}
-          />
-          <Route
-            path="cost-intelligence/config"
-            element={<CostIntelligenceConfig />}
           />
           <Route
             path="settings"
