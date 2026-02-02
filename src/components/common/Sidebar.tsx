@@ -36,7 +36,6 @@ import {
   ChartPieIcon,
   TagIcon,
   CreditCardIcon,
-  SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 import { useAuth } from '../../hooks';
@@ -94,7 +93,6 @@ const navCategories: NavCategory[] = [
     id: 'optimize',
     label: 'Optimize',
     items: [
-      { name: 'Cost Intelligence', href: '/cost-intelligence', icon: SparklesIcon, description: '6-layer cost intelligence stack with real-time insights' },
       { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Multi-step AI operations' },
       { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Performance insights' },
       { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'A/B testing' },

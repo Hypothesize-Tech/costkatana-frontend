@@ -34,14 +34,3 @@ export {
   EmailManagementShimmer,
 } from "./SettingsShimmer";
 
-// Cost Intelligence Shimmer Components
-export {
-  CostIntelligenceShimmer,
-  CostIntelligenceHeaderShimmer,
-  CostStatsCardsShimmer,
-  CostIntelligenceInsightsShimmer,
-  CostSimulationShimmer,
-  CostStreamShimmer,
-  CostConfigShimmer,
-} from "./CostIntelligenceShimmer";
-
