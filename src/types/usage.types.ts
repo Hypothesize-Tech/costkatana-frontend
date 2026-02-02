@@ -131,3 +131,116 @@ export interface UsageAnomaly {
     severity: 'low' | 'medium' | 'high';
     description: string;
 }
+
+export interface UsageContext {
+    usage: Usage[];
+    pagination: {
+        currentPage: number;
+        totalPages: number;
+        totalItems: number;
+        itemsPerPage: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+    summary: {
+        totalCost: number;
+        totalCalls: number;
+        avgCostPerCall: number;
+    };
+}
+
+export interface UsageTrendAnalysis {
+    requests: Array<{
+        id: string;
+        timestamp: Date;
+        model: string;
+        service: string;
+        status: 'success' | 'error';
+        statusCode: number;
+        latency: number;
+        totalTokens: number;
+        cost: number;
+        user: string;
+    }>;
+    stats: {
+        totalCost: number;
+        totalTokens: number;
+        totalRequests: number;
+        avgResponseTime: number;
+        errorCount: number;
+        successCount: number;
+        successRate: string;
+    };
+}
+
+export interface TemplateUsageInfo {
+    templateId?: string;
+    templateName?: string;
+    variableResolution?: Record<string, any>;
+    templateVersion?: string;
+}
+
+export interface WorkflowTrace {
+    traceId?: string;
+    traceName?: string;
+    traceStep?: string;
+    traceSequence?: number;
+    workflowId?: string;
+    workflowName?: string;
+    workflowStep?: string;
+    workflowSequence?: number;
+}
+
+export interface ProjectBreakdown {
+    projectId: string;
+    projectName: string;
+    totalCost: number;
+    totalTokens: number;
+    requestCount: number;
+    avgResponseTime: number;
+    errorRate: number;
+}
+
+export interface BusinessContext {
+    department?: string;
+    team?: string;
+    purpose?: string;
+    client?: string;
+    userEmail?: string;
+    customerEmail?: string;
+    projectContext?: string | { _id: string; name: string };
+}
+
+export interface PerformanceAnalysis {
+    tokenBreakdown: {
+        promptTokens: number;
+        completionTokens: number;
+        totalTokens: number;
+        costPerToken: number;
+    };
+    responseMetrics: {
+        responseTime: number;
+        status: 'success' | 'error';
+        errorType?: 'client_error' | 'server_error' | 'network_error' | 'auth_error' | 'rate_limit' | 'timeout' | 'validation_error' | 'integration_error';
+        httpStatusCode?: number;
+    };
+    costAnalysis: {
+        totalCost: number;
+        costBreakdown: {
+            inputCost: number;
+            outputCost: number;
+        };
+        optimizationApplied: boolean;
+        optimizationId?: string;
+    };
+}
+
+export interface DetailedUsageContext {
+    usage: Usage;
+    templateUsage?: TemplateUsageInfo;
+    workflowTrace?: WorkflowTrace;
+    performanceAnalysis?: PerformanceAnalysis;
+    businessContext?: BusinessContext;
+    historicalTrends?: UsageTrendAnalysis;
+    relatedRequests?: Usage[];
+}
