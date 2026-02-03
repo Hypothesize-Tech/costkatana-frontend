@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BeakerIcon, ChevronRightIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { BeakerIcon, ChevronRightIcon, EyeIcon, ClockIcon, LightBulbIcon } from '@heroicons/react/24/outline';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Usage } from '@/types';
 import { Pagination } from '@/components/common/Pagination';
@@ -38,9 +38,22 @@ interface UsageListProps {
   };
   onRefresh: () => void;
   onPageChange: (page: number) => void;
+  showNetworkDetails?: boolean;
+  showOptimizationSuggestions?: boolean;
+  onViewDetails?: (usage: Usage) => void;
+  onViewOptimizations?: (usage: Usage) => void;
 }
 
-export function EnhancedUsageList({ usage, pagination, onRefresh, onPageChange }: UsageListProps) {
+export function EnhancedUsageList({
+  usage,
+  pagination,
+  onRefresh,
+  onPageChange,
+  showNetworkDetails = false,
+  showOptimizationSuggestions = false,
+  onViewDetails,
+  onViewOptimizations
+}: UsageListProps) {
   const [usageForSimulation, setUsageForSimulation] = useState<Usage | null>(null);
   const [simulationModalOpen, setSimulationModalOpen] = useState(false);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
@@ -122,7 +135,7 @@ export function EnhancedUsageList({ usage, pagination, onRefresh, onPageChange }
                 <tr
                   key={item._id}
                   className="group transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/50 hover:to-secondary-50/50 dark:hover:from-primary-900/30 dark:hover:to-secondary-900/30 hover:shadow-lg"
-                  onClick={() => openDetailModal(item)}
+                  onClick={() => (onViewDetails ? onViewDetails(item) : openDetailModal(item))}
                 >
                   {/* Service / Model Column */}
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -162,6 +175,16 @@ export function EnhancedUsageList({ usage, pagination, onRefresh, onPageChange }
                             🔗 Traced
                           </span>
                         )}
+                        {showOptimizationSuggestions && item.optimizationOpportunities?.costOptimization?.potentialSavings && item.optimizationOpportunities.costOptimization.potentialSavings > 0 && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                            💡 Optimizable
+                          </span>
+                        )}
+                        {showNetworkDetails && item.requestTracking?.performance?.networkTime && item.requestTracking.performance.networkTime > 2000 && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400">
+                            🐌 Slow Network
+                          </span>
+                        )}
                       </div>
                     </div>
                   </td>
@@ -171,11 +194,15 @@ export function EnhancedUsageList({ usage, pagination, onRefresh, onPageChange }
                     <div className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                       {formatCurrency(item.cost)}
                     </div>
-                    {item.responseTime && (
-                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
-                        {formatResponseTime(item.responseTime)}
-                      </div>
-                    )}
+                    <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                      {item.responseTime && formatResponseTime(item.responseTime)}
+                      {showNetworkDetails && item.requestTracking?.performance?.networkTime && (
+                        <div className="flex items-center">
+                          <ClockIcon className="w-3 h-3 mr-1" />
+                          {formatResponseTime(item.requestTracking.performance.networkTime)}
+                        </div>
+                      )}
+                    </div>
                   </td>
 
                   {/* Tokens Column */}
@@ -231,13 +258,29 @@ export function EnhancedUsageList({ usage, pagination, onRefresh, onPageChange }
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          openDetailModal(item);
+                          if (onViewDetails) {
+                            onViewDetails(item);
+                          } else {
+                            openDetailModal(item);
+                          }
                         }}
                         className="p-2 text-primary-500 rounded-xl border transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-md hover:scale-105 active:scale-95"
                         title="View Details"
                       >
                         <EyeIcon className="w-4 h-4" />
                       </button>
+                      {showOptimizationSuggestions && onViewOptimizations && item.optimizationOpportunities && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onViewOptimizations(item);
+                          }}
+                          className="p-2 text-green-500 rounded-xl border transition-all duration-300 glass border-green-200/30 dark:border-green-700/30 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 hover:border-green-300/50 dark:hover:border-green-600/50 hover:shadow-md hover:scale-105 active:scale-95"
+                          title="Optimization Suggestions"
+                        >
+                          <LightBulbIcon className="w-4 h-4" />
+                        </button>
+                      )}
                       {(item.cost > 0.01 || item.totalTokens > 500) && (
                         <button
                           onClick={(e) => {

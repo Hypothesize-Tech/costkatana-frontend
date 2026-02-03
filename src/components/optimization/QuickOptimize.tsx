@@ -9,6 +9,7 @@ import {
   ChartBarIcon,
   LightBulbIcon,
   CurrencyDollarIcon,
+  GlobeAltIcon,
 } from "@heroicons/react/24/outline";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { optimizationService } from "@/services/optimization.service";
@@ -17,7 +18,9 @@ import { renderFormattedContent } from "@/utils/formatters";
 import { OptimizedPromptDisplay } from "../common/FormattedContent";
 import { CortexToggle } from "../cortex/CortexToggle";
 import { CortexConfigPanel } from "../cortex/CortexConfigPanel";
+import { OptimizationDetailsModal } from "./OptimizationDetailsModal";
 import type { CortexConfig } from "../../types/cortex.types";
+import type { Optimization } from "@/types/optimization.types";
 
 interface QuickOptimizeProps {
   className?: string;
@@ -32,8 +35,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
   const [useCortex, setUseCortex] = useState(false);
   const [cortexConfig, setCortexConfig] = useState<CortexConfig | undefined>(undefined);
   const [showCortexConfig, setShowCortexConfig] = useState(false);
-  const [optimizationResult, setOptimizationResult] = useState<any>(null);
+  const [optimizationResult, setOptimizationResult] = useState<Optimization | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const { showNotification } = useNotifications();
   const queryClient = useQueryClient();
 
@@ -87,6 +91,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
     setUseCortex(false);
     setOptimizationResult(null);
     setShowResult(false);
+    setShowDetailsModal(false);
   };
 
   return (
@@ -162,7 +167,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               <span className="text-center">AI-powered optimization • No configuration needed • Instant results</span>
             </div>
           </div>
-        ) : (
+        ) : optimizationResult ? (
           <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Success Header */}
             <div className="glass rounded-lg p-3 border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 sm:p-4 md:rounded-xl">
@@ -385,6 +390,13 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 Optimize Another
               </button>
               <button
+                onClick={() => setShowDetailsModal(true)}
+                className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-primary-200 dark:border-primary-700 bg-white dark:bg-dark-card text-primary-700 dark:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 min-h-[44px] [touch-action:manipulation] active:scale-95"
+              >
+                <GlobeAltIcon className="w-4 h-4" />
+                View network details
+              </button>
+              <button
                 onClick={() => handleCopy(optimizationResult.generatedAnswer || optimizationResult.optimizedPrompt || '')}
                 className="flex-1 btn btn-primary min-h-[44px] [touch-action:manipulation] active:scale-95"
               >
@@ -392,8 +404,16 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               </button>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
+
+      {optimizationResult && (
+        <OptimizationDetailsModal
+          isOpen={showDetailsModal}
+          onClose={() => setShowDetailsModal(false)}
+          optimization={optimizationResult as Optimization}
+        />
+      )}
     </div>
   );
 };

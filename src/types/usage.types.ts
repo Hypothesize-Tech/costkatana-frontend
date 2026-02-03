@@ -49,6 +49,61 @@ export interface Usage {
     // Email tracking fields
     userEmail?: string;
     customerEmail?: string;
+    // Comprehensive tracking fields
+    requestTracking?: {
+        clientInfo: {
+            ip: string;
+            userAgent: string;
+            hostname?: string;
+            platform?: string;
+            sdkVersion?: string;
+        };
+        headers: {
+            request: Record<string, string>;
+            response: Record<string, string>;
+        };
+        networking: {
+            endpoint?: string;
+            serverEndpoint?: string;
+            serverFullUrl?: string;
+            clientOrigin?: string;
+            method?: string;
+            protocol: string;
+            port?: number;
+            secure?: boolean;
+        };
+        payload: {
+            requestSize: number;
+            responseSize: number;
+            compressionRatio?: number;
+            requestBody?: string;
+            responseBody?: string;
+        };
+        performance: {
+            totalTime: number;
+            networkTime: number;
+            serverProcessingTime: number;
+            dnsTime?: number;
+            tcpTime?: number;
+            tlsTime?: number;
+        };
+    };
+    optimizationOpportunities?: {
+        costOptimization: {
+            potentialSavings: number;
+            suggestions: string[];
+        };
+        performanceOptimization: {
+            bottleneckType: string;
+            improvementPotential: string;
+            suggestions: string[];
+        };
+        dataEfficiency: {
+            compressionOpportunity: number;
+            cacheableContent: boolean;
+            suggestions: string[];
+        };
+    };
     createdAt: string;
     updatedAt: string;
 }
@@ -64,6 +119,10 @@ export interface UsageStats {
         avgCost: number;
         avgTokens: number;
         avgResponseTime: number;
+        // Comprehensive tracking metrics
+        avgNetworkTime?: number;
+        totalDataTransferred?: number;
+        totalPotentialSavings?: number;
     };
     serviceBreakdown: ServiceBreakdown[];
     modelBreakdown: ModelBreakdown[];

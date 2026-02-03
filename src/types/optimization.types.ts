@@ -1,3 +1,43 @@
+/** Request/network details for the optimization API call (same shape as Usage.requestTracking). */
+export interface OptimizationRequestTracking {
+  clientInfo?: {
+    ip?: string;
+    userAgent?: string;
+    forwardedIPs?: string[];
+    geoLocation?: { country?: string; region?: string; city?: string };
+    sdkVersion?: string;
+    environment?: string;
+  };
+  headers?: { request?: Record<string, string>; response?: Record<string, string> };
+  networking?: {
+    serverEndpoint?: string;
+    serverFullUrl?: string;
+    clientOrigin?: string;
+    serverIP?: string;
+    serverPort?: number;
+    routePattern?: string;
+    protocol?: string;
+    secure?: boolean;
+    dnsLookupTime?: number;
+    tcpConnectTime?: number;
+    tlsHandshakeTime?: number;
+  };
+  payload?: {
+    requestBody?: unknown;
+    responseBody?: unknown;
+    requestSize?: number;
+    responseSize?: number;
+    contentType?: string;
+    compressionRatio?: number;
+  };
+  performance?: {
+    totalRoundTripTime?: number;
+    networkTime?: number;
+    serverProcessingTime?: number;
+    dataTransferEfficiency?: number;
+  };
+}
+
 export interface Optimization {
   _id: string;
   userId: string;
@@ -18,6 +58,8 @@ export interface Optimization {
   model: string;
   category: OptimizationCategory;
   optimizationType?: 'text' | 'visual_compliance';
+  /** Request/network details for this optimization run (dashboard only). */
+  requestTracking?: OptimizationRequestTracking;
   visualComplianceData?: {
     referenceImageUrl?: string;
     evidenceImageUrl?: string;
