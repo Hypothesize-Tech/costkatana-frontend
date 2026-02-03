@@ -9,7 +9,6 @@ import { UsageFilters as IUsageFilters } from '@/types';
 import { UsageFilter } from '@/components/usage/UsageFilter';
 import { TrackUsageModal } from '@/components/usage/TrackUsageModal';
 import { UsageChart } from '@/components/usage/UsageChart';
-import { UsageStats } from '@/components/usage/UsageStats';
 import { UsageSearch } from '@/components/usage/UsageSearch';
 import { UsageExport } from '@/components/usage/UsageExport';
 import { UsageUpload } from '@/components/usage/UsageUpload';
@@ -17,6 +16,8 @@ import { useProject } from '@/contexts/ProjectContext';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { HighCostSuggestions, WhatIfSimulationModal } from '@/components/experimentation';
+import { RequestDetailsModal } from '@/components/usage/RequestDetailsModal';
+import OptimizationSuggestionsModal from '@/components/usage/OptimizationSuggestionsModal';
 import type { Usage } from '@/types';
 
 export default function Usage() {
@@ -29,6 +30,10 @@ export default function Usage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [simulationModalOpen, setSimulationModalOpen] = useState(false);
   const [usageForSimulation, setUsageForSimulation] = useState<Usage | null>(null);
+  // NEW: States for comprehensive tracking features
+  const [selectedUsageDetails, setSelectedUsageDetails] = useState<Usage | null>(null);
+  const [showRequestDetailsModal, setShowRequestDetailsModal] = useState(false);
+  const [showOptimizationModal, setShowOptimizationModal] = useState(false);
 
   const { selectedProject, setSelectedProject, projects, getSelectedProjectName } = useProject();
 
@@ -303,6 +308,31 @@ export default function Usage() {
     refetch();
   };
 
+  // NEW: Handlers for comprehensive tracking features
+  const handleViewRequestDetails = (usage: Usage) => {
+    setSelectedUsageDetails(usage);
+    setShowRequestDetailsModal(true);
+  };
+
+  // Called when user switches to "Network Details" tab (lazy load)
+  const handleFetchNetworkDetails = async (usageId: string) => {
+    try {
+      const networkData = await usageService.getNetworkDetails(usageId);
+      if (networkData?.requestTracking) {
+        setSelectedUsageDetails((prev) =>
+          prev ? { ...prev, requestTracking: networkData.requestTracking } : prev
+        );
+      }
+    } catch {
+      // Keep showing basic usage if network details fail
+    }
+  };
+
+  const handleViewOptimizations = (usage: Usage) => {
+    setSelectedUsageDetails(usage);
+    setShowOptimizationModal(true);
+  };
+
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
     setCurrentPage(1);
@@ -498,6 +528,75 @@ export default function Usage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Network Performance Cards */}
+                {transformedData.summary?.avgNetworkTime !== undefined && (
+                  <>
+                    {/* Average Network Time */}
+                    <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
+                      <div className="flex items-center">
+                        <div className="p-2 sm:p-2.5 md:p-3 mr-2 sm:mr-3 md:mr-4 bg-gradient-to-br rounded-lg sm:rounded-xl from-orange-500/20 to-orange-600/20 dark:from-orange-500/30 dark:to-orange-600/30 flex-shrink-0">
+                          <CircleStackIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-600 dark:text-orange-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
+                            Avg Network Time
+                          </dt>
+                          <dd className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white truncate">
+                            {(() => {
+                              const avgTime = transformedData.summary?.avgNetworkTime || 0;
+                              return avgTime > 1000 ? `${(avgTime / 1000).toFixed(1)}s` : `${Math.round(avgTime)}ms`;
+                            })()}
+                          </dd>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Data Transferred */}
+                    <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
+                      <div className="flex items-center">
+                        <div className="p-2 sm:p-2.5 md:p-3 mr-2 sm:mr-3 md:mr-4 bg-gradient-to-br rounded-lg sm:rounded-xl from-purple-500/20 to-purple-600/20 dark:from-purple-500/30 dark:to-purple-600/30 flex-shrink-0">
+                          <CloudArrowUpIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
+                            Data Transferred
+                          </dt>
+                          <dd className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white truncate">
+                            {(() => {
+                              const totalData = (transformedData.summary?.totalDataTransferred || 0);
+                              if (totalData > 1024 * 1024) {
+                                return `${(totalData / (1024 * 1024)).toFixed(1)} MB`;
+                              } else if (totalData > 1024) {
+                                return `${(totalData / 1024).toFixed(1)} KB`;
+                              }
+                              return `${totalData.toFixed(0)} B`;
+                            })()}
+                          </dd>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Potential Savings */}
+                    {transformedData.summary?.potentialSavings > 0 && (
+                      <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
+                        <div className="flex items-center">
+                          <div className="p-2 sm:p-2.5 md:p-3 mr-2 sm:mr-3 md:mr-4 bg-gradient-to-br rounded-lg sm:rounded-xl from-green-500/20 to-green-600/20 dark:from-green-500/30 dark:to-green-600/30 flex-shrink-0">
+                            <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-600 dark:text-green-400" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
+                              Potential Savings
+                            </dt>
+                            <dd className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white truncate">
+                              ${(transformedData.summary?.potentialSavings || 0).toFixed(2)}
+                            </dd>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             )}
 
@@ -618,6 +717,10 @@ export default function Usage() {
                   usage={transformedData?.usage || []}
                   onRefresh={handleRefresh}
                   onPageChange={handlePageChange}
+                  showNetworkDetails={true}
+                  showOptimizationSuggestions={true}
+                  onViewDetails={handleViewRequestDetails}
+                  onViewOptimizations={handleViewOptimizations}
                 />
 
                 {/* Cost Optimization Opportunities - Always render container for scroll target */}
@@ -653,6 +756,36 @@ export default function Usage() {
           }}
           usage={usageForSimulation}
         />
+
+        {/* Unified Usage & Request Details Modal (row click and eye icon) */}
+        {selectedUsageDetails && (
+          <RequestDetailsModal
+            isOpen={showRequestDetailsModal}
+            onClose={() => {
+              setShowRequestDetailsModal(false);
+              setSelectedUsageDetails(null);
+            }}
+            usage={selectedUsageDetails}
+            onFetchNetworkDetails={handleFetchNetworkDetails}
+            onSimulate={(usage: Usage) => {
+              setUsageForSimulation(usage);
+              setShowRequestDetailsModal(false);
+              setSimulationModalOpen(true);
+            }}
+          />
+        )}
+
+        {/* NEW: Optimization Suggestions Modal */}
+        {selectedUsageDetails && (
+          <OptimizationSuggestionsModal
+            isOpen={showOptimizationModal}
+            onClose={() => {
+              setShowOptimizationModal(false);
+              setSelectedUsageDetails(null);
+            }}
+            usage={selectedUsageDetails}
+          />
+        )}
       </div>
     </div>
   );

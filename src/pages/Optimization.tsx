@@ -18,6 +18,7 @@ import { OptimizationShimmer } from "../components/shimmer/OptimizationShimmer";
 import { OptimizationForm } from "../components/optimization/OptimizationForm";
 import { BulkOptimizer } from "../components/optimization/BulkOptimizer";
 import { QuickOptimize } from "../components/optimization/QuickOptimize";
+import { OptimizationDetailsModal } from "../components/optimization/OptimizationDetailsModal";
 import { VisualComplianceTab } from "../components/optimization/VisualComplianceTab";
 import { VisualComplianceBatch } from "../components/optimization/VisualComplianceBatch";
 import { VisualComplianceDashboard } from "../components/optimization/VisualComplianceDashboard";
@@ -32,6 +33,8 @@ export const Optimization: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState<'quick' | 'bulk' | 'visual' | 'visual-batch' | 'visual-dashboard'>('quick');
   const [optimizationTypeFilter, setOptimizationTypeFilter] = useState<'all' | 'text' | 'visual_compliance'>('all');
+  const [detailsOptimization, setDetailsOptimization] = useState<any>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const pageSize = 10;
   const { showNotification } = useNotifications();
   const navigate = useNavigate();
@@ -803,6 +806,10 @@ export const Optimization: React.FC = () => {
                     key={optimization._id}
                     optimization={optimization}
                     onFeedback={handleFeedback}
+                    onViewDetails={(opt) => {
+                      setDetailsOptimization(opt);
+                      setShowDetailsModal(true);
+                    }}
                   />
                 ))}
             </div>
@@ -870,6 +877,18 @@ export const Optimization: React.FC = () => {
               </div>
             )}
           </>
+        )}
+
+        {/* Optimization details modal (from card "View details") */}
+        {detailsOptimization && (
+          <OptimizationDetailsModal
+            isOpen={showDetailsModal}
+            onClose={() => {
+              setShowDetailsModal(false);
+              setDetailsOptimization(null);
+            }}
+            optimization={detailsOptimization}
+          />
         )}
       </div>
     </div>

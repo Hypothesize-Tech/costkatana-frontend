@@ -10,6 +10,7 @@ import {
   ClipboardIcon,
   ChartBarIcon,
   XCircleIcon,
+  GlobeAltIcon,
 } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
 import ReactMarkdown from "react-markdown";
@@ -24,12 +25,14 @@ interface OptimizationCardProps {
   optimization: Optimization;
   onApply?: (id: string) => void;
   onFeedback: (id: string, helpful: boolean, comment?: string) => void;
+  onViewDetails?: (optimization: Optimization) => void;
 }
 
 export const OptimizationCard: React.FC<OptimizationCardProps> = ({
   optimization,
   onApply: _onApply,
   onFeedback,
+  onViewDetails,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -1342,14 +1345,26 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
 
             {/* Actions */}
             <div className="flex justify-between items-center pt-6 border-t border-primary-200/30">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
                 {!showFeedback && (
-                  <button
-                    onClick={() => setShowFeedback(true)}
-                    className="btn btn-secondary"
-                  >
-                    Provide Feedback
-                  </button>
+                  <>
+                    {onViewDetails && (
+                      <button
+                        type="button"
+                        onClick={() => onViewDetails(optimization)}
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium border border-primary-200/30 glass hover:bg-primary-500/10 text-secondary-700 dark:text-secondary-300 sm:px-4 sm:py-2 sm:text-sm [touch-action:manipulation] active:scale-95"
+                      >
+                        <GlobeAltIcon className="w-4 h-4" />
+                        View details
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setShowFeedback(true)}
+                      className="btn btn-secondary"
+                    >
+                      Provide Feedback
+                    </button>
+                  </>
                 )}
               </div>
 

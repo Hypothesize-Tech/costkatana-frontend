@@ -1,6 +1,6 @@
 // src/services/optimization.service.ts
 import { apiClient } from "../config/api";
-import { Optimization, OptimizationRequest, PaginatedResponse } from "../types";
+import { Optimization, OptimizationRequest, OptimizationRequestTracking, PaginatedResponse } from "../types";
 import type { CortexConfig } from "../types/cortex.types";
 
 interface ConversationMessage {
@@ -142,6 +142,30 @@ class OptimizationService {
       return response.data.data;
     } catch (error) {
       console.error("Error fetching optimization:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get network/request details for an optimization (for Optimization Details modal).
+   * Use when optimization from list doesn't include requestTracking (lazy load).
+   */
+  async getOptimizationNetworkDetails(optimizationId: string): Promise<{
+    requestTracking?: OptimizationRequestTracking;
+    performance?: { responseTime?: number; networkMetrics?: unknown };
+    clientInfo?: unknown;
+  }> {
+    try {
+      const response = await apiClient.get<{
+        data: {
+          requestTracking?: OptimizationRequestTracking;
+          performance?: { responseTime?: number; networkMetrics?: unknown };
+          clientInfo?: unknown;
+        };
+      }>(`/optimizations/${optimizationId}/network-details`);
+      return response.data?.data ?? {};
+    } catch (error) {
+      console.error("Error fetching optimization network details:", error);
       throw error;
     }
   }

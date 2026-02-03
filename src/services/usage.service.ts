@@ -98,7 +98,9 @@ class UsageService {
                 userEmail: item.userEmail,
                 customerEmail: item.customerEmail,
                 createdAt: item.createdAt,
-                updatedAt: item.updatedAt
+                updatedAt: item.updatedAt,
+                // Comprehensive tracking (headers, request/response body, network)
+                requestTracking: item.requestTracking
             }));
 
             // Use backend pagination if available, otherwise calculate client-side
@@ -148,6 +150,38 @@ class UsageService {
         } catch (error) {
             console.error('Error fetching usage by ID:', error);
             throw error;
+        }
+    }
+
+    /**
+     * Fetch full network details (headers, request/response body) for a usage record.
+     * Use when opening Request Details modal to show comprehensive tracking data.
+     */
+    async getNetworkDetails(usageId: string): Promise<{ requestTracking?: Usage['requestTracking'] }> {
+        try {
+            const response = await apiClient.get(`/usage/${usageId}/network-details`);
+            return response.data?.data ?? {};
+        } catch (error) {
+            console.error('Error fetching network details:', error);
+            return {};
+        }
+    }
+
+    /**
+     * Fetch optimization suggestions for a usage record (existing opportunities + generated).
+     */
+    async getOptimizationSuggestions(usageId: string): Promise<{
+        existing?: unknown;
+        generated?: Array<{ type?: string; priority?: string; title?: string; description?: string; potentialSavings?: number; implementation?: string }>;
+        context?: { model?: string; service?: string; cost?: number; tokens?: number; responseTime?: number };
+    }> {
+        try {
+            const response = await apiClient.get(`/usage/${usageId}/optimization-suggestions`);
+            const data = response.data?.data;
+            return data ?? { existing: undefined, generated: [], context: undefined };
+        } catch (error) {
+            console.error('Error fetching optimization suggestions:', error);
+            return { generated: [], context: undefined };
         }
     }
 
