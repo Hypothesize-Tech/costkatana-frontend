@@ -1099,6 +1099,7 @@ export const ConversationalAgent: React.FC = () => {
 
     // Define top tier models based on capabilities and quality
     const topTierIds = [
+      'anthropic.claude-opus-4-6-v1', // Claude Opus 4.6 - next-gen flagship
       'anthropic.claude-opus-4-1-20250805-v1:0', // Claude 4 Opus - most powerful
       'anthropic.claude-sonnet-4-20250514-v1:0', // Claude Sonnet 4 - high performance
       'anthropic.claude-3-5-sonnet-20240620-v1:0', // Claude 3.5 Sonnet - popular
