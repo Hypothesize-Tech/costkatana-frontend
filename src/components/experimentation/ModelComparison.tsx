@@ -567,6 +567,11 @@ const ModelComparison: React.FC = () => {
         output: 25.0,
         unit: "Per 1M tokens",
       },
+      "anthropic.claude-sonnet-4-6-v1:0": {
+        input: 3.0,
+        output: 15.0,
+        unit: "Per 1M tokens",
+      },
       "anthropic.claude-opus-4-1-20250805-v1:0": {
         input: 15.0,
         output: 75.0,
