@@ -24,12 +24,12 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
         try {
             setLoading(true);
             const response = await userSessionService.getActiveUserSessions();
-            if (response.success) {
-                setSessions(response.data);
-            }
-        } catch (error: any) {
+            const data = response?.data;
+            setSessions(Array.isArray(data) ? data : []);
+        } catch (error: unknown) {
             console.error('Error loading sessions:', error);
-            showNotification('Failed to load active sessions', 'error');
+            const message = error instanceof Error ? error.message : 'Failed to load active sessions';
+            showNotification(message, 'error');
         } finally {
             setLoading(false);
         }
@@ -46,9 +46,10 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
                 await loadSessions();
                 onSessionRevoked?.();
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error revoking session:', error);
-            showNotification(error.message || 'Failed to revoke session', 'error');
+            const message = error instanceof Error ? error.message : 'Failed to revoke session';
+            showNotification(message, 'error');
         } finally {
             setRevokingSessionId(null);
         }
@@ -66,9 +67,10 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
                 onSessionRevoked?.();
             }
             setShowRevokeAllConfirm(false);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error revoking all other sessions:', error);
-            showNotification(error.message || 'Failed to revoke sessions', 'error');
+            const message = error instanceof Error ? error.message : 'Failed to revoke sessions';
+            showNotification(message, 'error');
         } finally {
             setRevokingSessionId(null);
         }
@@ -114,12 +116,18 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
     };
 
     const getLocationText = (session: UserSession): string => {
-        if (session.location.city && session.location.country) {
-            return `${session.location.city}, ${session.location.country}`;
-        } else if (session.location.country) {
-            return session.location.country;
-        } else if (session.location.city) {
-            return session.location.city;
+        const location = session?.location;
+        if (!location || typeof location !== 'object') {
+            return 'Unknown Location';
+        }
+        if (location.city && location.country) {
+            return `${location.city}, ${location.country}`;
+        }
+        if (location.country) {
+            return location.country;
+        }
+        if (location.city) {
+            return location.city;
         }
         return 'Unknown Location';
     };
@@ -128,7 +136,9 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
         return <UserSessionShimmer />;
     }
 
-    if (sessions.length === 0) {
+    const safeSessions: UserSession[] = Array.isArray(sessions) ? sessions : [];
+
+    if (safeSessions.length === 0) {
         return (
             <div className="p-4 rounded-lg border glass border-info-200/30 sm:p-5 md:p-6">
                 <div className="flex flex-col gap-3 items-center text-center sm:flex-row sm:text-left sm:gap-4">
@@ -143,8 +153,8 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
         );
     }
 
-    const otherSessions = sessions.filter(s => !s.isCurrentSession);
-    const currentSession = sessions.find(s => s.isCurrentSession);
+    const otherSessions = safeSessions.filter(s => !s.isCurrentSession);
+    const currentSession = safeSessions.find(s => s.isCurrentSession);
 
     return (
         <div className="space-y-3 sm:space-y-4">
