@@ -310,9 +310,12 @@ export const AdminDashboard: React.FC = () => {
             }
 
             if (activeTab === 'endpoints') {
-                setEndpointPerformance((results[idx++] as EndpointPerformance[]) || []);
-                setEndpointTrends((results[idx++] as EndpointTrend[]) || []);
-                setTopEndpoints((results[idx++] as TopEndpoint[]) || []);
+                const ep = results[idx++];
+                setEndpointPerformance(Array.isArray(ep) ? ep : []);
+                const et = results[idx++];
+                setEndpointTrends(Array.isArray(et) ? et : []);
+                const te = results[idx++];
+                setTopEndpoints(Array.isArray(te) ? te : []);
             }
 
             if (activeTab === 'geographic') {
@@ -324,9 +327,12 @@ export const AdminDashboard: React.FC = () => {
 
             if (activeTab === 'budget') {
                 setBudgetOverview((results[idx++] as BudgetOverview) || null);
-                setBudgetAlerts((results[idx++] as BudgetAlert[]) || []);
-                setProjectBudgetStatus((results[idx++] as ProjectBudgetStatus[]) || []);
-                setBudgetTrends((results[idx++] as BudgetTrend[]) || []);
+                const alerts = results[idx++];
+                setBudgetAlerts(Array.isArray(alerts) ? alerts : []);
+                const status = results[idx++];
+                setProjectBudgetStatus(Array.isArray(status) ? status : []);
+                const trends = results[idx++];
+                setBudgetTrends(Array.isArray(trends) ? trends : []);
             }
 
             if (activeTab === 'integrations') {
@@ -679,15 +685,15 @@ export const AdminDashboard: React.FC = () => {
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
                                         <div>
                                             <span className="text-light-text-secondary dark:text-dark-text-secondary">Free → Plus:</span>
-                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{conversionMetrics.conversionRates.freeToPlus.toFixed(1)}%</span>
+                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{((typeof conversionMetrics?.conversionRates?.freeToPlus === 'number' ? conversionMetrics.conversionRates.freeToPlus : 0)).toFixed(1)}%</span>
                                         </div>
                                         <div>
                                             <span className="text-light-text-secondary dark:text-dark-text-secondary">Free → Pro:</span>
-                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{conversionMetrics.conversionRates.freeToPro.toFixed(1)}%</span>
+                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{((typeof conversionMetrics?.conversionRates?.freeToPro === 'number' ? conversionMetrics.conversionRates.freeToPro : 0)).toFixed(1)}%</span>
                                         </div>
                                         <div>
                                             <span className="text-light-text-secondary dark:text-dark-text-secondary">Plus → Pro:</span>
-                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{conversionMetrics.conversionRates.plusToPro.toFixed(1)}%</span>
+                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{((typeof conversionMetrics?.conversionRates?.plusToPro === 'number' ? conversionMetrics.conversionRates.plusToPro : 0)).toFixed(1)}%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -822,7 +828,7 @@ export const AdminDashboard: React.FC = () => {
                                 </p>
                             </div>
                         </div>
-                        {topEndpoints.length > 0 && (
+                        {Array.isArray(topEndpoints) && topEndpoints.length > 0 && (
                             <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
                                 <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Top Endpoints
@@ -838,23 +844,27 @@ export const AdminDashboard: React.FC = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {topEndpoints.map((endpoint, idx) => (
+                                            {(Array.isArray(topEndpoints) ? topEndpoints : []).map((endpoint, idx) => {
+                                                const avgResponse = typeof endpoint?.avgResponseTime === 'number' ? endpoint.avgResponseTime : 0;
+                                                const errorRate = typeof endpoint?.errorRate === 'number' ? endpoint.errorRate : 0;
+                                                return (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{endpoint.endpoint}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.requests)}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{endpoint?.endpoint ?? '—'}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint?.requests ?? 0)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{avgResponse.toFixed(0)}ms</td>
                                                     <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
-                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${endpoint.errorRate < 0.01
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${errorRate < 0.01
                                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                                                            : endpoint.errorRate < 0.05
+                                                            : errorRate < 0.05
                                                                 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                                                                 : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                                             }`}>
-                                                            {(endpoint.errorRate * 100).toFixed(2)}%
+                                                            {(errorRate * 100).toFixed(2)}%
                                                         </span>
                                                     </td>
                                                 </tr>
-                                            ))}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -880,7 +890,7 @@ export const AdminDashboard: React.FC = () => {
                                 </div>
                             </div>
                         )}
-                        {endpointPerformance.length > 0 && (
+                        {Array.isArray(endpointPerformance) && endpointPerformance.length > 0 && (
                             <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-3 sm:p-4 md:p-6">
                                 <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Endpoint Performance Details
@@ -897,24 +907,29 @@ export const AdminDashboard: React.FC = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {endpointPerformance.slice(0, 10).map((endpoint, idx) => (
+                                            {(Array.isArray(endpointPerformance) ? endpointPerformance : []).slice(0, 10).map((endpoint, idx) => {
+                                                const avgResponse = typeof endpoint?.avgResponseTime === 'number' ? endpoint.avgResponseTime : 0;
+                                                const p95Response = typeof endpoint?.p95ResponseTime === 'number' ? endpoint.p95ResponseTime : 0;
+                                                const errorRate = typeof endpoint?.errorRate === 'number' ? endpoint.errorRate : 0;
+                                                return (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{endpoint.endpoint}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.totalRequests)}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.p95ResponseTime.toFixed(0)}ms</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{endpoint?.endpoint ?? '—'}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint?.totalRequests ?? 0)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{avgResponse.toFixed(0)}ms</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{p95Response.toFixed(0)}ms</td>
                                                     <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
-                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${endpoint.errorRate < 0.01
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${errorRate < 0.01
                                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                                                            : endpoint.errorRate < 0.05
+                                                            : errorRate < 0.05
                                                                 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                                                                 : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                                             }`}>
-                                                            {(endpoint.errorRate * 100).toFixed(2)}%
+                                                            {(errorRate * 100).toFixed(2)}%
                                                         </span>
                                                     </td>
                                                 </tr>
-                                            ))}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -1074,7 +1089,7 @@ export const AdminDashboard: React.FC = () => {
                                 />
                             </div>
                         )}
-                        {budgetAlerts.length > 0 && (
+                        {Array.isArray(budgetAlerts) && budgetAlerts.length > 0 && (
                             <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
                                 <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Budget Alerts
@@ -1088,11 +1103,11 @@ export const AdminDashboard: React.FC = () => {
                                                     <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">{alert.message}</p>
                                                     <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary truncate">{alert.projectName || alert.workspaceName}</p>
                                                 </div>
-                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold flex-shrink-0 ${alert.alertType === 'critical' || alert.alertType === 'over_budget'
+                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold flex-shrink-0 ${(alert.alertType ?? alert.severity) === 'critical' || (alert.alertType ?? alert.severity) === 'over_budget'
                                                     ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                                     : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                                                     }`}>
-                                                    {alert.alertType}
+                                                    {alert.alertType ?? alert.severity ?? 'warning'}
                                                 </span>
                                             </div>
                                         </div>
@@ -1100,7 +1115,7 @@ export const AdminDashboard: React.FC = () => {
                                 </div>
                             </div>
                         )}
-                        {projectBudgetStatus.length > 0 && (
+                        {Array.isArray(projectBudgetStatus) && projectBudgetStatus.length > 0 && (
                             <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
                                 <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Project Budget Status
@@ -1116,29 +1131,34 @@ export const AdminDashboard: React.FC = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {projectBudgetStatus.map((project, idx) => (
+                                            {(Array.isArray(projectBudgetStatus) ? projectBudgetStatus : []).map((project, idx) => {
+                                                const budgetAmount = project?.budget ?? project?.budgetAmount ?? 0;
+                                                const spent = project?.currentSpending ?? project?.spent ?? 0;
+                                                const utilization = project?.budgetUtilization ?? project?.monthlyUtilization ?? project?.dailyUtilization ?? project?.utilization ?? 0;
+                                                return (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{project.projectName}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.budgetAmount)}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.spent)}</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{project?.projectName ?? '—'}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(budgetAmount)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(spent)}</td>
                                                     <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
-                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${project.utilization > 90
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${utilization > 90
                                                             ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                                                            : project.utilization > 70
+                                                            : utilization > 70
                                                                 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                                                                 : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                             }`}>
-                                                            {project.utilization.toFixed(1)}%
+                                                            {(typeof utilization === 'number' ? utilization : 0).toFixed(1)}%
                                                         </span>
                                                     </td>
                                                 </tr>
-                                            ))}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         )}
-                        {budgetTrends.length > 0 && (
+                        {Array.isArray(budgetTrends) && budgetTrends.length > 0 && (
                             <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-3 sm:p-4 md:p-6">
                                 <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Budget Trends
@@ -1146,14 +1166,14 @@ export const AdminDashboard: React.FC = () => {
                                 <div className="h-48 sm:h-56 md:h-64">
                                     <Line
                                         data={generateLineChartData(
-                                            budgetTrends.map(t => new Date(t.date).toLocaleDateString()),
+                                            (Array.isArray(budgetTrends) ? budgetTrends : []).map(t => new Date(t?.date ?? '').toLocaleDateString()),
                                             [{
                                                 label: 'Budget',
-                                                data: budgetTrends.map(t => t.budget),
+                                                data: (Array.isArray(budgetTrends) ? budgetTrends : []).map(t => t?.budget ?? 0),
                                                 color: '#10B981',
                                             }, {
                                                 label: 'Spent',
-                                                data: budgetTrends.map(t => t.spent),
+                                                data: (Array.isArray(budgetTrends) ? budgetTrends : []).map(t => (t?.spending ?? t?.spent) ?? 0),
                                                 color: '#EF4444',
                                             }]
                                         )}
@@ -1181,7 +1201,7 @@ export const AdminDashboard: React.FC = () => {
                                 </p>
                             </div>
                         </div>
-                        {integrationStats.length > 0 && (
+                        {Array.isArray(integrationStats) && integrationStats.length > 0 && (
                             <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
                                 <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Integration Statistics
@@ -1197,55 +1217,63 @@ export const AdminDashboard: React.FC = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {integrationStats.map((stat, idx) => (
+                                            {(Array.isArray(integrationStats) ? integrationStats : []).map((stat, idx) => {
+                                                const errorRate = typeof stat?.errorRate === 'number' ? stat.errorRate : 0;
+                                                return (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{stat.service}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(stat.totalRequests)}</td>
-                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(stat.totalCost)}</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{stat?.service ?? '—'}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(stat?.totalRequests ?? 0)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(stat?.totalCost ?? 0)}</td>
                                                     <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
-                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${stat.errorRate < 0.01
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${errorRate < 0.01
                                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                                                            : stat.errorRate < 0.05
+                                                            : errorRate < 0.05
                                                                 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                                                                 : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                                             }`}>
-                                                            {(stat.errorRate * 100).toFixed(2)}%
+                                                            {(errorRate * 100).toFixed(2)}%
                                                         </span>
                                                     </td>
                                                 </tr>
-                                            ))}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         )}
-                        {integrationHealth.length > 0 && (
+                        {Array.isArray(integrationHealth) && integrationHealth.length > 0 && (
                             <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
                                 <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Integration Health
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                                    {integrationHealth.map((health, idx) => (
+                                    {(Array.isArray(integrationHealth) ? integrationHealth : []).map((health, idx) => {
+                                        const uptime = typeof health?.uptime === 'number' ? health.uptime : 0;
+                                        const errorRate = typeof health?.errorRate === 'number' ? health.errorRate : 0;
+                                        const avgResponse = typeof health?.avgResponseTime === 'number' ? health.avgResponseTime : 0;
+                                        return (
                                         <div key={idx} className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
                                             <div className="flex items-center justify-between mb-2">
-                                                <span className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">{health.service}</span>
-                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold flex-shrink-0 ${health.status === 'healthy'
+                                                <span className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">{health?.service ?? '—'}</span>
+                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold flex-shrink-0 ${health?.status === 'healthy'
                                                     ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                                                    : health.status === 'degraded'
+                                                    : health?.status === 'degraded'
                                                         ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                                                         : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                                     }`}>
-                                                    {health.status}
+                                                    {health?.status ?? 'unknown'}
                                                 </span>
                                             </div>
                                             <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400 mt-2">
-                                                <div>Uptime: {(health.uptime * 100).toFixed(1)}%</div>
-                                                <div>Error Rate: {(health.errorRate * 100).toFixed(2)}%</div>
-                                                <div>Avg Response: {health.avgResponseTime.toFixed(0)}ms</div>
-                                                <div>Incidents: {health.incidents24h}</div>
+                                                <div>Uptime: {(uptime * 100).toFixed(1)}%</div>
+                                                <div>Error Rate: {(errorRate * 100).toFixed(2)}%</div>
+                                                <div>Avg Response: {avgResponse.toFixed(0)}ms</div>
+                                                <div>Incidents: {health?.incidents24h ?? 0}</div>
                                             </div>
                                         </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}

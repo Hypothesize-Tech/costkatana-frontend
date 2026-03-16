@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { integrationService } from '../services/integration.service';
 import { IntegrationsShimmer } from '../components/shimmer/IntegrationsShimmer';
@@ -35,12 +35,21 @@ import { awsService, AWSConnection } from '../services/aws.service';
 import { mongodbService, MongoDBConnection } from '../services/mongodb.service';
 import linearIcon from '../assets/linear-app-icon-seeklogo.svg';
 import jiraIcon from '../assets/jira.png';
+import { Modal } from '../components/common/Modal';
 
 type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | 'google' | 'vercel' | 'aws' | 'mongodb' | null;
 type ViewModal = { type: 'linear' | 'jira'; integrationId: string } | null;
 
+interface DisconnectModalState {
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void | Promise<void>;
+}
+
 export const IntegrationsPage: React.FC = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { theme } = useTheme();
     const [searchParams, setSearchParams] = useSearchParams();
     const [setupModal, setSetupModal] = useState<SetupModal>(null);
@@ -59,37 +68,39 @@ export const IntegrationsPage: React.FC = () => {
     const [awsConnections, setAwsConnections] = useState<AWSConnection[]>([]);
     const [mongodbConnections, setMongodbConnections] = useState<MongoDBConnection[]>([]);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [oauthErrorMessage, setOauthErrorMessage] = useState<string | null>(null);
+    const [disconnectModal, setDisconnectModal] = useState<DisconnectModalState>({
+        isOpen: false,
+        title: '',
+        message: '',
+        onConfirm: () => {},
+    });
 
-    const { data: integrationsData, isLoading, error, refetch } = useQuery(
-        ['integrations'],
-        () => integrationService.getIntegrations(),
-        {
-            retry: 1,
-            onError: (err) => {
-                console.error('Failed to fetch integrations:', err);
-            }
-        }
-    );
+    const { data: integrationsData, isLoading, error, refetch } = useQuery({
+        queryKey: ['integrations'],
+        queryFn: () => integrationService.getIntegrations(),
+        retry: 1,
+    });
 
-    const integrations = integrationsData?.data || [];
+    const integrations = Array.isArray(integrationsData?.data) ? integrationsData.data : [];
 
     // Function to load integration data
     const loadIntegrationData = async () => {
         try {
             const [githubConn, gitIntegrations, googleConn, vercelConn, awsResult, mongodbConn] = await Promise.all([
-                githubService.listConnections(),
-                githubService.listIntegrations(),
-                googleService.listConnections().catch(() => []),
-                vercelService.listConnections().catch(() => []),
-                awsService.listConnections().catch(() => ({ connections: [] })),
-                mongodbService.listConnections().catch(() => [])
+                githubService.listConnections(true),
+                githubService.listIntegrations(undefined, undefined, true),
+                googleService.listConnections(true).catch(() => []),
+                vercelService.listConnections(true).catch(() => []),
+                awsService.listConnections(true).catch(() => ({ connections: [] })),
+                mongodbService.listConnections(true).catch(() => [])
             ]);
-            setGithubConnections(githubConn);
-            setGithubIntegrations(gitIntegrations);
-            setGoogleConnections(googleConn);
-            setVercelConnections(vercelConn);
-            setAwsConnections(awsResult.connections || []);
-            setMongodbConnections(mongodbConn);
+            setGithubConnections(Array.isArray(githubConn) ? githubConn : []);
+            setGithubIntegrations(Array.isArray(gitIntegrations) ? gitIntegrations : []);
+            setGoogleConnections(Array.isArray(googleConn) ? googleConn : []);
+            setVercelConnections(Array.isArray(vercelConn) ? vercelConn : []);
+            setAwsConnections(Array.isArray(awsResult?.connections) ? awsResult.connections : []);
+            setMongodbConnections(Array.isArray(mongodbConn) ? mongodbConn : []);
         } catch (error) {
             console.error('Failed to load integration data:', error);
         }
@@ -105,6 +116,18 @@ export const IntegrationsPage: React.FC = () => {
         const googleConnected = searchParams.get('googleConnected');
         const vercelConnected = searchParams.get('vercelConnected');
         const message = searchParams.get('message');
+        const errorParam = searchParams.get('error');
+
+        // Show OAuth error (e.g. from Vercel callback redirect)
+        if (errorParam) {
+            setSuccessMessage(null);
+            const decodedError = decodeURIComponent(errorParam);
+            setOauthErrorMessage(decodedError);
+            const newParams = new URLSearchParams(searchParams);
+            newParams.delete('error');
+            setSearchParams(newParams, { replace: true });
+            setTimeout(() => setOauthErrorMessage(null), 8000);
+        }
 
         if (googleConnected === 'true') {
             // Reload Google connections
@@ -183,10 +206,10 @@ export const IntegrationsPage: React.FC = () => {
             setShowFeatureSelector(false);
             setSelectedRepo(null);
             refetch();
-            // Reload GitHub data
+            // Reload GitHub data (skip cache for fresh data)
             const [connections, gitIntegrations] = await Promise.all([
-                githubService.listConnections(),
-                githubService.listIntegrations()
+                githubService.listConnections(true),
+                githubService.listIntegrations(undefined, undefined, true)
             ]);
             setGithubConnections(connections);
             setGithubIntegrations(gitIntegrations);
@@ -196,18 +219,39 @@ export const IntegrationsPage: React.FC = () => {
     };
 
     const handleDisconnectGitHub = async (connectionId: string) => {
-        if (window.confirm('Are you sure you want to disconnect GitHub? This will remove all your GitHub connections and integrations.')) {
-            try {
-                await githubService.disconnectConnection(connectionId);
-                const [connections, gitIntegrations] = await Promise.all([
-                    githubService.listConnections(),
-                    githubService.listIntegrations()
-                ]);
-                setGithubConnections(connections);
-                setGithubIntegrations(gitIntegrations);
-            } catch (error) {
-                console.error('Failed to disconnect GitHub:', error);
-            }
+        const prevConnections = githubConnections;
+        const prevIntegrations = githubIntegrations;
+        const getId = (c: { _id?: string; id?: string }) => c._id || c.id;
+        setGithubConnections(prev => prev.filter(c => getId(c) !== connectionId));
+        setGithubIntegrations(prev => prev.filter(i => (i as { connectionId?: string }).connectionId !== connectionId));
+        try {
+            await githubService.disconnectConnection(connectionId);
+            const [connections, gitIntegrations] = await Promise.all([
+                githubService.listConnections(true),
+                githubService.listIntegrations(undefined, undefined, true)
+            ]);
+            setGithubConnections(connections);
+            setGithubIntegrations(gitIntegrations);
+        } catch (error) {
+            console.error('Failed to disconnect GitHub:', error);
+            setGithubConnections(prevConnections);
+            setGithubIntegrations(prevIntegrations);
+        }
+    };
+
+    const openDisconnectModal = (title: string, message: string, onConfirm: () => void | Promise<void>) => {
+        setDisconnectModal({ isOpen: true, title, message, onConfirm });
+    };
+
+    const closeDisconnectModal = () => {
+        setDisconnectModal(prev => ({ ...prev, isOpen: false }));
+    };
+
+    const handleModalDisconnect = async () => {
+        try {
+            await disconnectModal.onConfirm();
+        } finally {
+            closeDisconnectModal();
         }
     };
 
@@ -250,15 +294,92 @@ export const IntegrationsPage: React.FC = () => {
         });
     };
 
-    // Handle Vercel disconnect
-    const handleDisconnectVercel = async (connectionId: string) => {
-        if (window.confirm('Are you sure you want to disconnect Vercel? This will remove your Vercel connection.')) {
-            try {
-                await vercelService.disconnectConnection(connectionId);
-                loadIntegrationData();
-            } catch (error) {
-                console.error('Failed to disconnect Vercel:', error);
+    const handleDisconnectGoogle = async (connectionId: string) => {
+        const prevConnections = googleConnections;
+        setGoogleConnections(prev => prev.filter(c => c._id !== connectionId));
+        try {
+            await googleService.disconnectConnection(connectionId);
+            const conn = await googleService.listConnections(true);
+            setGoogleConnections(conn);
+            refetch();
+        } catch (error) {
+            console.error('Failed to disconnect Google:', error);
+            setGoogleConnections(prevConnections);
+        }
+    };
+
+    const handleDisconnectAWS = async (connectionId: string) => {
+        const prevConnections = awsConnections;
+        setAwsConnections(prev => prev.filter(c => c.id !== connectionId));
+        setShowAWSPanel(false);
+        setSelectedAWSConnection(null);
+        try {
+            await awsService.deleteConnection(connectionId);
+            await loadIntegrationData();
+        } catch (error) {
+            console.error('Failed to disconnect AWS:', error);
+            setAwsConnections(prevConnections);
+        }
+    };
+
+    const handleDisconnectMongoDB = async (connectionId: string) => {
+        const prevConnections = mongodbConnections;
+        setMongodbConnections(prev => prev.filter(c => c._id !== connectionId));
+        setShowMongoDBPanel(false);
+        try {
+            await mongodbService.deleteConnection(connectionId);
+            await loadIntegrationData();
+        } catch (error) {
+            console.error('Failed to disconnect MongoDB:', error);
+            setMongodbConnections(prevConnections);
+        }
+    };
+
+    const handleDisconnectRegularIntegrations = async (
+        integrationName: string,
+        integrationsToDelete: Array<{ id?: string; _id?: string }>
+    ) => {
+        const idsToRemove = new Set(
+            integrationsToDelete
+                .map(integ => integ.id || String(integ._id ?? ''))
+                .filter(Boolean)
+        );
+        if (idsToRemove.size === 0) return;
+
+        const previousData = queryClient.getQueryData<{ data?: unknown[] }>(['integrations']);
+        queryClient.setQueryData(['integrations'], (old: { data?: Array<{ id?: string; _id?: string }> } | undefined) => {
+            if (!old?.data) return old;
+            return {
+                ...old,
+                data: old.data.filter(i => !idsToRemove.has(i.id || String(i._id ?? '')))
+            };
+        });
+        setViewModal(null);
+
+        try {
+            for (const integ of integrationsToDelete) {
+                const integId = integ.id || String(integ._id ?? '');
+                if (integId) await integrationService.deleteIntegration(integId);
             }
+            refetch();
+        } catch (error) {
+            console.error(`Failed to disconnect ${integrationName}:`, error);
+            if (previousData) queryClient.setQueryData(['integrations'], previousData);
+            refetch();
+        }
+    };
+
+    // Handle Vercel disconnect - optimistic update first, then API
+    const handleDisconnectVercel = async (connectionId: string) => {
+        const previousConnections = vercelConnections;
+        setVercelConnections(prev => prev.filter(c => c._id !== connectionId));
+        setShowVercelPanel(false);
+        try {
+            await vercelService.disconnectConnection(connectionId);
+            await loadIntegrationData();
+        } catch (error) {
+            console.error('Failed to disconnect Vercel:', error);
+            setVercelConnections(previousConnections);
         }
     };
 
@@ -417,6 +538,26 @@ export const IntegrationsPage: React.FC = () => {
                     </div>
                 )}
 
+                {/* OAuth Error Banner (e.g. invalid/expired state from Vercel callback) */}
+                {oauthErrorMessage && (
+                    <div className="mb-6 p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-red-500/30 bg-gradient-to-r from-red-500/10 to-rose-500/10 dark:from-red-500/20 dark:to-rose-500/20 sm:p-6">
+                        <div className="flex items-center gap-3">
+                            <svg className="w-6 h-6 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                            <p className="flex-1 text-sm font-medium text-red-700 dark:text-red-300 sm:text-base">
+                                {oauthErrorMessage}
+                            </p>
+                            <button
+                                onClick={() => setOauthErrorMessage(null)}
+                                className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
+                            >
+                                <XMarkIcon className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {isLoading ? (
                     <IntegrationsShimmer />
                 ) : (
@@ -449,7 +590,7 @@ export const IntegrationsPage: React.FC = () => {
                                     <div className="flex flex-col gap-3 justify-between items-start mb-4 sm:flex-row sm:items-center sm:mb-6">
                                         <h2 className="text-xl font-bold font-display gradient-text-primary sm:text-2xl">Integrations</h2>
                                         <span className="px-2.5 py-1 text-xs font-semibold rounded-full border bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-300 dark:border-success-700 font-display sm:px-3 sm:text-sm">
-                                            {integrations.length + (githubConnections.filter(c => c.isActive).length) + (mongodbConnections.filter(c => c.isActive).length)} Connected
+                                            {integrations.length + (Array.isArray(githubConnections) ? githubConnections.filter(c => c.isActive).length : 0) + (Array.isArray(mongodbConnections) ? mongodbConnections.filter(c => c.isActive).length : 0)} Connected
                                         </span>
                                     </div>
                                     <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
@@ -535,7 +676,7 @@ export const IntegrationsPage: React.FC = () => {
                                                                             {awsConnection.connectionName}
                                                                         </p>
                                                                         <p className="text-xs text-secondary-500 dark:text-secondary-400">
-                                                                            AWS Account ID: {awsConnection.roleArn.match(/arn:aws:iam::(\d+):role/)?.[1] || 'Unknown'}
+                                                                            AWS Account ID: {(awsConnection.roleArn && awsConnection.roleArn.match(/arn:aws:iam::(\d+):role/)?.[1]) || 'Unknown'}
                                                                         </p>
                                                                     </div>
                                                                 )}
@@ -582,7 +723,7 @@ export const IntegrationsPage: React.FC = () => {
                                                             <div className="space-y-2">
                                                                 <div className="flex items-center justify-between">
                                                                     <p className="text-xs font-medium text-secondary-500 dark:text-secondary-400">
-                                                                        {awsConnection.environment.charAt(0).toUpperCase() + awsConnection.environment.slice(1)} Environment
+                                                                        {(awsConnection.environment ? awsConnection.environment.charAt(0).toUpperCase() + awsConnection.environment.slice(1) : 'Unknown')} Environment
                                                                     </p>
                                                                     <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${awsConnection.status === 'active'
                                                                         ? 'bg-success-100 dark:bg-success-900/20 text-success-700 dark:text-success-300 border border-success-300 dark:border-success-700'
@@ -682,9 +823,16 @@ export const IntegrationsPage: React.FC = () => {
                                                                             <span>Manage</span>
                                                                         </button>
                                                                         <button
-                                                                            onClick={async () => {
-                                                                                if (githubConnection && window.confirm('Are you sure you want to disconnect GitHub?')) {
-                                                                                    await handleDisconnectGitHub(githubConnection._id);
+                                                                            onClick={() => {
+                                                                                if (githubConnection) {
+                                                                                    const connId = (githubConnection as { _id?: string; id?: string })._id || (githubConnection as { _id?: string; id?: string }).id;
+                                                                                    if (connId) {
+                                                                                        openDisconnectModal(
+                                                                                            'Disconnect GitHub',
+                                                                                            'Are you sure you want to disconnect GitHub? This will remove all your GitHub connections and integrations.',
+                                                                                            () => handleDisconnectGitHub(connId)
+                                                                                        );
+                                                                                    }
                                                                                 }
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
@@ -703,16 +851,13 @@ export const IntegrationsPage: React.FC = () => {
                                                                             <span>Manage</span>
                                                                         </button>
                                                                         <button
-                                                                            onClick={async () => {
-                                                                                if (googleConnection && window.confirm('Are you sure you want to disconnect Google?')) {
-                                                                                    try {
-                                                                                        await googleService.disconnectConnection(googleConnection._id);
-                                                                                        const googleConn = await googleService.listConnections();
-                                                                                        setGoogleConnections(googleConn);
-                                                                                        refetch();
-                                                                                    } catch (error) {
-                                                                                        console.error('Failed to disconnect Google:', error);
-                                                                                    }
+                                                                            onClick={() => {
+                                                                                if (googleConnection) {
+                                                                                    openDisconnectModal(
+                                                                                        'Disconnect Google',
+                                                                                        'Are you sure you want to disconnect Google? This will remove your Google Workspace connection.',
+                                                                                        () => handleDisconnectGoogle(googleConnection._id)
+                                                                                    );
                                                                                 }
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
@@ -733,7 +878,11 @@ export const IntegrationsPage: React.FC = () => {
                                                                         <button
                                                                             onClick={() => {
                                                                                 if (vercelConnection) {
-                                                                                    handleDisconnectVercel(vercelConnection._id);
+                                                                                    openDisconnectModal(
+                                                                                        'Disconnect Vercel',
+                                                                                        'Are you sure you want to disconnect Vercel? This will remove your Vercel connection.',
+                                                                                        () => handleDisconnectVercel(vercelConnection._id)
+                                                                                    );
                                                                                 }
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
@@ -757,14 +906,13 @@ export const IntegrationsPage: React.FC = () => {
                                                                             <span>Manage</span>
                                                                         </button>
                                                                         <button
-                                                                            onClick={async () => {
-                                                                                if (awsConnection && window.confirm('Are you sure you want to disconnect AWS? This will revoke CostKatana access to your AWS account.')) {
-                                                                                    try {
-                                                                                        await awsService.deleteConnection(awsConnection.id);
-                                                                                        loadIntegrationData();
-                                                                                    } catch (error) {
-                                                                                        console.error('Failed to disconnect AWS:', error);
-                                                                                    }
+                                                                            onClick={() => {
+                                                                                if (awsConnection) {
+                                                                                    openDisconnectModal(
+                                                                                        'Disconnect AWS',
+                                                                                        'Are you sure you want to disconnect AWS? This will revoke CostKatana access to your AWS account.',
+                                                                                        () => handleDisconnectAWS(awsConnection.id)
+                                                                                    );
                                                                                 }
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
@@ -785,14 +933,13 @@ export const IntegrationsPage: React.FC = () => {
                                                                             <span>Manage</span>
                                                                         </button>
                                                                         <button
-                                                                            onClick={async () => {
-                                                                                if (mongodbConnection && window.confirm('Are you sure you want to disconnect MongoDB? This will remove your MongoDB connection and database access.')) {
-                                                                                    try {
-                                                                                        await mongodbService.deleteConnection(mongodbConnection._id);
-                                                                                        loadIntegrationData();
-                                                                                    } catch (error) {
-                                                                                        console.error('Failed to disconnect MongoDB:', error);
-                                                                                    }
+                                                                            onClick={() => {
+                                                                                if (mongodbConnection) {
+                                                                                    openDisconnectModal(
+                                                                                        'Disconnect MongoDB',
+                                                                                        'Are you sure you want to disconnect MongoDB? This will remove your MongoDB connection and database access.',
+                                                                                        () => handleDisconnectMongoDB(mongodbConnection._id)
+                                                                                    );
                                                                                 }
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
@@ -809,7 +956,12 @@ export const IntegrationsPage: React.FC = () => {
                                                                                 if ((integration.type === 'linear' || integration.type === 'jira') && regularIntegrations.length > 0) {
                                                                                     // Show details for the first integration or allow selection
                                                                                     const firstIntegration = regularIntegrations[0];
-                                                                                    setViewModal({ type: integration.type, integrationId: firstIntegration.id });
+                                                                                    const integId = firstIntegration.id || String((firstIntegration as { _id?: string })._id ?? '');
+                                                                                    if (integId) {
+                                                                                        setViewModal({ type: integration.type, integrationId: integId });
+                                                                                    } else {
+                                                                                        setSetupModal(integration.type);
+                                                                                    }
                                                                                 } else {
                                                                                     // For other integrations, show setup to add more
                                                                                     setSetupModal(integration.type);
@@ -821,17 +973,12 @@ export const IntegrationsPage: React.FC = () => {
                                                                             <span>{regularIntegrations.length > 1 ? 'Manage' : 'View'}</span>
                                                                         </button>
                                                                         <button
-                                                                            onClick={async () => {
-                                                                                if (window.confirm(`Are you sure you want to disconnect all ${integration.name} integrations?`)) {
-                                                                                    try {
-                                                                                        for (const integ of regularIntegrations) {
-                                                                                            await integrationService.deleteIntegration(integ.id);
-                                                                                        }
-                                                                                        refetch();
-                                                                                    } catch (error) {
-                                                                                        console.error('Failed to delete integrations:', error);
-                                                                                    }
-                                                                                }
+                                                                            onClick={() => {
+                                                                                openDisconnectModal(
+                                                                                    `Disconnect ${integration.name}`,
+                                                                                    `Are you sure you want to disconnect all ${integration.name} integrations?`,
+                                                                                    () => handleDisconnectRegularIntegrations(integration.name, regularIntegrations)
+                                                                                );
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
                                                                             title={`Disconnect ${integration.name}`}
@@ -1003,6 +1150,33 @@ export const IntegrationsPage: React.FC = () => {
                         detectedLanguage={selectedRepo.repo.language}
                     />
                 )}
+
+                {/* Disconnect Confirmation Modal */}
+                <Modal
+                    isOpen={disconnectModal.isOpen}
+                    onClose={closeDisconnectModal}
+                    title={disconnectModal.title}
+                    maxWidth="md"
+                    closeOnBackdropClick={true}
+                    footer={
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={closeDisconnectModal}
+                                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleModalDisconnect}
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+                            >
+                                Disconnect
+                            </button>
+                        </div>
+                    }
+                >
+                    <p className="text-gray-600 dark:text-gray-400">{disconnectModal.message}</p>
+                </Modal>
             </div>
         </div>
     );

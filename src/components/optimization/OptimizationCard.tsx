@@ -16,7 +16,7 @@ import { CheckIcon } from "@heroicons/react/24/solid";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { formatCurrency, formatDate } from "../../utils/formatters";
+import { formatCurrency, formatDate, formatModelName } from "../../utils/formatters";
 import { Optimization } from "../../types";
 import { CortexImpactDisplay } from "../cortex/CortexImpactDisplay";
 import { CortexResultsDisplay } from "../cortex/CortexResultsDisplay";
@@ -127,7 +127,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   Fallback Mode
                 </span>
               )}
-              {optimization.improvementPercentage && optimization.improvementPercentage < 0 && (
+              {((optimization.improvementPercentage && optimization.improvementPercentage < 0) || optimization.isIncrease || optimization.metadata?.isIncrease) && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-display font-medium bg-danger-50/50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300 border border-danger-200/50">
                   ⚠️ Token Increase
                 </span>
@@ -139,20 +139,20 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
 
             <h3 className="mt-2 text-base font-display font-semibold gradient-text-primary sm:mt-3 sm:text-lg">
               {optimization?.improvementPercentage
-                ? `${Math.abs(optimization.improvementPercentage).toFixed(1)}% Token ${optimization.improvementPercentage < 0 ? 'Increase' : 'Reduction'}`
+                ? `${Math.abs(optimization.improvementPercentage).toFixed(1)}% Token ${(optimization.improvementPercentage < 0 || optimization.isIncrease || optimization.metadata?.isIncrease) ? 'Increase' : 'Reduction'}`
                 : '0.0% Token Reduction'}
             </h3>
 
             <div className="grid grid-cols-2 gap-2 mt-3 text-xs sm:gap-3 sm:mt-4 sm:text-sm md:grid-cols-4">
               <div className="glass rounded-lg p-3 border border-secondary-200/30 hover:scale-105 transition-transform duration-200">
                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1">
-                  {optimization.improvementPercentage && optimization.improvementPercentage < 0 ? 'Token Increase' : 'Tokens Saved'}
+                  {(optimization.improvementPercentage && optimization.improvementPercentage < 0) || optimization.isIncrease || optimization.metadata?.isIncrease ? 'Token Increase' : 'Tokens Saved'}
                 </span>
-                <span className={`font-display font-semibold text-lg ${optimization.improvementPercentage && optimization.improvementPercentage < 0
+                <span className={`font-display font-semibold text-lg ${(optimization.improvementPercentage && optimization.improvementPercentage < 0) || optimization.isIncrease || optimization.metadata?.isIncrease
                   ? 'text-danger-600 dark:text-danger-400'
                   : 'text-success-600 dark:text-success-400'
                   }`}>
-                  {optimization.tokensSaved || optimization.cortexImpactMetrics?.tokenReduction?.absoluteSavings || 0}
+                  {Math.abs(optimization.tokensSaved ?? optimization.cortexImpactMetrics?.tokenReduction?.absoluteSavings ?? 0)}
                 </span>
               </div>
               <div
@@ -162,22 +162,22 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 onMouseLeave={() => setShowTooltip(false)}
               >
                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-1 mb-1">
-                  {optimization.improvementPercentage && optimization.improvementPercentage < 0 ? 'Cost Increase' : (isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings ? 'Net Savings' : 'Cost Saved')}
+                  {(optimization.improvementPercentage && optimization.improvementPercentage < 0) || optimization.isIncrease || optimization.metadata?.isIncrease ? 'Cost Increase' : (isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings ? 'Net Savings' : 'Cost Saved')}
                   {isVisualCompliance && optimization.metadata?.costBreakdown && (
                     <svg className="w-3.5 h-3.5 text-success-600 dark:text-success-400 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   )}
                 </span>
-                <span className={`font-display font-semibold text-lg ${optimization.improvementPercentage && optimization.improvementPercentage < 0
+                <span className={`font-display font-semibold text-lg ${(optimization.improvementPercentage && optimization.improvementPercentage < 0) || optimization.isIncrease || optimization.metadata?.isIncrease
                   ? 'text-danger-600 dark:text-danger-400'
                   : 'gradient-text-success'
                   }`}>
                   {isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings
                     ? formatCurrency(optimization.metadata.costBreakdown.netSavings.amount)
-                    : formatCurrency(optimization.costSaved || optimization.cortexImpactMetrics?.costImpact?.costSavings || 0)}
+                    : formatCurrency(Math.abs(optimization.costSaved ?? optimization.cortexImpactMetrics?.costImpact?.costSavings ?? 0))}
                 </span>
-                {isVisualCompliance && optimization.metadata?.costBreakdown?.internal?.isAdjusted && (
+                {((isVisualCompliance && optimization.metadata?.costBreakdown?.internal?.isAdjusted) || optimization.cortexImpactMetrics?.costImpact?.isAdjusted || optimization.metadata?.isAdjusted) && (
                   <span className="text-[10px] font-body text-success-600 dark:text-success-400 italic">Minimal fee</span>
                 )}
               </div>
@@ -229,7 +229,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 <span className="font-display font-semibold gradient-text-accent text-lg">
                   {isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings
                     ? (optimization.metadata.costBreakdown.netSavings.percentage || 0).toFixed(1)
-                    : (optimization.improvementPercentage || optimization.cortexImpactMetrics?.tokenReduction?.percentageSavings || 0).toFixed(1)}%
+                    : Math.abs(optimization.improvementPercentage ?? optimization.cortexImpactMetrics?.tokenReduction?.percentageSavings ?? 0).toFixed(1)}%
                 </span>
               </div>
             </div>
@@ -755,12 +755,14 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                             <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">tokens</div>
                           </div>
                           <div className="glass rounded-xl p-4 border border-secondary-200/30 bg-gradient-to-br from-secondary-50/50 to-transparent dark:from-secondary-900/20 dark:to-transparent">
-                            <div className="text-xs font-display font-medium text-secondary-600 dark:text-secondary-400 mb-2 uppercase tracking-wide">Savings</div>
-                            <div className="text-3xl font-display font-bold gradient-text-success mb-1">
-                              {optimization.cortexImpactMetrics.tokenReduction.absoluteSavings.toLocaleString()}
+                            <div className="text-xs font-display font-medium text-secondary-600 dark:text-secondary-400 mb-2 uppercase tracking-wide">
+                              {optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'Savings' : 'Token Increase'}
                             </div>
-                            <div className="text-xs font-body text-success-600 dark:text-success-400 font-semibold">
-                              {optimization.cortexImpactMetrics.tokenReduction.percentageSavings.toFixed(1)}% reduction
+                            <div className={`text-3xl font-display font-bold mb-1 ${optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'gradient-text-success' : 'text-danger-600 dark:text-danger-400'}`}>
+                              {Math.abs(optimization.cortexImpactMetrics.tokenReduction.absoluteSavings).toLocaleString()}
+                            </div>
+                            <div className={`text-xs font-body font-semibold ${optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'text-success-600 dark:text-success-400' : 'text-danger-600 dark:text-danger-400'}`}>
+                              {Math.abs(optimization.cortexImpactMetrics.tokenReduction.percentageSavings).toFixed(1)}% {optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'reduction' : 'increase'}
                             </div>
                           </div>
                         </div>
@@ -789,13 +791,18 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                             <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">actual cost</div>
                           </div>
                           <div className="glass rounded-xl p-4 border border-secondary-200/30 bg-gradient-to-br from-secondary-50/50 to-transparent dark:from-secondary-900/20 dark:to-transparent">
-                            <div className="text-xs font-display font-medium text-secondary-600 dark:text-secondary-400 mb-2 uppercase tracking-wide">Savings</div>
-                            <div className="text-2xl font-display font-bold gradient-text-success mb-1">
-                              {formatCurrency(optimization.cortexImpactMetrics.costImpact.costSavings)}
+                            <div className="text-xs font-display font-medium text-secondary-600 dark:text-secondary-400 mb-2 uppercase tracking-wide">
+                              {optimization.cortexImpactMetrics.costImpact.costSavings >= 0 ? 'Savings' : 'Cost Increase'}
                             </div>
-                            <div className="text-xs font-body text-success-600 dark:text-success-400 font-semibold">
-                              {optimization.cortexImpactMetrics.costImpact.savingsPercentage.toFixed(1)}% reduction
+                            <div className={`text-2xl font-display font-bold mb-1 ${optimization.cortexImpactMetrics.costImpact.costSavings >= 0 ? 'gradient-text-success' : 'text-danger-600 dark:text-danger-400'}`}>
+                              {formatCurrency(Math.abs(optimization.cortexImpactMetrics.costImpact.costSavings))}
                             </div>
+                            <div className={`text-xs font-body font-semibold ${optimization.cortexImpactMetrics.costImpact.costSavings >= 0 ? 'text-success-600 dark:text-success-400' : 'text-danger-600 dark:text-danger-400'}`}>
+                              {Math.abs(optimization.cortexImpactMetrics.costImpact.savingsPercentage).toFixed(1)}% {optimization.cortexImpactMetrics.costImpact.costSavings >= 0 ? 'reduction' : 'increase'}
+                            </div>
+                            {optimization.cortexImpactMetrics.costImpact.isAdjusted && (
+                              <span className="text-[10px] font-body text-success-600 dark:text-success-400 italic block mt-1">Minimal fee applied</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1168,19 +1175,19 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                       <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-secondary-200/20">
                         <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Encoder</div>
                         <div className="text-xs font-semibold font-display text-secondary-700 dark:text-secondary-300 truncate">
-                          {optimization.metadata.cortex.cortexModel.encoder?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
+                          {formatModelName(optimization.metadata.cortex.cortexModel.encoder) || 'N/A'}
                         </div>
                       </div>
                       <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-indigo-200/20">
                         <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Core Processor</div>
                         <div className="text-xs font-semibold font-display text-indigo-700 dark:text-indigo-300 truncate">
-                          {(optimization.metadata.cortex.cortexModel.core || optimization.metadata.cortex.cortexModel.processor)?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
+                          {formatModelName(optimization.metadata.cortex.cortexModel.core || optimization.metadata.cortex.cortexModel.processor) || 'N/A'}
                         </div>
                       </div>
                       <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-secondary-200/20">
                         <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Decoder</div>
                         <div className="text-xs font-semibold font-display text-secondary-700 dark:text-secondary-300 truncate">
-                          {optimization.metadata.cortex.cortexModel.decoder?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
+                          {formatModelName(optimization.metadata.cortex.cortexModel.decoder) || 'N/A'}
                         </div>
                       </div>
                     </div>

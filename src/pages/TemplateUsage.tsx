@@ -25,7 +25,8 @@ const TemplateUsagePage: React.FC = () => {
     try {
       setLoading(true);
       const data = await PromptTemplateService.getTemplates();
-      setTemplates(Array.isArray(data) ? data : []);
+      const allTemplates = Array.isArray(data) ? data : [];
+      setTemplates(allTemplates.filter((t) => !t.isDeleted));
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Failed to load templates";
       console.error("Error loading templates:", error);

@@ -891,17 +891,18 @@ export const ConversationalAgent: React.FC = () => {
   const loadGitHubConnection = async () => {
     try {
       const connections = await githubService.listConnections();
-      if (connections.length > 0 && connections[0].isActive) {
+      const connList = Array.isArray(connections) ? connections : [];
+      if (connList.length > 0 && connList[0]?.isActive) {
         setGithubConnection({
-          avatarUrl: connections[0].avatarUrl,
-          username: connections[0].githubUsername,
+          avatarUrl: connList[0].avatarUrl,
+          username: connList[0].githubUsername,
           hasConnection: true
         });
 
         // Check for existing integrations
         try {
           const integrations = await githubService.listIntegrations();
-          setHasExistingIntegrations(integrations.length > 0);
+          setHasExistingIntegrations(Array.isArray(integrations) && integrations.length > 0);
         } catch (intError) {
           console.error('Failed to check integrations:', intError);
           setHasExistingIntegrations(false);
@@ -920,11 +921,12 @@ export const ConversationalAgent: React.FC = () => {
   const loadVercelConnection = async () => {
     try {
       const connections = await vercelService.listConnections();
-      if (connections.length > 0 && connections[0].isActive) {
+      const connList = Array.isArray(connections) ? connections : [];
+      if (connList.length > 0 && connList[0]?.isActive) {
         setVercelConnection({
           hasConnection: true,
-          username: connections[0].vercelUsername,
-          avatarUrl: connections[0].avatarUrl
+          username: connList[0].vercelUsername,
+          avatarUrl: connList[0].avatarUrl
         });
       } else {
         setVercelConnection({ hasConnection: false });
@@ -938,7 +940,8 @@ export const ConversationalAgent: React.FC = () => {
   const loadAWSConnection = async () => {
     try {
       const result = await awsService.listConnections();
-      const activeConnection = result.connections?.find(c => c.status === 'active');
+      const connections = result?.connections ?? [];
+      const activeConnection = Array.isArray(connections) ? connections.find(c => c?.status === 'active') : undefined;
       if (activeConnection) {
         setAwsConnection({
           hasConnection: true,
@@ -956,7 +959,8 @@ export const ConversationalAgent: React.FC = () => {
   const loadMongoDBConnection = async () => {
     try {
       const connections = await mongodbService.listConnections();
-      const activeConnection = connections.find(c => c.isActive);
+      const list = Array.isArray(connections) ? connections : [];
+      const activeConnection = list.find(c => c?.isActive);
       setMongodbConnection({
         hasConnection: !!activeConnection,
         connection: activeConnection
@@ -970,7 +974,8 @@ export const ConversationalAgent: React.FC = () => {
   const loadGoogleConnection = async () => {
     try {
       const connections = await googleService.listConnections();
-      const activeConnection = connections.find(conn => conn.isActive);
+      const list = Array.isArray(connections) ? connections : [];
+      const activeConnection = list.find(conn => conn?.isActive);
 
       if (activeConnection) {
         setGoogleConnection({
@@ -1100,7 +1105,7 @@ export const ConversationalAgent: React.FC = () => {
     // Define top tier models based on capabilities and quality
     const topTierIds = [
       'anthropic.claude-opus-4-6-v1', // Claude Opus 4.6 - next-gen flagship
-      'anthropic.claude-sonnet-4-6-v1:0', // Claude Sonnet 4.6 - latest Sonnet
+      'anthropic.claude-sonnet-4-6', // Claude Sonnet 4.6 - latest Sonnet
       'anthropic.claude-opus-4-1-20250805-v1:0', // Claude 4 Opus - most powerful
       'anthropic.claude-sonnet-4-20250514-v1:0', // Claude Sonnet 4 - high performance
       'anthropic.claude-3-5-sonnet-20240620-v1:0', // Claude 3.5 Sonnet - popular
@@ -1420,10 +1425,12 @@ export const ConversationalAgent: React.FC = () => {
         try {
           // Fetch repository details to restore selectedRepo
           const connections = await githubService.listConnections();
-          const connection = connections.find(c => c._id === result.conversation!.githubContext!.connectionId);
+          const connList = Array.isArray(connections) ? connections : [];
+          const connection = connList.find(c => c?._id === result.conversation!.githubContext!.connectionId);
           if (connection) {
             const repos = await githubService.getRepositories(connection._id);
-            const repo = repos.repositories.find(r => r.fullName === result.conversation!.githubContext!.repositoryFullName);
+            const repoList = Array.isArray(repos?.repositories) ? repos.repositories : [];
+            const repo = repoList.find(r => r.fullName === result.conversation!.githubContext!.repositoryFullName);
             if (repo) {
               setSelectedRepo({
                 repo,
@@ -4670,8 +4677,9 @@ export const ConversationalAgent: React.FC = () => {
                                                 onConfirm: async () => {
                                                   try {
                                                     const connections = await githubService.listConnections();
-                                                    for (const conn of connections) {
-                                                      if (conn.isActive) {
+                                                    const connList = Array.isArray(connections) ? connections : [];
+                                                    for (const conn of connList) {
+                                                      if (conn?.isActive) {
                                                         await githubService.disconnectConnection(conn._id);
                                                       }
                                                     }
@@ -4834,8 +4842,9 @@ export const ConversationalAgent: React.FC = () => {
                                                 onConfirm: async () => {
                                                   try {
                                                     const connections = await vercelService.listConnections();
-                                                    for (const conn of connections) {
-                                                      if (conn.isActive) {
+                                                    const connList = Array.isArray(connections) ? connections : [];
+                                                    for (const conn of connList) {
+                                                      if (conn?.isActive && conn?._id) {
                                                         await vercelService.disconnectConnection(conn._id);
                                                       }
                                                     }

@@ -12,6 +12,8 @@ interface ModalProps {
   showCloseButton?: boolean;
   closeOnBackdropClick?: boolean;
   footer?: React.ReactNode;
+  /** When true, modal fills 100% of viewport (fullscreen) */
+  fullscreen?: boolean;
 }
 
 const maxWidthClasses = {
@@ -36,7 +38,8 @@ export const Modal: React.FC<ModalProps> = ({
   size,
   showCloseButton = true,
   closeOnBackdropClick = true,
-  footer
+  footer,
+  fullscreen = false,
 }) => {
   // Use size as alias for maxWidth (backward compatibility)
   const modalSize = size || maxWidth || '4xl';
@@ -100,9 +103,20 @@ export const Modal: React.FC<ModalProps> = ({
                     padding: 1rem;
                     overflow: auto;
                 }
+                .modal-overlay-container.modal-fullscreen {
+                    padding: 0;
+                    align-items: stretch;
+                }
+                .modal-fullscreen .modal-content-wrapper {
+                    width: 100%;
+                    max-width: 100%;
+                    height: 100%;
+                    max-height: 100%;
+                    border-radius: 0;
+                }
             `}</style>
       <div
-        className="modal-overlay-container"
+        className={`modal-overlay-container ${fullscreen ? 'modal-fullscreen' : ''}`}
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.7)',
           backdropFilter: 'blur(12px)',
@@ -111,12 +125,12 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={handleBackdropClick}
       >
         <div
-          className={`relative bg-white dark:bg-dark-bg-200 rounded-2xl shadow-2xl w-full ${maxWidthClasses[modalSize]} flex flex-col border border-gray-200 dark:border-gray-800`}
+          className={`modal-content-wrapper relative bg-white dark:bg-dark-bg-200 rounded-2xl shadow-2xl w-full ${fullscreen ? '' : maxWidthClasses[modalSize]} flex flex-col border border-gray-200 dark:border-gray-800`}
           style={{
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
             animation: 'modalSlideIn 0.3s ease-out',
-            maxHeight: '90vh',
-            margin: 'auto',
+            maxHeight: fullscreen ? '100%' : '90vh',
+            margin: fullscreen ? 0 : 'auto',
           }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -141,7 +155,7 @@ export const Modal: React.FC<ModalProps> = ({
           )}
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6 bg-gray-50/50 dark:bg-dark-bg-100 custom-scrollbar">
+          <div className={`flex-1 overflow-y-auto bg-gray-50/50 dark:bg-dark-bg-100 custom-scrollbar ${fullscreen ? 'p-4 sm:p-6 min-h-0' : 'p-6'}`}>
             {children}
           </div>
 

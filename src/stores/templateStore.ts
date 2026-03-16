@@ -48,14 +48,15 @@ export const useTemplateStore = create<TemplateState>((set, get) => ({
     searchQuery: '',
     selectedCategory: null,
 
-    // Fetch all accessible templates
+    // Fetch all accessible templates (excludes soft-deleted)
     fetchTemplates: async () => {
         set({ isLoading: true, error: null });
         try {
-            const templates = await PromptTemplateService.getTemplates({
+            const allTemplates = await PromptTemplateService.getTemplates({
                 page: 1,
                 limit: 100
             });
+            const templates = allTemplates.filter((t) => !t.isDeleted);
             set({ 
                 templates, 
                 isLoading: false 

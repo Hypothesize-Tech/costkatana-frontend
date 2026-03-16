@@ -1,5 +1,11 @@
 import { apiClient } from '../config/api';
 
+/** Request config to prevent caching of discount data */
+const NO_CACHE_HEADERS = {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    Pragma: 'no-cache',
+};
+
 export interface Discount {
     _id: string;
     code: string;
@@ -89,7 +95,9 @@ export class AdminDiscountService {
             if (filters.search) params.append('search', filters.search);
             if (filters.plan) params.append('plan', filters.plan);
 
-            const response = await apiClient.get(`/admin/discounts?${params.toString()}`);
+            const response = await apiClient.get(`/admin/discounts?${params.toString()}`, {
+                headers: NO_CACHE_HEADERS,
+            });
             return response.data.data;
         } catch (error: any) {
             console.error('Error fetching discounts:', error);
@@ -102,7 +110,9 @@ export class AdminDiscountService {
      */
     static async getDiscount(id: string): Promise<Discount> {
         try {
-            const response = await apiClient.get(`/admin/discounts/${id}`);
+            const response = await apiClient.get(`/admin/discounts/${id}`, {
+                headers: NO_CACHE_HEADERS,
+            });
             return response.data.data;
         } catch (error: any) {
             console.error('Error fetching discount:', error);
@@ -141,7 +151,9 @@ export class AdminDiscountService {
      */
     static async deleteDiscount(id: string): Promise<void> {
         try {
-            await apiClient.delete(`/admin/discounts/${id}`);
+            await apiClient.delete(`/admin/discounts/${id}`, {
+                headers: NO_CACHE_HEADERS,
+            });
         } catch (error: any) {
             console.error('Error deleting discount:', error);
             throw error;
@@ -153,7 +165,9 @@ export class AdminDiscountService {
      */
     static async getDiscountUsage(id: string): Promise<DiscountUsageStats> {
         try {
-            const response = await apiClient.get(`/admin/discounts/${id}/usage`);
+            const response = await apiClient.get(`/admin/discounts/${id}/usage`, {
+                headers: NO_CACHE_HEADERS,
+            });
             return response.data.data;
         } catch (error: any) {
             console.error('Error fetching discount usage:', error);
@@ -192,7 +206,9 @@ export class AdminDiscountService {
      */
     static async bulkDelete(ids: string[]): Promise<{ deletedCount: number }> {
         try {
-            const response = await apiClient.post('/admin/discounts/bulk-delete', { ids });
+            const response = await apiClient.post('/admin/discounts/bulk-delete', { ids }, {
+                headers: NO_CACHE_HEADERS,
+            });
             return response.data.data;
         } catch (error: any) {
             console.error('Error bulk deleting discounts:', error);

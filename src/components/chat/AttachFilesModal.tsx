@@ -63,7 +63,8 @@ const AttachFilesModal: React.FC<AttachFilesModalProps> = ({
     const loadGoogleConnection = useCallback(async () => {
         try {
             const connections = await googleService.listConnections();
-            const activeConnection = connections.find(conn => conn.isActive);
+            const list = Array.isArray(connections) ? connections : [];
+            const activeConnection = list.find(conn => conn?.isActive);
 
             if (activeConnection) {
                 setGoogleConnection(activeConnection);

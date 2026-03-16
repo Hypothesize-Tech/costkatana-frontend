@@ -109,7 +109,7 @@ export class AdminUserSpendingService {
                 params.append('maxCost', filters.maxCost.toString());
             }
 
-            const response = await apiClient.get(`/admin/users/spending?${params.toString()}`);
+            const response = await apiClient.get(`/admin/user-spending?${params.toString()}`);
             return response.data.data || [];
         } catch (error: any) {
             console.error('Error fetching all users spending:', error);
@@ -143,7 +143,7 @@ export class AdminUserSpendingService {
                 params.append('projectId', filters.projectId);
             }
 
-            const response = await apiClient.get(`/admin/users/spending/${userId}?${params.toString()}`);
+            const response = await apiClient.get(`/admin/user-spending/${userId}?${params.toString()}`);
             return response.data.data || null;
         } catch (error: any) {
             console.error('Error fetching user detailed spending:', error);
@@ -168,7 +168,7 @@ export class AdminUserSpendingService {
                 params.append('endDate', filters.endDate);
             }
 
-            const response = await apiClient.get(`/admin/users/spending/by-service/${service}?${params.toString()}`);
+            const response = await apiClient.get(`/admin/user-spending/by-service/${service}?${params.toString()}`);
             return response.data.data || [];
         } catch (error: any) {
             console.error('Error fetching users by service:', error);
@@ -206,7 +206,7 @@ export class AdminUserSpendingService {
                 params.append('userId', filters.userId);
             }
 
-            const response = await apiClient.get(`/admin/users/spending/trends?${params.toString()}`);
+            const response = await apiClient.get(`/admin/user-spending/trends?${params.toString()}`);
             return response.data.data || [];
         } catch (error: any) {
             console.error('Error fetching spending trends:', error);
@@ -231,7 +231,7 @@ export class AdminUserSpendingService {
                 params.append('service', filters.service);
             }
 
-            const response = await apiClient.get(`/admin/users/spending/summary?${params.toString()}`);
+            const response = await apiClient.get(`/admin/user-spending/summary?${params.toString()}`);
             return response.data.data;
         } catch (error: any) {
             console.error('Error fetching platform summary:', error);
@@ -263,7 +263,7 @@ export class AdminUserSpendingService {
                 params.append('model', filters.model);
             }
 
-            const response = await apiClient.get(`/admin/users/spending/export?${params.toString()}`, {
+            const response = await apiClient.get(`/admin/user-spending/export?${params.toString()}`, {
                 responseType: 'blob'
             });
 

@@ -250,7 +250,12 @@ export const UniversalGovernedAgent: React.FC<UniversalGovernedAgentProps> = ({
         // Listen to 'update' event
         eventSource.addEventListener('update', (event: MessageEvent) => {
             const data = JSON.parse(event.data);
-            console.log('📊 Task update received:', data.mode, data.status);
+            console.log('📊 Task update received:', data.mode, data.status, data.type);
+
+            // Surface execution failure (not for user-initiated cancel)
+            if (data.type === 'governed_task_failed' && data.error) {
+                setError(data.error);
+            }
 
             // Update task state with real-time data
             setTask(prev => prev ? {
@@ -261,6 +266,7 @@ export const UniversalGovernedAgent: React.FC<UniversalGovernedAgentProps> = ({
                 scopeAnalysis: data.scopeAnalysis || prev.scopeAnalysis,
                 plan: data.plan || prev.plan,
                 executionProgress: data.executionProgress || prev.executionProgress,
+                executionResults: data.executionResults ?? prev.executionResults,
                 verification: data.verification || prev.verification,
                 error: data.error || prev.error
             } : null);
@@ -340,7 +346,8 @@ export const UniversalGovernedAgent: React.FC<UniversalGovernedAgentProps> = ({
                     Authorization: `Bearer ${authToken}`
                 }
             });
-            // Task will transition to BUILD_MODE via SSE updates
+            // Stop spinner; BUILD updates or governed_task_failed will arrive via SSE
+            setActionLoading(null);
         } catch (err: any) {
             setError(err.message || 'Failed to approve and execute plan');
             setActionLoading(null);
@@ -417,7 +424,19 @@ export const UniversalGovernedAgent: React.FC<UniversalGovernedAgentProps> = ({
         }
     };
 
-    const handleCancel = () => {
+    const handleCancel = async () => {
+        // Cancel task on backend (stops build if running)
+        if (taskId) {
+            try {
+                const authToken = localStorage.getItem('access_token');
+                await apiClient.post(`/chat/governed/${taskId}/cancel`, {}, {
+                    headers: { Authorization: `Bearer ${authToken}` }
+                });
+            } catch (err) {
+                // Still close UI; task may already be terminal
+                console.warn('Cancel request failed:', err);
+            }
+        }
         if (onComplete) {
             onComplete();
         }

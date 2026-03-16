@@ -247,9 +247,10 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                       <p className="mt-2 text-sm gradient-text-danger">{errors.providerKeyId}</p>
                     )}
                     {selectedProviderKey && (
-                      <div className="glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-2">
-                        <p className="text-xs font-body text-primary-600 dark:text-primary-400">
-                          This proxy key will use the <span className="font-semibold">{selectedProviderKey.provider}</span> API key: <code className="bg-primary-100/50 dark:bg-primary-900/50 px-2 py-1 rounded text-xs">{selectedProviderKey.maskedKey}</code>
+                      <div className="glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-2 overflow-hidden">
+                        <p className="text-xs font-body text-primary-600 dark:text-primary-400 break-words">
+                          This proxy key will use the <span className="font-semibold">{selectedProviderKey.provider}</span> API key:{' '}
+                          <code className="bg-primary-100/50 dark:bg-primary-900/50 px-2 py-1 rounded text-xs break-all inline-block max-w-full mt-1">{selectedProviderKey.maskedKey}</code>
                         </p>
                       </div>
                     )}

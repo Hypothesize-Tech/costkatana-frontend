@@ -5,8 +5,9 @@ import { XMarkIcon, SparklesIcon, EyeIcon, CpuChipIcon, CurrencyDollarIcon } fro
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { optimizationService } from "@/services/optimization.service";
+import { getClientRequestTrackingInfo } from "@/utils/request-tracking.utils";
 import { getProviders, getModelsForProvider } from "@/utils/cost";
-import { formatOptimizationSuggestions } from "@/utils/formatters";
+import { formatOptimizationSuggestions, formatModelName } from "@/utils/formatters";
 import { AxiosError } from "axios";
 
 interface OptimizationFormProps {
@@ -82,6 +83,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
         enableCompression: true,
         enableContextTrimming: true,
         enableRequestFusion: true,
+        requestTracking: getClientRequestTrackingInfo(),
       }),
     onSuccess: (data) => {
       showNotification("Optimization created successfully!", "success");
@@ -128,6 +130,14 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
         ...prev,
         service: newService,
         model: newModel,
+      }));
+    } else if (field === "useCortex") {
+      const enabled = value as boolean;
+      setFormData((prev) => ({
+        ...prev,
+        useCortex: enabled,
+        // When enabling Cortex, switch to Claude Sonnet 4.6 (Cortex core model)
+        ...(enabled ? { service: "anthropic", model: "claude-sonnet-4-6" } : {}),
       }));
     } else {
       setFormData((prev) => ({ ...prev, [field]: value }));
@@ -211,7 +221,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                   >
                     {getModelsForService(formData.service).map((model) => (
                       <option key={model} value={model}>
-                        {model}
+                        {formatModelName(model)}
                       </option>
                     ))}
                   </select>

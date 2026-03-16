@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 // Create standard axios instance
 const api: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
-    timeout: 60000, // Increased to 60 seconds
+    timeout: 180000, // 3 minutes — Cortex AI pipeline (encode+answer+decode) can take 60-90s for complex queries
     withCredentials: true, // Include cookies in requests
     headers: {
         'Content-Type': 'application/json',

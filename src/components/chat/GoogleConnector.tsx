@@ -50,15 +50,16 @@ const GoogleConnector: React.FC<GoogleConnectorProps> = ({
     const loadConnections = useCallback(async () => {
         try {
             setLoading(true);
-            const conns = await googleService.listConnections();
-            setConnections(conns);
+            const conns = await googleService.listConnections(true);
+            const connList = Array.isArray(conns) ? conns : [];
+            setConnections(connList);
 
-            if (conns.length > 0) {
-                setSelectedConnection(conns[0]);
+            if (connList.length > 0 && connList[0]) {
+                setSelectedConnection(connList[0]);
                 if (onConnect) {
-                    onConnect(conns[0]._id);
+                    onConnect(connList[0]._id);
                 }
-                await loadFiles(conns[0]._id);
+                await loadFiles(connList[0]._id);
                 setStep('select-file');
             }
         } catch (err: unknown) {

@@ -14,7 +14,18 @@ class AlertService {
     order?: "asc" | "desc";
   }): Promise<PaginatedResponse<Alert>> {
     const response = await apiClient.get("/user/alerts", { params });
-    return response.data;
+    const raw = response.data;
+    // Normalize Nest { alerts, pagination } to Express { data, pagination }
+    if (raw?.alerts !== undefined && raw?.data === undefined) {
+      return {
+        data: Array.isArray(raw.alerts) ? raw.alerts : [],
+        pagination: raw.pagination ?? { page: 1, limit: 20, total: 0, pages: 0 },
+      };
+    }
+    return {
+      data: Array.isArray(raw?.data) ? raw.data : [],
+      pagination: raw?.pagination ?? { page: 1, limit: 20, total: 0, pages: 0 },
+    };
   }
 
   async getAlert(id: string): Promise<{
@@ -103,7 +114,20 @@ class AlertService {
     };
   }> {
     const response = await apiClient.get("/user/alerts/unread-count");
-    return response.data;
+    const raw = response.data;
+    // Normalize Nest { count } or { data: { count, ... } } to expected shape
+    const data = raw?.data ?? raw;
+    const count = data?.count ?? 0;
+    return {
+      success: true,
+      data: {
+        count,
+        critical: data?.critical ?? 0,
+        high: data?.high ?? 0,
+        medium: data?.medium ?? 0,
+        low: data?.low ?? 0,
+      },
+    };
   }
 
   async snoozeAlert(

@@ -14,11 +14,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   editable = false,
 }) => {
   const initials =
-    user.name
+    user?.name
       ?.split(" ")
       .map((n) => n?.[0])
       .join("")
-      .toUpperCase() || user.email?.[0].toUpperCase();
+      .toUpperCase() || (user?.email?.[0] ?? "U").toUpperCase();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

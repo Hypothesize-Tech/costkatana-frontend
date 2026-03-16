@@ -222,8 +222,8 @@ export const CortexConfigPanel: React.FC<CortexConfigPanelProps> = ({
             {/* Model Configuration Hint */}
             <div className="bg-gradient-accent/10 border border-accent-200/30 p-4 rounded-xl glass backdrop-blur-xl">
                 <div className="text-sm font-body text-accent-700 dark:text-accent-300 leading-relaxed">
-                    <strong className="font-display font-semibold">Model Selection:</strong> Cortex automatically uses Claude Sonnet for encoding/decoding
-                    and Claude Opus 4.1 for core processing. SAST mode enables advanced semantic understanding
+                    <strong className="font-display font-semibold">Model Selection:</strong> Cortex automatically uses Claude Haiku for encoding/decoding
+                    and Claude Sonnet 4.6 for core processing. SAST mode enables advanced semantic understanding
                     with automatic ambiguity resolution and cross-lingual compatibility.
                 </div>
             </div>

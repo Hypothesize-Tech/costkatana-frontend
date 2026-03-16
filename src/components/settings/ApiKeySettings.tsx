@@ -4,10 +4,21 @@ import { Plus, Trash2, Settings, Key, Sparkles, AlertTriangle, Lock, BookOpen } 
 import { userService } from "../../services/user.service";
 import { ApiKeySettingsShimmer } from "../shimmer/SettingsShimmer";
 import { useNotifications } from "../../contexts/NotificationContext";
+import { Modal } from "../common/Modal";
 
 interface ApiKeySettingsProps {
-  profile: any;
-  onUpdate: (data: any) => void;
+  profile?: object;
+  onUpdate?: (data: Record<string, unknown>) => void;
+}
+
+interface DashboardApiKeyItem {
+  keyId: string;
+  name: string;
+  maskedKey: string;
+  permissions: string[];
+  createdAt: string;
+  expiresAt?: string;
+  lastUsed?: string;
 }
 
 const PERMISSION_OPTIONS = [
@@ -37,12 +48,17 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
   });
 
   const [showCreatedKey, setShowCreatedKey] = useState<string | null>(null);
+  const [keyToDelete, setKeyToDelete] = useState<{
+    keyId: string;
+    name: string;
+  } | null>(null);
   const { showNotification } = useNotifications();
   const queryClient = useQueryClient();
 
   const { data: apiKeys, isLoading } = useQuery(
     ["dashboard-api-keys"],
     userService.getDashboardApiKeys,
+    { staleTime: 0 },
   );
   const createKeyMutation = useMutation(
     (data: { name: string; permissions: string[]; expiresAt?: string }) =>
@@ -68,12 +84,28 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
   const deleteKeyMutation = useMutation(
     (keyId: string) => userService.deleteDashboardApiKey(keyId),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["dashboard-api-keys"]);
-        showNotification("API key deleted successfully", "success");
+      onMutate: async (keyId) => {
+        await queryClient.cancelQueries(["dashboard-api-keys"]);
+        const previousKeys = queryClient.getQueryData<Array<{ keyId: string; [k: string]: unknown }>>(["dashboard-api-keys"]);
+        queryClient.setQueryData(
+          ["dashboard-api-keys"],
+          (old: Array<{ keyId: string; [k: string]: unknown }> | undefined) =>
+            Array.isArray(old) ? old.filter((k) => String(k?.keyId ?? "").trim() !== String(keyId ?? "").trim()) : [],
+        );
+        return { previousKeys };
       },
-      onError: () => {
+      onError: (_err, _keyId, context) => {
+        if (context?.previousKeys != null) {
+          queryClient.setQueryData(["dashboard-api-keys"], context.previousKeys);
+        }
         showNotification("Failed to delete API key", "error");
+      },
+      onSuccess: () => {
+        showNotification("API key deleted successfully", "success");
+        setKeyToDelete(null);
+      },
+      onSettled: () => {
+        void queryClient.invalidateQueries(["dashboard-api-keys"]);
       },
     },
   );
@@ -193,7 +225,7 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
       {/* Existing API Keys - Responsive */}
       <div className="space-y-3 sm:space-y-4">
         {apiKeys && Array.isArray(apiKeys) && apiKeys.length > 0 ? (
-          apiKeys.map((apiKey: any) => (
+          apiKeys.map((apiKey: DashboardApiKeyItem) => (
             <div
               key={apiKey.keyId}
               className={`glass rounded-xl p-4 border shadow-lg backdrop-blur-xl sm:p-5 md:p-6 ${isExpired(apiKey.expiresAt)
@@ -254,7 +286,7 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
                   </div>
                 </div>
                 <button
-                  onClick={() => deleteKeyMutation.mutate(apiKey.keyId)}
+                  onClick={() => setKeyToDelete({ keyId: apiKey.keyId, name: apiKey.name })}
                   className="btn btn-icon-danger self-start sm:self-center"
                   disabled={deleteKeyMutation.isLoading}
                 >
@@ -409,6 +441,46 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
           </p>
         </div>
       </div>
+
+      {/* Delete confirmation modal */}
+      <Modal
+        isOpen={!!keyToDelete}
+        onClose={() => setKeyToDelete(null)}
+        title="Delete API Key"
+        showCloseButton={true}
+        closeOnBackdropClick={!deleteKeyMutation.isLoading}
+        footer={
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setKeyToDelete(null)}
+              className="btn-secondary btn"
+              disabled={deleteKeyMutation.isLoading}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (keyToDelete) {
+                  deleteKeyMutation.mutate(keyToDelete.keyId);
+                }
+              }}
+              className="btn btn-danger"
+              disabled={deleteKeyMutation.isLoading}
+            >
+              {deleteKeyMutation.isLoading ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        }
+      >
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Are you sure you want to delete the API key{" "}
+          <strong className="text-gray-900 dark:text-white">&quot;{keyToDelete?.name}&quot;</strong>?
+          This action cannot be undone. Any applications using this key will
+          stop working immediately.
+        </p>
+      </Modal>
     </div>
   );
 };

@@ -173,18 +173,23 @@ export const generateLineChartData = (
     color?: string;
     fill?: boolean;
   }>,
-) => ({
-  labels,
-  datasets: datasets.map((dataset, index) => ({
+) => {
+  const safeLabels = Array.isArray(labels) ? labels : [];
+  const safeDatasets = Array.isArray(datasets) ? datasets : [];
+  const colors = Object.values(CHART_COLORS);
+  return {
+  labels: safeLabels,
+  datasets: safeDatasets.map((dataset, index) => ({
     label: dataset.label,
-    data: dataset.data,
-    borderColor: dataset.color || Object.values(CHART_COLORS)[index],
+    data: Array.isArray(dataset.data) ? dataset.data : [],
+    borderColor: dataset.color || colors[index % colors.length],
     backgroundColor: dataset.fill
-      ? `${dataset.color || Object.values(CHART_COLORS)[index]}20`
+      ? `${dataset.color || colors[index % colors.length]}20`
       : "transparent",
     fill: dataset.fill || false,
   })),
-});
+};
+};
 
 export const generateBarChartData = (
   labels: string[],
@@ -193,33 +198,45 @@ export const generateBarChartData = (
     data: number[];
     color?: string;
   }>,
-) => ({
-  labels,
-  datasets: datasets.map((dataset, index) => ({
+) => {
+  const safeLabels = Array.isArray(labels) ? labels : [];
+  const safeDatasets = Array.isArray(datasets) ? datasets : [];
+  const colors = Object.values(CHART_COLORS);
+  return {
+  labels: safeLabels,
+  datasets: safeDatasets.map((dataset, index) => ({
     label: dataset.label,
-    data: dataset.data,
-    backgroundColor: dataset.color || Object.values(CHART_COLORS)[index],
-    borderColor: dataset.color || Object.values(CHART_COLORS)[index],
+    data: Array.isArray(dataset.data) ? dataset.data : [],
+    backgroundColor: dataset.color || colors[index % colors.length],
+    borderColor: dataset.color || colors[index % colors.length],
     borderWidth: 0,
   })),
-});
+};
+};
 
 export const generateDoughnutChartData = (
   labels: string[],
   data: number[],
   colors?: string[],
-) => ({
-  labels,
+) => {
+  const safeLabels = Array.isArray(labels) ? labels : [];
+  const safeData = Array.isArray(data) ? data : [];
+  const chartColors = Object.values(CHART_COLORS);
+  return {
+  labels: safeLabels,
   datasets: [
     {
-      data,
+      data: safeData,
       backgroundColor:
-        colors || Object.values(CHART_COLORS).slice(0, data.length),
+        Array.isArray(colors) && colors.length > 0
+          ? colors
+          : chartColors.slice(0, safeData.length || 1),
       borderWidth: 0,
       hoverOffset: 4,
     },
   ],
-});
+};
+};
 
 // Gradient generators
 export const createGradient = (

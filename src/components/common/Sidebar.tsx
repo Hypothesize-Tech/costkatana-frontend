@@ -20,7 +20,6 @@ import {
   PuzzlePieceIcon,
   WifiIcon,
   ShieldCheckIcon,
-  ExclamationTriangleIcon,
   BeakerIcon,
   FolderIcon,
   DocumentTextIcon,
@@ -32,8 +31,6 @@ import {
   ChevronDownIcon,
   LinkIcon,
   EyeIcon,
-  ClipboardDocumentListIcon,
-  ChartPieIcon,
   TagIcon,
   CreditCardIcon,
 } from '@heroicons/react/24/outline';
@@ -103,8 +100,7 @@ const navCategories: NavCategory[] = [
     label: 'Security & Compliance',
     items: [
       { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'API key management' },
-      { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'Content moderation' },
-      { name: 'Security', href: '/security', icon: ExclamationTriangleIcon, description: 'LLM security guardrails' },
+      { name: 'Security & Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'Threats, moderation & reviews' },
     ],
   },
   {

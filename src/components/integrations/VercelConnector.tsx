@@ -28,12 +28,13 @@ const VercelConnector: React.FC<VercelConnectorProps> = ({
     const loadConnections = async () => {
         try {
             setLoading(true);
-            const conns = await vercelService.listConnections();
-            setConnections(conns);
+            const conns = await vercelService.listConnections(true);
+            const connList = Array.isArray(conns) ? conns : [];
+            setConnections(connList);
 
-            if (conns.length > 0) {
-                setSelectedConnection(conns[0]);
-                setProjects(conns[0].projects);
+            if (connList.length > 0 && connList[0]) {
+                setSelectedConnection(connList[0]);
+                setProjects(connList[0]?.projects ?? []);
                 setStep('select-project');
             }
         } catch (err: unknown) {

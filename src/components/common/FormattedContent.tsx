@@ -1,4 +1,6 @@
 import React from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { renderFormattedContent } from "@/utils/formatters";
 
 interface FormattedContentProps {
@@ -38,32 +40,22 @@ export const OptimizedPromptDisplay: React.FC<OptimizedPromptDisplayProps> = ({
 
   // Function to clean and format markdown content more thoroughly
   const formatMarkdownContent = (text: string) => {
-    // Remove raw markdown formatting characters more aggressively
-    let cleanedText = text
-      // Remove headers
+    // Extract code blocks FIRST (before inline ` replace corrupts them)
+    let cleanedText = text.replace(/```([a-zA-Z0-9_+#-]*)\s*\n([\s\S]*?)```/g, (_, lang, code) => {
+      const language = (lang || "text").trim();
+      return `\n[CODE_BLOCK:${language}]\n${code.trim()}\n[/CODE_BLOCK]\n`;
+    });
+
+    // Then remove other markdown formatting
+    cleanedText = cleanedText
       .replace(/^#{1,6}\s*/gm, "")
-      // Remove bold formatting
       .replace(/\*\*(.*?)\*\*/g, "$1")
-      // Remove italic formatting
       .replace(/\*(.*?)\*/g, "$1")
-      // Remove inline code formatting
       .replace(/`([^`]+)`/g, "$1")
-      // Remove list markers
       .replace(/^[-*+]\s+/gm, "• ")
-      // Remove numbered list markers
       .replace(/^\d+\.\s+/gm, "")
-      // Clean up extra whitespace
       .replace(/\n\s*\n/g, "\n\n")
       .trim();
-
-    // Handle code blocks more carefully
-    cleanedText = cleanedText.replace(/```[\s\S]*?```/g, (match) => {
-      const code = match.slice(3, -3);
-      const lines = code.split("\n");
-      const language = lines[0].trim();
-      const codeContent = lines.slice(1).join("\n");
-      return `\n[CODE_BLOCK:${language}]\n${codeContent}\n[/CODE_BLOCK]\n`;
-    });
 
     return cleanedText;
   };
@@ -93,9 +85,16 @@ export const OptimizedPromptDisplay: React.FC<OptimizedPromptDisplayProps> = ({
                   {language || "code"}
                 </span>
               </div>
-              <pre className="p-4 bg-dark-bg-primary text-dark-text-primary font-mono text-sm leading-relaxed overflow-x-auto">
-                <code>{codeContent}</code>
-              </pre>
+              <SyntaxHighlighter
+                style={oneDark}
+                language={language || "text"}
+                PreTag="div"
+                className="!mt-0 !p-4 !bg-[#282c34] text-sm leading-relaxed overflow-x-auto rounded-b-xl"
+                showLineNumbers={codeContent.split("\n").length > 5}
+                wrapLines
+              >
+                {codeContent}
+              </SyntaxHighlighter>
             </div>
           );
         }
@@ -144,6 +143,70 @@ export const OptimizedPromptDisplay: React.FC<OptimizedPromptDisplayProps> = ({
         {formatCodeBlocks(content)}
       </div>
     </div>
+  );
+};
+
+/**
+ * Renders model response text with syntax-highlighted code blocks.
+ * Use for LLM responses that may contain ```...``` code.
+ */
+interface FormattedModelResponseProps {
+  content: string;
+  className?: string;
+}
+
+export const FormattedModelResponse: React.FC<FormattedModelResponseProps> = ({
+  content,
+  className = "",
+}) => {
+  if (!content) return null;
+
+  const codeBlockRe = /```([a-zA-Z0-9_+#-]*)\s*\n([\s\S]*?)```/;
+  const parts = content.split(codeBlockRe);
+
+  const elements: React.ReactNode[] = [];
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 3 === 0 && parts[i]) {
+      elements.push(
+        <span
+          key={i}
+          className="whitespace-pre-wrap leading-relaxed font-body text-light-text-primary dark:text-dark-text-primary text-sm"
+        >
+          {parts[i]}
+        </span>
+      );
+    } else if (i % 3 === 2) {
+      const lang = (parts[i - 1] || "text").trim();
+      const codeContent = parts[i].trim();
+      elements.push(
+        <div
+          key={i}
+          className="my-3 rounded-xl overflow-hidden border border-primary-200/30 min-w-0"
+        >
+          <div className="flex items-center justify-between px-3 py-2 glass border-b border-primary-200/30">
+            <span className="font-display font-medium text-xs text-light-text-primary dark:text-dark-text-primary capitalize">
+              {lang || "code"}
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <SyntaxHighlighter
+              style={oneDark}
+              language={lang || "text"}
+              PreTag="div"
+              className="!mt-0 !p-3 !py-4 !bg-[#282c34] !text-sm leading-relaxed !rounded-b-xl"
+              showLineNumbers={codeContent.split("\n").length > 5}
+              wrapLines
+            >
+              {codeContent}
+            </SyntaxHighlighter>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  return (
+    <div className={`space-y-1 break-words ${className}`}>{elements}</div>
   );
 };
 

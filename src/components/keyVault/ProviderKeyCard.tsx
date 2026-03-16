@@ -20,7 +20,7 @@ interface ProviderKeyCardProps {
 }
 
 const getProviderIcon = (provider: string) => {
-  const iconProps = { className: 'h-5 w-5 text-white' };
+  const iconProps = { className: 'h-5 w-5 text-white', strokeWidth: 2.5 };
   switch (provider) {
     case 'openai':
       return <Bot {...iconProps} />;
@@ -87,28 +87,28 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
         <div className="flex items-center gap-2 flex-shrink-0">
           {providerKey.isActive ? (
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg" title="Active">
-              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" strokeWidth={2.5} />
             </div>
           ) : (
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg" title="Inactive">
-              <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+              <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 text-white" strokeWidth={2.5} />
             </div>
           )}
           <button
             onClick={onDelete}
-            className="btn w-7 h-7 sm:w-8 sm:h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg hover:opacity-90 hover:scale-110 transition-all duration-300"
             title="Delete provider key"
           >
-            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+            <Trash2 className="h-4 w-4 sm:h-5 sm:w-5 text-white" strokeWidth={2.5} />
           </button>
         </div>
       </div>
 
       <div className="space-y-2 sm:space-y-3">
-        <div className="glass p-2.5 sm:p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
-            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">API Key:</span>
-            <code className="bg-primary-100/50 dark:bg-primary-900/50 px-2 sm:px-3 py-1 rounded-lg font-mono text-xs sm:text-sm gradient-text-primary break-all sm:break-normal">
+        <div className="glass p-2.5 sm:p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 min-w-0">
+            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary shrink-0">API Key:</span>
+            <code className="bg-primary-100/50 dark:bg-primary-900/50 px-2 sm:px-3 py-1 rounded-lg font-mono text-xs sm:text-sm gradient-text-primary break-all min-w-0 overflow-hidden">
               {providerKey.maskedKey}
             </code>
           </div>
@@ -127,8 +127,8 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
             <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Last Used:</span>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-accent flex items-center justify-center shadow-lg flex-shrink-0">
-                <Clock className="h-1.5 w-1.5 sm:h-2 sm:w-2 text-white" />
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg flex-shrink-0">
+                <Clock className="h-2 w-2 sm:h-2.5 sm:w-2.5 text-white" strokeWidth={2.5} />
               </div>
               <span className="font-display font-semibold gradient-text-primary text-xs sm:text-sm">
                 {formatDate(providerKey.lastUsed)}
@@ -146,19 +146,19 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
             }`}>
             {providerKey.isActive ? (
               <>
-                <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-success-600 dark:text-success-400" strokeWidth={2.5} />
                 Active
               </>
             ) : (
               <>
-                <AlertTriangle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 text-warning-600 dark:text-warning-400" strokeWidth={2.5} />
                 Inactive
               </>
             )}
           </span>
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-secondary flex items-center justify-center shadow-lg flex-shrink-0">
-              <Key className="h-2 w-2 sm:h-3 sm:w-3 text-white" />
+            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg flex-shrink-0">
+              <Key className="h-2 w-2 sm:h-3 sm:w-3 text-white" strokeWidth={2.5} />
             </div>
             <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               Master Key

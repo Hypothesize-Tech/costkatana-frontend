@@ -38,15 +38,16 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
     }
   }, [optimization._id, optimization.requestTracking]);
 
-  // Lazy load network details when user switches to tab and we don't have them
+  // Lazy load network details when user switches to tab and we don't have them.
+  // GET /network-details returns nodes/edges for viz; requestTracking comes from the full optimization.
   useEffect(() => {
     if (!isOpen || activeTab !== 'network' || !optimization._id || requestTracking) return;
     setNetworkDetailsLoading(true);
     optimizationService
-      .getOptimizationNetworkDetails(optimization._id)
-      .then((data) => {
-        if (data.requestTracking) {
-          setRequestTracking(data.requestTracking as OptimizationRequestTracking);
+      .getOptimization(optimization._id)
+      .then((opt) => {
+        if (opt.requestTracking) {
+          setRequestTracking(opt.requestTracking);
         }
       })
       .finally(() => setNetworkDetailsLoading(false));
@@ -199,15 +200,19 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
                             <p className="font-medium text-secondary-900 dark:text-white">{optimization.model}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-secondary-600 dark:text-secondary-300">Cost Saved</p>
-                            <p className="font-medium text-success-600 dark:text-success-400">
-                              {formatCurrency(optimization.costSaved ?? 0)}
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300">
+                              {(optimization.isIncrease ?? optimization.metadata?.isIncrease) ? 'Cost Increase' : 'Cost Saved'}
+                            </p>
+                            <p className={`font-medium ${(optimization.isIncrease ?? optimization.metadata?.isIncrease) ? 'text-danger-600 dark:text-danger-400' : 'text-success-600 dark:text-success-400'}`}>
+                              {formatCurrency(Math.abs(optimization.costSaved ?? optimization.cortexImpactMetrics?.costImpact?.costSavings ?? 0))}
                             </p>
                           </div>
                           <div>
-                            <p className="text-sm text-secondary-600 dark:text-secondary-300">Tokens Saved</p>
-                            <p className="font-medium text-secondary-900 dark:text-white">
-                              {(optimization.tokensSaved ?? 0).toLocaleString()}
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300">
+                              {(optimization.isIncrease ?? optimization.metadata?.isIncrease) ? 'Token Increase' : 'Tokens Saved'}
+                            </p>
+                            <p className={`font-medium ${(optimization.isIncrease ?? optimization.metadata?.isIncrease) ? 'text-danger-600 dark:text-danger-400' : 'text-secondary-900 dark:text-white'}`}>
+                              {Math.abs(optimization.tokensSaved ?? optimization.cortexImpactMetrics?.tokenReduction?.absoluteSavings ?? 0).toLocaleString()}
                             </p>
                           </div>
                           <div>
@@ -278,25 +283,34 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
                             {optimization.cortexImpactMetrics.tokenReduction && (
                               <>
                                 <div>
-                                  <p className="text-secondary-600 dark:text-secondary-300">Token reduction</p>
-                                  <p className="font-medium text-secondary-900 dark:text-white">
-                                    {optimization.cortexImpactMetrics.tokenReduction.percentageSavings?.toFixed(1)}%
+                                  <p className="text-secondary-600 dark:text-secondary-300">
+                                    {optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'Token reduction' : 'Token increase'}
+                                  </p>
+                                  <p className={`font-medium ${optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'text-secondary-900 dark:text-white' : 'text-danger-600 dark:text-danger-400'}`}>
+                                    {Math.abs(optimization.cortexImpactMetrics.tokenReduction.percentageSavings ?? 0).toFixed(1)}%
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-secondary-600 dark:text-secondary-300">Tokens saved</p>
-                                  <p className="font-medium text-secondary-900 dark:text-white">
-                                    {optimization.cortexImpactMetrics.tokenReduction.absoluteSavings?.toLocaleString()}
+                                  <p className="text-secondary-600 dark:text-secondary-300">
+                                    {optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'Tokens saved' : 'Tokens increased'}
+                                  </p>
+                                  <p className={`font-medium ${optimization.cortexImpactMetrics.tokenReduction.absoluteSavings >= 0 ? 'text-secondary-900 dark:text-white' : 'text-danger-600 dark:text-danger-400'}`}>
+                                    {Math.abs(optimization.cortexImpactMetrics.tokenReduction.absoluteSavings ?? 0).toLocaleString()}
                                   </p>
                                 </div>
                               </>
                             )}
                             {optimization.cortexImpactMetrics.costImpact && (
                               <div>
-                                <p className="text-secondary-600 dark:text-secondary-300">Cost saved</p>
-                                <p className="font-medium text-success-600 dark:text-success-400">
-                                  {formatCurrency(optimization.cortexImpactMetrics.costImpact.costSavings ?? 0)}
+                                <p className="text-secondary-600 dark:text-secondary-300">
+                                  {optimization.cortexImpactMetrics.costImpact.costSavings >= 0 ? 'Cost saved' : 'Cost increase'}
                                 </p>
+                                <p className={`font-medium ${optimization.cortexImpactMetrics.costImpact.costSavings >= 0 ? 'text-success-600 dark:text-success-400' : 'text-danger-600 dark:text-danger-400'}`}>
+                                  {formatCurrency(Math.abs(optimization.cortexImpactMetrics.costImpact.costSavings ?? 0))}
+                                </p>
+                                {optimization.cortexImpactMetrics.costImpact.isAdjusted && (
+                                  <p className="text-[10px] text-success-600 dark:text-success-400 italic mt-1">Minimal fee applied</p>
+                                )}
                               </div>
                             )}
                           </div>
@@ -389,7 +403,20 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
                                 <div>
                                   <p className="text-sm text-secondary-600 dark:text-secondary-300">Data Efficiency</p>
                                   <p className="font-medium text-secondary-900 dark:text-white">
-                                    {formatBytes(rt.performance.dataTransferEfficiency ?? 0)}/s
+                                    {(() => {
+                                      const eff = rt.performance.dataTransferEfficiency;
+                                      const reqSize = rt.payload?.requestSize ?? 0;
+                                      const resSize = rt.payload?.responseSize ?? 0;
+                                      const totalMs = rt.performance.totalRoundTripTime ?? 0;
+                                      // Throughput in bytes/s: compute from payload if efficiency not provided
+                                      const bytesPerSec =
+                                        typeof eff === 'number' && eff > 0
+                                          ? eff
+                                          : totalMs > 0 && (reqSize > 0 || resSize > 0)
+                                            ? Math.round((reqSize + resSize) / (totalMs / 1000))
+                                            : 0;
+                                      return bytesPerSec > 0 ? `${formatBytes(bytesPerSec)}/s` : '—';
+                                    })()}
                                   </p>
                                 </div>
                               </div>

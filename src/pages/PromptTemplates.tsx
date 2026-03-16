@@ -127,7 +127,9 @@ const PromptTemplates: React.FC = () => {
     try {
       setLoading(true);
       const data = await PromptTemplateService.getTemplates();
-      setTemplates(Array.isArray(data) ? data : []);
+      const allTemplates = Array.isArray(data) ? data : [];
+      // Filter out soft-deleted templates for the list view
+      setTemplates(allTemplates.filter((t) => !t.isDeleted));
     } catch (error: any) {
       console.error("Error loading templates:", error);
       setTemplates([]);

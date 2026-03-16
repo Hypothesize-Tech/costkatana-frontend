@@ -13,8 +13,20 @@ export class EmailManagementService {
    */
   static async getEmails(): Promise<EmailData[]> {
     try {
-      const response = await apiClient.get("/user/emails");
-      return response.data.data.emails;
+      const response = await apiClient.get("/user/emails", {
+        params: { _t: Date.now() },
+        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      });
+      const data = response.data;
+      // Handle Express format: { success, message, data: { emails } } or direct { data: { emails } }
+      const emails = data?.data?.emails ?? data?.emails;
+      if (!Array.isArray(emails)) return [];
+      return emails.map((e: any) => ({
+        email: e.email ?? "",
+        isPrimary: Boolean(e.isPrimary),
+        verified: Boolean(e.verified),
+        addedAt: e.addedAt ? new Date(e.addedAt).toISOString() : new Date().toISOString(),
+      }));
     } catch (error) {
       console.error("Error fetching emails:", error);
       throw error;

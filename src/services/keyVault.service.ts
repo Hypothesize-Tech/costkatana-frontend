@@ -46,6 +46,8 @@ export interface ProxyKey {
 }
 
 export interface KeyVaultAnalytics {
+    totalProviderKeys: number;
+    totalActiveProviderKeys: number;
     totalKeys: number;
     activeKeys: number;
     totalRequests: number;
@@ -84,10 +86,14 @@ export interface CreateProxyKeyRequest {
 
 export class KeyVaultService {
     /**
-     * Get Key Vault dashboard data
+     * Get Key Vault dashboard data.
+     * Uses cache-busting param (_t) to prevent 304 responses and ensure fresh data after create/delete.
+     * Query param only - no custom headers to avoid CORS preflight issues.
      */
     static async getDashboard(): Promise<KeyVaultDashboard> {
-        const response = await apiClient.get('/key-vault/dashboard');
+        const response = await apiClient.get('/key-vault/dashboard', {
+            params: { _t: Date.now() },
+        });
         return response.data.data;
     }
 

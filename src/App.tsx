@@ -76,7 +76,6 @@ import { TelemetryDashboard } from './pages/telemetry/TelemetryDashboard';
 import CostLake from './pages/CostLake';
 import Webhooks from './pages/Webhooks';
 import { Moderation } from './pages/Moderation';
-import { Security } from './pages/Security';
 import GitHubCallback from './pages/GitHubCallback';
 import GitHubIntegrations from './pages/GitHubIntegrations';
 import { GoogleIntegrations } from './pages/GoogleIntegrations';
@@ -247,7 +246,7 @@ function AppContent() {
           />
           <Route
             path="security"
-            element={<Security />}
+            element={<Navigate to="/moderation" replace />}
           />
           <Route
             path="predictive-intelligence"

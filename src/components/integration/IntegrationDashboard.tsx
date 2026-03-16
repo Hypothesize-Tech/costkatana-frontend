@@ -28,6 +28,7 @@ import { analyticsService } from "../../services/analytics.service";
 import { IntegrationShimmer } from "../shimmer/IntegrationShimmer";
 import { ApiKeyIntegration } from "./ApiKeyIntegration";
 import { ProjectIdGuide } from "./ProjectIdGuide";
+import { Modal } from "../common/Modal";
 import { formatCurrency } from "../../utils/formatters";
 
 interface IntegrationDashboardProps {
@@ -102,6 +103,24 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
     totalProjects: projects?.length || 0,
     recentActivity: recentUsage || [],
   };
+
+  // Derive totals with fallbacks: analytics may be empty; use project data when available
+  const totalSpent =
+    (analytics?.summary?.totalCost ?? 0) > 0
+      ? (analytics?.summary?.totalCost ?? 0)
+      : (projects ?? []).reduce(
+          (sum, p) => sum + (p.spending?.current ?? 0),
+          0,
+        );
+
+  const totalApiCalls =
+    (analytics?.summary?.totalRequests ?? analytics?.summary?.totalCalls ?? 0) >
+    0
+      ? (analytics?.summary?.totalRequests ?? analytics?.summary?.totalCalls ?? 0)
+      : (projects ?? []).reduce(
+          (sum, p) => sum + (p.usage?.totalRequests ?? 0),
+          0,
+        );
 
   const getIntegrationHealth = () => {
     const score =
@@ -265,16 +284,16 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
               </div>
               <div className="glass rounded-lg border border-green-200/30 dark:border-green-500/20 shadow-lg backdrop-blur-xl p-3 bg-gradient-to-br from-green-50/50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/20 text-center hover:scale-105 transition-transform duration-300 [touch-action:manipulation] sm:p-4 sm:rounded-xl md:p-6">
                 <div className="mb-1 text-xl font-bold text-green-600 sm:text-2xl md:text-3xl font-display dark:text-green-400 sm:mb-1.5 md:mb-2 break-words">
-                  {integrationStatus.projectsWithUsage}
+                  {integrationStatus.totalProjects}
                 </div>
                 <div className="flex gap-1 justify-center items-center text-[10px] font-semibold sm:text-xs md:text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">
                   <BoltIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:h-4 md:w-4 flex-shrink-0" />
-                  <span className="truncate">Active Projects</span>
+                  <span className="truncate">Total Projects</span>
                 </div>
               </div>
               <div className="glass rounded-lg border border-gray-200/30 dark:border-gray-500/20 shadow-lg backdrop-blur-xl p-3 bg-gradient-to-br from-gray-50/50 to-gray-100/50 dark:from-gray-900/20 dark:to-gray-800/20 text-center hover:scale-105 transition-transform duration-300 [touch-action:manipulation] sm:p-4 sm:rounded-xl md:p-6">
                 <div className="mb-1 text-xl font-bold text-gray-700 sm:text-2xl md:text-3xl font-display dark:text-gray-300 sm:mb-1.5 md:mb-2 break-words">
-                  {analytics?.summary?.totalRequests || 0}
+                  {totalApiCalls}
                 </div>
                 <div className="flex gap-1 justify-center items-center text-[10px] font-semibold sm:text-xs md:text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">
                   <BoltIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:h-4 md:w-4 flex-shrink-0" />
@@ -283,7 +302,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
               </div>
               <div className="glass rounded-lg border border-yellow-200/30 dark:border-yellow-500/20 shadow-lg backdrop-blur-xl p-3 bg-gradient-to-br from-yellow-50/50 to-yellow-100/50 dark:from-yellow-900/20 dark:to-yellow-800/20 text-center hover:scale-105 transition-transform duration-300 [touch-action:manipulation] sm:p-4 sm:rounded-xl md:p-6">
                 <div className="mb-1 text-lg font-bold text-yellow-700 sm:text-xl md:text-2xl lg:text-3xl font-display dark:text-yellow-300 sm:mb-1.5 md:mb-2 break-words">
-                  {formatCurrency(analytics?.summary?.totalCost || 0)}
+                  {formatCurrency(totalSpent)}
                 </div>
                 <div className="flex gap-1 justify-center items-center text-[10px] font-semibold sm:text-xs md:text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">
                   <BanknotesIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:h-4 md:w-4 flex-shrink-0" />
@@ -538,105 +557,89 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       )}
 
       {/* Activity Detail Modal */}
-      {selectedActivity && (
-        <div className="flex fixed inset-0 z-50 justify-center items-center p-2 backdrop-blur-sm bg-black/50 sm:p-3 md:p-4">
-          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-white/95 to-white/90 dark:from-dark-card/95 dark:to-dark-card/90 max-w-2xl w-full max-h-[90vh] sm:max-h-[85vh] md:max-h-[80vh] overflow-y-auto animate-scale-in sm:rounded-2xl m-2 sm:m-0">
-            <div className="p-3 sm:p-4 md:p-6 lg:p-8">
-              <div className="flex gap-2 justify-between items-start mb-3 sm:gap-3 sm:mb-4 md:gap-4 md:mb-6">
-                <div className="flex flex-1 gap-1.5 items-center min-w-0 sm:gap-2 md:gap-3">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 flex items-center justify-center shadow-lg flex-shrink-0 sm:rounded-xl">
-                    <EyeIcon className="w-3.5 h-3.5 text-white sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                  </div>
-                  <h3 className="flex gap-1.5 items-center text-base font-bold truncate sm:text-lg sm:gap-2 md:text-xl lg:text-2xl font-display gradient-text-primary">
-                    <EyeIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-6 lg:w-6 text-[#06ec9e] dark:text-emerald-400 flex-shrink-0 hidden sm:block" />
-                    <span className="truncate">Activity Details</span>
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setSelectedActivity(null)}
-                  className="btn btn-ghost p-2 min-h-[36px] min-w-[36px] flex items-center justify-center flex-shrink-0 [touch-action:manipulation] sm:min-h-[32px] sm:min-w-[32px]"
-                >
-                  <span className="text-base sm:text-lg md:text-xl">✕</span>
-                </button>
+      <Modal
+        isOpen={!!selectedActivity}
+        onClose={() => setSelectedActivity(null)}
+        title="Activity Details"
+        maxWidth="2xl"
+        closeOnBackdropClick={true}
+      >
+        {selectedActivity && (
+          <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <span
+                className={`px-2 py-1 text-[10px] font-medium rounded-full sm:text-xs ${getServiceColor(selectedActivity.service)}`}
+              >
+                {selectedActivity.service}
+              </span>
+              <span className="px-2 py-1 text-[10px] text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-200 sm:text-xs">
+                {selectedActivity.model}
+              </span>
+            </div>
+
+            <div>
+              <label className="block mb-1.5 text-[10px] font-medium sm:mb-2 sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary">
+                Prompt
+              </label>
+              <div className="p-2.5 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50 sm:p-3 sm:rounded-xl">
+                <pre className="overflow-x-auto text-[10px] whitespace-pre-wrap sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary break-words">
+                  {selectedActivity.prompt}
+                </pre>
               </div>
+            </div>
 
-              <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                  <span
-                    className={`px-2 py-1 text-[10px] font-medium rounded-full sm:text-xs ${getServiceColor(selectedActivity.service)}`}
-                  >
-                    {selectedActivity.service}
-                  </span>
-                  <span className="px-2 py-1 text-[10px] text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-200 sm:text-xs">
-                    {selectedActivity.model}
-                  </span>
+            {selectedActivity.completion && (
+              <div>
+                <label className="block mb-1.5 text-[10px] font-medium sm:mb-2 sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary">
+                  Response
+                </label>
+                <div className="p-2.5 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50 sm:p-3 sm:rounded-xl">
+                  <pre className="overflow-x-auto text-[10px] whitespace-pre-wrap sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary break-words">
+                    {selectedActivity.completion}
+                  </pre>
                 </div>
+              </div>
+            )}
 
-                <div>
-                  <label className="block mb-1.5 text-[10px] font-medium sm:mb-2 sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary">
-                    Prompt
-                  </label>
-                  <div className="p-2.5 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50 sm:p-3 sm:rounded-xl">
-                    <pre className="overflow-x-auto text-[10px] whitespace-pre-wrap sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary break-words">
-                      {selectedActivity.prompt}
-                    </pre>
-                  </div>
+            <div className="grid grid-cols-1 gap-2.5 text-[10px] sm:grid-cols-3 sm:gap-3 sm:text-xs md:gap-4 md:text-sm">
+              <div>
+                <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                  Cost:
+                </span>
+                <div className="font-medium text-light-text-primary dark:text-dark-text-primary break-words">
+                  {formatCurrency(selectedActivity.cost || 0)}
                 </div>
-
-                {selectedActivity.completion && (
-                  <div>
-                    <label className="block mb-1.5 text-[10px] font-medium sm:mb-2 sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary">
-                      Response
-                    </label>
-                    <div className="p-2.5 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50 sm:p-3 sm:rounded-xl">
-                      <pre className="overflow-x-auto text-[10px] whitespace-pre-wrap sm:text-xs md:text-sm text-light-text-primary dark:text-dark-text-primary break-words">
-                        {selectedActivity.completion}
-                      </pre>
-                    </div>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 gap-2.5 text-[10px] sm:grid-cols-3 sm:gap-3 sm:text-xs md:gap-4 md:text-sm">
-                  <div>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary">
-                      Cost:
-                    </span>
-                    <div className="font-medium text-light-text-primary dark:text-dark-text-primary break-words">
-                      {formatCurrency(selectedActivity.cost || 0)}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary">
-                      Tokens:
-                    </span>
-                    <div className="font-medium text-light-text-primary dark:text-dark-text-primary break-words">
-                      {selectedActivity.totalTokens
-                        ? selectedActivity.totalTokens.toLocaleString()
-                        : selectedActivity.promptTokens &&
-                          selectedActivity.completionTokens
-                          ? (
-                            selectedActivity.promptTokens +
-                            selectedActivity.completionTokens
-                          ).toLocaleString()
-                          : "N/A"}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary">
-                      Time:
-                    </span>
-                    <div className="font-medium text-light-text-primary dark:text-dark-text-primary break-words text-[9px] sm:text-[10px] md:text-xs">
-                      {selectedActivity.createdAt
-                        ? new Date(selectedActivity.createdAt).toLocaleString()
-                        : "N/A"}
-                    </div>
-                  </div>
+              </div>
+              <div>
+                <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                  Tokens:
+                </span>
+                <div className="font-medium text-light-text-primary dark:text-dark-text-primary break-words">
+                  {selectedActivity.totalTokens
+                    ? selectedActivity.totalTokens.toLocaleString()
+                    : selectedActivity.promptTokens &&
+                      selectedActivity.completionTokens
+                      ? (
+                        selectedActivity.promptTokens +
+                        selectedActivity.completionTokens
+                      ).toLocaleString()
+                      : "N/A"}
+                </div>
+              </div>
+              <div>
+                <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                  Time:
+                </span>
+                <div className="font-medium text-light-text-primary dark:text-dark-text-primary break-words text-[9px] sm:text-[10px] md:text-xs">
+                  {selectedActivity.createdAt
+                    ? new Date(selectedActivity.createdAt).toLocaleString()
+                    : "N/A"}
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
 
       {/* Integration Modal */}
       <ApiKeyIntegration

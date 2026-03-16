@@ -17,6 +17,7 @@ export interface ModelComparisonResult {
   provider: string;
   model: string;
   response: string;
+  bedrockOutput?: string;
   metrics: {
     cost: number;
     latency: number;
@@ -36,7 +37,21 @@ export interface ModelComparisonResult {
     outputCost: number;
     totalCost: number;
   };
-  qualityMetrics: {
+  actualCost?: number;
+  executionTime?: number;
+  aiEvaluation?: {
+    model?: string;
+    overallScore?: number;
+    overall_score?: number;
+    criteriaScores?: Record<string, number>;
+    criteria_scores?: Record<string, number>;
+    criterion_scores?: Record<string, number>;
+    reasoning?: string | Record<string, unknown>;
+    recommendation?: string;
+    strengths?: string[];
+    weaknesses?: string[];
+  };
+  qualityMetrics?: {
     accuracy: number;
     relevance: number;
     completeness: number;

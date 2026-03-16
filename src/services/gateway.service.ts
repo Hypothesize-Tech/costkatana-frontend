@@ -25,15 +25,18 @@ export interface GatewayAnalytics {
     summary: {
         totalRequests: number;
         totalCost: number;
+        totalTokens?: number;
         cacheHitRate: number;
         averageLatency: number;
         errorRate: number;
         cost_savings: number;
+        averageCostPerRequest?: number;
     };
     timeline: Array<{
         date: string;
         requests: number;
         cost: number;
+        tokens?: number;
         cacheHits: number;
         cacheMisses: number;
         errors: number;
@@ -60,6 +63,19 @@ export interface GatewayAnalytics {
         cost: number;
         percentage: number;
     }>;
+    projectBreakdown?: Array<{
+        projectId: string | null;
+        projectName: string;
+        totalCost: number;
+        totalTokens: number;
+        totalRequests: number;
+    }>;
+    modelBreakdown?: Array<{
+        model: string;
+        totalCost: number;
+        totalTokens: number;
+        totalRequests: number;
+    }>;
     cacheMetrics: {
         hitRate: number;
         missRate: number;
@@ -74,6 +90,11 @@ export interface GatewayAnalytics {
         total: number;
         percentage: number;
     }>;
+    trends?: {
+        costTrend: string;
+        tokenTrend: string;
+        insights: string[];
+    };
 }
 
 export class GatewayService {
@@ -235,39 +256,53 @@ export class GatewayService {
             }
         ];
         
-        // Timeline data
+        // Timeline data (preserve all API fields)
         const timelineData = timeline.map((item: any) => ({
-            date: item.date,
-            requests: item.calls || 0,
-            cost: item.cost || 0,
-            cacheHits: 0, // Not available in current data
-            cacheMisses: 0, // Not available in current data
-            errors: 0, // Not available in current data
-            averageLatency: 0 // Not available in current data
+            date: typeof item.date === 'string' ? item.date : item.date?.toISOString?.() ?? '',
+            requests: item.calls ?? item.requests ?? 0,
+            cost: item.cost ?? 0,
+            tokens: item.tokens ?? 0,
+            cacheHits: 0, // Not available in current analytics API
+            cacheMisses: 0,
+            errors: 0,
+            averageLatency: 0
         }));
         
-        // Top properties (from project breakdown)
+        // Top properties (from project breakdown) + model breakdown as additional context
         const topProperties = projectBreakdown.map((project: any) => ({
             property: 'Project',
-            value: project.projectName || project.projectId,
+            value: project.projectName || project.projectId || 'Unassigned',
             count: project.totalRequests || 0,
             cost: project.totalCost || 0,
             percentage: totalRequests > 0 ? ((project.totalRequests || 0) / totalRequests) * 100 : 0
         }));
+        // Add model breakdown to topProperties for "Most Used Models" display
+        const modelEntries = (breakdown.models || []).map((m: any) => ({
+            property: 'Model',
+            value: m.model || 'unknown',
+            count: m.totalRequests || 0,
+            cost: m.totalCost || 0,
+            percentage: totalRequests > 0 ? ((m.totalRequests || 0) / totalRequests) * 100 : 0
+        }));
+        const allTopProperties = [...topProperties, ...modelEntries].sort((a, b) => (b.cost || 0) - (a.cost || 0));
         
         return {
             summary: {
                 totalRequests,
                 totalCost,
+                totalTokens: summary.totalTokens ?? 0,
                 cacheHitRate,
                 averageLatency,
                 errorRate,
-                cost_savings: 0 // We'll need to calculate this from actual cache data
+                cost_savings: 0, // We'll need to calculate this from actual cache data
+                averageCostPerRequest: summary.averageCostPerRequest ?? (totalRequests > 0 ? totalCost / totalRequests : 0)
             },
             timeline: timelineData,
             providerBreakdown,
             featuresUsage,
-            topProperties,
+            topProperties: allTopProperties,
+            projectBreakdown,
+            modelBreakdown: breakdown.models || [],
             cacheMetrics: {
                 hitRate: cacheHitRate,
                 missRate: 100 - cacheHitRate,
@@ -275,12 +310,13 @@ export class GatewayService {
                 totalMisses: 0,
                 savingsFromCache: 0
             },
+            trends: data.trends ?? { costTrend: 'stable', tokenTrend: 'stable', insights: [] },
             budgetUtilization: projectBreakdown.map((project: any) => ({
-                budgetId: project.projectId,
-                budgetName: project.projectName || project.projectId,
+                budgetId: project.projectId || 'unassigned',
+                budgetName: project.projectName || project.projectId || 'Unassigned',
                 utilized: project.totalCost || 0,
                 total: 0, // We'll need to get this from project data
-                percentage: 0 // We'll need to calculate this
+                percentage: totalRequests > 0 && totalCost > 0 ? ((project.totalCost || 0) / totalCost) * 100 : 0
             }))
         };
     }
@@ -299,6 +335,7 @@ export class GatewayService {
                 cost_savings: 0
             },
             timeline: [],
+            trends: { costTrend: 'stable', tokenTrend: 'stable', insights: [] },
             providerBreakdown: [],
             featuresUsage: [
                 { feature: 'Caching', count: 0, percentage: 0, cost_impact: 0 },

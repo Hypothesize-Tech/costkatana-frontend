@@ -259,9 +259,12 @@ class AWSService {
     return response.data;
   }
 
-  async listConnections(): Promise<{ connections: AWSConnection[] }> {
-    const response = await api.get(`${this.baseUrl}/connections`);
-    return response.data;
+  async listConnections(skipCache = false): Promise<{ connections: AWSConnection[] }> {
+    const config = skipCache ? { params: { _t: Date.now() } } : {};
+    const response = await api.get(`${this.baseUrl}/connections`, config);
+    const data = response.data?.data ?? response.data;
+    const connections = Array.isArray(data?.connections) ? data.connections : (Array.isArray(data) ? data : []);
+    return { connections };
   }
 
   async deleteConnection(id: string): Promise<void> {

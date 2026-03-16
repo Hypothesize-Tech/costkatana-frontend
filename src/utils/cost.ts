@@ -131,6 +131,8 @@ export function calculateCost(
       pricing = PRICING_DATA.find((p) => p.model === "grok-2-1212us-east-1");
     } else if (model.toLowerCase().includes("claude-3-opus")) {
       pricing = PRICING_DATA.find((p) => p.model === "claude-opus-4-20250514");
+    } else if (model.toLowerCase().includes("claude-sonnet-4-6")) {
+      pricing = PRICING_DATA.find((p) => p.model === "claude-sonnet-4-6");
     } else if (model.toLowerCase().includes("claude-3-sonnet")) {
       pricing = PRICING_DATA.find(
         (p) => p.model === "claude-sonnet-4-20250514",

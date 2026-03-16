@@ -59,8 +59,9 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
         try {
             setLoading(true);
             const connections = await googleService.listConnections();
-            if (connections.length > 0) {
-                setConnection(connections[0]);
+            const list = Array.isArray(connections) ? connections : [];
+            if (list.length > 0) {
+                setConnection(list[0]);
             }
         } catch (error) {
             console.error('Failed to load Google connection:', error);

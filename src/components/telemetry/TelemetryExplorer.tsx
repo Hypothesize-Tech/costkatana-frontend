@@ -14,8 +14,8 @@ export const TelemetryExplorer: React.FC = () => {
         staleTime: 10000,
     });
 
-    const records = data?.data || [];
-    const pagination = data?.pagination || { page: 1, total_pages: 1, total: 0 } as any;
+    const records = Array.isArray(data?.data) ? data.data : [];
+    const pagination = data?.pagination ?? { page: 1, total_pages: 1, total: 0, limit: 20 };
 
     const setFilter = (patch: Partial<TelemetryQueryParams>) => setFilters(prev => ({ ...prev, ...patch, page: 1 }));
 

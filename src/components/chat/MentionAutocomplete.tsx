@@ -76,12 +76,9 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
 
     const loadIntegrations = async () => {
         try {
-            // Also try without filter to see all integrations
             const response = await integrationService.getIntegrations();
-
-            if (response.success && response.data) {
-                setIntegrations(response.data);
-            }
+            const data = response?.data ?? (response as { integrations?: Integration[] })?.integrations;
+            setIntegrations(Array.isArray(data) ? data : []);
         } catch (error) {
             // Silently fail - integrations will just be empty
         }
@@ -90,7 +87,8 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const loadGoogleConnections = async () => {
         try {
             const connections = await googleService.listConnections();
-            setGoogleConnections(connections.filter(c => c.isActive));
+            const list = Array.isArray(connections) ? connections : [];
+            setGoogleConnections(list.filter(c => c?.isActive));
         } catch (error) {
             // Silently fail - Google connections will just be empty
         }
@@ -99,7 +97,8 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const loadVercelConnection = async () => {
         try {
             const connections = await vercelService.listConnections();
-            setVercelConnected(connections.length > 0 && connections[0].isActive);
+            const list = Array.isArray(connections) ? connections : [];
+            setVercelConnected(list.length > 0 && !!list[0]?.isActive);
         } catch (error) {
             // Silently fail - Vercel connection will just be false
         }
@@ -108,7 +107,8 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const loadGitHubConnection = async () => {
         try {
             const connections = await githubService.listConnections();
-            setGithubConnected(connections.length > 0 && connections.some((c: any) => c.isActive));
+            const list = Array.isArray(connections) ? connections : [];
+            setGithubConnected(list.length > 0 && list.some((c) => c?.isActive));
         } catch (error) {
             // Silently fail - GitHub connection will just be false
         }
@@ -117,7 +117,8 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const loadAWSConnection = async () => {
         try {
             const result = await awsService.listConnections();
-            setAwsConnected(result.connections && result.connections.some(c => c.status === 'active'));
+            const connections = result?.connections ?? [];
+            setAwsConnected(Array.isArray(connections) && connections.some(c => c?.status === 'active'));
         } catch (error) {
             // Silently fail - AWS connection will just be false
         }
@@ -126,7 +127,8 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const loadMongoDBConnection = async () => {
         try {
             const connections = await mongodbService.listConnections();
-            setMongodbConnected(connections.length > 0 && connections.some(c => c.isActive));
+            const list = Array.isArray(connections) ? connections : [];
+            setMongodbConnected(list.length > 0 && list.some(c => c?.isActive));
         } catch (error) {
             // Silently fail - MongoDB connection will just be false
         }

@@ -14,28 +14,33 @@ export class PromptTemplateService {
   private static baseUrl = "/prompt-templates";
 
   // Get all templates for the current user
+  // Backend returns { success, templates, total, page, limit }
   static async getTemplates(
     filters?: TemplateSearchFilters,
   ): Promise<PromptTemplate[]> {
     const response = await apiClient.get(this.baseUrl, { params: filters });
-    return response.data.data;
+    const templates = response.data.templates ?? response.data.data;
+    return Array.isArray(templates) ? templates : [];
   }
 
   // Get a specific template by ID
+  // Backend returns { success, template }
   static async getTemplate(templateId: string): Promise<PromptTemplate> {
     const response = await apiClient.get(`${this.baseUrl}/${templateId}`);
-    return response.data.data;
+    return response.data.template ?? response.data.data;
   }
 
   // Create a new template
+  // Backend returns { success, template }
   static async createTemplate(
     templateData: CreateTemplateRequest,
   ): Promise<PromptTemplate> {
     const response = await apiClient.post(this.baseUrl, templateData);
-    return response.data.data;
+    return response.data.template ?? response.data.data;
   }
 
   // Update an existing template
+  // Backend returns { success, template }
   static async updateTemplate(
     templateId: string,
     updates: UpdateTemplateRequest,
@@ -44,7 +49,7 @@ export class PromptTemplateService {
       `${this.baseUrl}/${templateId}`,
       updates,
     );
-    return response.data.data;
+    return response.data.template ?? response.data.data;
   }
 
   // Delete a template
@@ -53,6 +58,7 @@ export class PromptTemplateService {
   }
 
   // Duplicate a template
+  // Backend returns { success, template }
   static async duplicateTemplate(
     templateId: string,
     customizations?: {
@@ -75,7 +81,7 @@ export class PromptTemplateService {
       `${this.baseUrl}/${templateId}/duplicate`,
       customizations || {},
     );
-    return response.data.data;
+    return response.data.template ?? response.data.data;
   }
 
   // Toggle favorite status
@@ -369,13 +375,15 @@ export class PromptTemplateService {
   }
 
   // Get trending templates
+  // Backend returns { success, templates }
   static async getTrendingTemplates(
     period: "day" | "week" | "month" = "week",
   ): Promise<PromptTemplate[]> {
     const response = await apiClient.get(`${this.baseUrl}/trending`, {
       params: { period },
     });
-    return response.data.data;
+    const templates = response.data.templates ?? response.data.data;
+    return Array.isArray(templates) ? templates : [];
   }
 
   // ============ AI-POWERED ENDPOINTS ============

@@ -26,7 +26,16 @@ export const ErrorMonitor: React.FC = () => {
         queryKey: ['telemetry-errors', 'recent'],
         queryFn: async () => {
             const response = await TelemetryAPI.getDashboard();
-            return response.dashboard.recent_errors;
+            const raw = response?.dashboard?.recent_errors ?? [];
+            return (Array.isArray(raw) ? raw : []).map((span: unknown) => {
+                const s = span as Record<string, unknown>;
+                return {
+                    trace_id: String(s.trace_id ?? s._id ?? ''),
+                    error_message: String(s.error_type ?? s.status_message ?? s.status ?? 'Error'),
+                    route: String(s.http_route ?? s.operation_name ?? ''),
+                    timestamp: s.start_time ? new Date(s.start_time as string | Date).toISOString() : new Date().toISOString(),
+                };
+            });
         },
         staleTime: 10000
     });
