@@ -83,7 +83,25 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
             const data = response.data;
 
             if (data.success) {
-                setEnrichmentStats(data.enrichment_stats);
+                const raw = data.enrichment_stats as Record<string, unknown> | undefined;
+                if (!raw) {
+                    setEnrichmentStats(null);
+                    return;
+                }
+                // Normalize Nest (totalSpans, enrichedSpans, coverage) and Express (total_spans, enriched_spans, enrichment_rate) shapes
+                const totalSpans = (raw.total_spans ?? raw.totalSpans ?? 0) as number;
+                const enrichedSpans = (raw.enriched_spans ?? raw.enrichedSpans ?? 0) as number;
+                const coverage = (raw.coverage ?? raw.enrichment_rate ?? 0) as number;
+                const enrichmentRate = typeof coverage === 'number'
+                    ? (coverage <= 1 ? coverage * 100 : coverage)
+                    : (totalSpans > 0 ? (enrichedSpans / totalSpans) * 100 : 0);
+                setEnrichmentStats({
+                    total_spans: totalSpans,
+                    enriched_spans: enrichedSpans,
+                    enrichment_rate: enrichmentRate,
+                    cache_hit_spans: (raw.cache_hit_spans ?? 0) as number,
+                    routing_decisions: (raw.routing_decisions ?? 0) as number,
+                });
             }
         } catch (error) {
             console.error('Failed to fetch enrichment stats:', error);
@@ -152,7 +170,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                         <div className="flex justify-between items-center mb-3 sm:mb-4">
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs sm:text-sm font-medium tracking-wide uppercase font-display gradient-text-primary">Total Spans</p>
-                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-primary truncate">{enrichmentStats.total_spans}</p>
+                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-primary truncate">{enrichmentStats.total_spans ?? 0}</p>
                             </div>
                             <div className="flex justify-center items-center w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl shadow-lg bg-gradient-primary glow-primary shrink-0 ml-2">
                                 <EyeIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -164,11 +182,11 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                         <div className="flex justify-between items-center mb-3 sm:mb-4">
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs sm:text-sm font-medium tracking-wide uppercase font-display gradient-text-success">Enriched</p>
-                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-success truncate">{enrichmentStats.enriched_spans}</p>
+                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-success truncate">{enrichmentStats.enriched_spans ?? 0}</p>
                             </div>
                             <div className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gradient-to-r rounded-full border shadow-lg backdrop-blur-xl glass border-success-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 shrink-0 ml-2">
                                 <span className="text-xs sm:text-sm font-semibold font-display text-success-700 dark:text-success-300">
-                                    {enrichmentStats.enrichment_rate.toFixed(1)}%
+                                    {(enrichmentStats.enrichment_rate ?? 0).toFixed(1)}%
                                 </span>
                             </div>
                         </div>
@@ -178,7 +196,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                         <div className="flex justify-between items-center mb-3 sm:mb-4">
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs sm:text-sm font-medium tracking-wide uppercase font-display gradient-text-secondary">Cache Hits</p>
-                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-secondary truncate">{enrichmentStats.cache_hit_spans}</p>
+                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-secondary truncate">{enrichmentStats.cache_hit_spans ?? 0}</p>
                             </div>
                             <div className="flex justify-center items-center w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl shadow-lg bg-gradient-secondary glow-secondary shrink-0 ml-2">
                                 <BoltIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -190,7 +208,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                         <div className="flex justify-between items-center mb-3 sm:mb-4">
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs sm:text-sm font-medium tracking-wide uppercase font-display gradient-text-accent">Routing Decisions</p>
-                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-accent truncate">{enrichmentStats.routing_decisions}</p>
+                                <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold font-display gradient-text-accent truncate">{enrichmentStats.routing_decisions ?? 0}</p>
                             </div>
                             <div className="flex justify-center items-center w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl shadow-lg bg-gradient-accent glow-accent shrink-0 ml-2">
                                 <AdjustmentsHorizontalIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />

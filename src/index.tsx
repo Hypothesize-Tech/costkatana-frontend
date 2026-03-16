@@ -7,6 +7,16 @@ import { Toaster } from "react-hot-toast";
 import App from "./App";
 import "./styles/global.css";
 
+// Unregister orphaned service workers (fixes "Failed to fetch" from cached sw.js)
+// Common when switching between projects (e.g. docs vs frontend) on same port
+if ("serviceWorker" in navigator && import.meta.env.DEV) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => {
+      registration.unregister().catch(() => {});
+    });
+  });
+}
+
 // Initialize Sentry as early as possible
 import { initializeSentryReact } from "./config/sentry";
 initializeSentryReact();

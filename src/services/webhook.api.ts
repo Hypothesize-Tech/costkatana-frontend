@@ -1,5 +1,11 @@
 import { apiClient } from '../config/api';
-import {  WebhookEvent, WebhookFormData, WebhookQueueStats } from '../types/webhook.types';
+import { WebhookEvent, WebhookFormData, WebhookQueueStats } from '../types/webhook.types';
+
+/** Cache-busting config for webhook endpoints - prevents stale 304 responses */
+const NO_CACHE_HEADERS = {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    Pragma: 'no-cache',
+};
 
 export const webhookApi = {
     // Get all webhooks
@@ -12,7 +18,9 @@ export const webhookApi = {
             filters.events.forEach(event => params.append('events', event));
         }
         
-        const response = await apiClient.get(`/webhooks${params.toString() ? `?${params}` : ''}`);
+        const response = await apiClient.get(`/webhooks${params.toString() ? `?${params}` : ''}`, {
+            headers: NO_CACHE_HEADERS,
+        });
         return response.data;
     },
 
@@ -92,7 +100,9 @@ export const webhookApi = {
 
     // Get queue statistics
     async getQueueStats(): Promise<{ queue: WebhookQueueStats }> {
-        const response = await apiClient.get('/webhooks/queue/stats');
+        const response = await apiClient.get('/webhooks/queue/stats', {
+            headers: NO_CACHE_HEADERS,
+        });
         return response.data;
     }
 };

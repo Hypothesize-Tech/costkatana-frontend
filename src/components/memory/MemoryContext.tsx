@@ -38,7 +38,7 @@ export const MemoryProvider: React.FC<MemoryProviderProps> = ({ children }) => {
     const [error, setError] = useState<string | null>(null);
 
     const refreshMemory = async () => {
-        if (!user) return;
+        if (!user?.id) return;
 
         try {
             setIsLoading(true);
@@ -61,7 +61,7 @@ export const MemoryProvider: React.FC<MemoryProviderProps> = ({ children }) => {
     };
 
     const getRecommendationsForQuery = async (query: string): Promise<string[]> => {
-        if (!user) return [];
+        if (!user?.id) return [];
 
         try {
             const recommendations = await MemoryService.getPersonalizedRecommendations(user.id, query);
@@ -74,7 +74,7 @@ export const MemoryProvider: React.FC<MemoryProviderProps> = ({ children }) => {
     };
 
     const updatePreferences = async (updates: Partial<UserPreference>) => {
-        if (!user) return;
+        if (!user?.id) return;
 
         try {
             const updatedPreferences = await MemoryService.updateUserPreferences(user.id, updates);
@@ -91,7 +91,7 @@ export const MemoryProvider: React.FC<MemoryProviderProps> = ({ children }) => {
 
     // Load memory data when user changes
     useEffect(() => {
-        if (user) {
+        if (user?.id) {
             refreshMemory();
         } else {
             // Clear memory data when user logs out

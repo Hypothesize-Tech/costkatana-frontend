@@ -69,10 +69,13 @@ class GitHubService {
 
     /**
      * List user's GitHub connections
+     * @param skipCache - When true, adds cache-busting param for fresh data (e.g. after disconnect)
      */
-    async listConnections(): Promise<GitHubConnection[]> {
-        const response = await api.get('/github/connections');
-        return response.data.data;
+    async listConnections(skipCache = false): Promise<GitHubConnection[]> {
+        const config = skipCache ? { params: { _t: Date.now() } } : {};
+        const response = await api.get('/github/connections', config);
+        const data = response.data?.data ?? response.data?.connections;
+        return Array.isArray(data) ? data : [];
     }
 
     /**
@@ -111,12 +114,16 @@ class GitHubService {
 
     /**
      * List user's integrations
+     * @param skipCache - When true, adds cache-busting param for fresh data (e.g. after disconnect)
      */
-    async listIntegrations(status?: string, limit?: number): Promise<Integration[]> {
-        const response = await api.get('/github/integrations', {
-            params: { status, limit }
-        });
-        return response.data.data;
+    async listIntegrations(status?: string, limit?: number, skipCache = false): Promise<Integration[]> {
+        const params: Record<string, string | number> = {};
+        if (status != null) params.status = status;
+        if (limit != null) params.limit = limit;
+        if (skipCache) params._t = Date.now();
+        const response = await api.get('/github/integrations', { params });
+        const data = response.data?.data ?? response.data?.integrations;
+        return Array.isArray(data) ? data : [];
     }
 
     /**

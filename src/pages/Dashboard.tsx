@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ChartBarIcon,
@@ -16,7 +16,14 @@ import {
   FolderIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
-import { ConversationalAgent } from "../components/chat/ConversationalAgent";
+import { ChatErrorBoundary } from "../components/chat/ChatErrorBoundary";
+
+const ConversationalAgent = lazy(
+  () =>
+    import("../components/chat/ConversationalAgent").then((m) => ({
+      default: m.ConversationalAgent,
+    })),
+);
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { CostChart } from "../components/dashboard/CostChart";
 import { ServiceBreakdown } from "../components/dashboard/ServiceBreakdown";
@@ -61,6 +68,7 @@ export const Dashboard: React.FC = () => {
   );
   const [dashboardPanelCollapsed, setDashboardPanelCollapsed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [chatRetryKey, setChatRetryKey] = useState(0);
 
   const { showNotification } = useNotification();
   const {
@@ -739,7 +747,20 @@ export const Dashboard: React.FC = () => {
         >
           <div className="h-[calc(100vh-4.5rem)] sm:h-[calc(100vh-5rem)] p-2 sm:p-3 md:p-4 lg:p-6">
             <div className="overflow-hidden h-full bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass sm:rounded-2xl border-primary-200/30 from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
-              <ConversationalAgent />
+              <ChatErrorBoundary
+                key={chatRetryKey}
+                onReset={() => setChatRetryKey((k) => k + 1)}
+              >
+                <Suspense
+                  fallback={
+                    <div className="flex h-full min-h-[300px] items-center justify-center">
+                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+                    </div>
+                  }
+                >
+                  <ConversationalAgent />
+                </Suspense>
+              </ChatErrorBoundary>
             </div>
           </div>
         </div>

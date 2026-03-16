@@ -22,7 +22,7 @@ import { OptimizationDetailsModal } from "../components/optimization/Optimizatio
 import { VisualComplianceTab } from "../components/optimization/VisualComplianceTab";
 import { VisualComplianceBatch } from "../components/optimization/VisualComplianceBatch";
 import { VisualComplianceDashboard } from "../components/optimization/VisualComplianceDashboard";
-import { formatCurrency, formatSmartNumber } from "../utils/formatters";
+import { formatCurrency, formatSmartNumber, formatModelName } from "../utils/formatters";
 import { useNotifications } from "../contexts/NotificationContext";
 import { processFormattedText } from "../utils/codeFormatter";
 import "../styles/codeBlocks.css";
@@ -608,19 +608,19 @@ export const Optimization: React.FC = () => {
                       <div className="p-1.5 text-center rounded-lg bg-white/50 dark:bg-black/20 sm:p-2">
                         <div className="mb-0.5 text-[10px] font-body text-secondary-600 dark:text-secondary-300 sm:text-xs">Encoder</div>
                         <div className="text-[10px] font-medium truncate font-display text-secondary-900 dark:text-white sm:text-xs">
-                          {getAllOptimizations()[0].metadata.cortex.cortexModel.encoder?.split('.')[1] || 'N/A'}
+                          {formatModelName(getAllOptimizations()[0].metadata.cortex.cortexModel.encoder) || 'N/A'}
                         </div>
                       </div>
                       <div className="p-1.5 text-center rounded-lg bg-white/50 dark:bg-black/20 sm:p-2">
                         <div className="mb-0.5 text-[10px] font-body text-secondary-600 dark:text-secondary-300 sm:text-xs">Processor/Core</div>
                         <div className="text-[10px] font-medium truncate font-display text-secondary-900 dark:text-white sm:text-xs">
-                          {(getAllOptimizations()[0].metadata.cortex.cortexModel.core || getAllOptimizations()[0].metadata.cortex.cortexModel.processor)?.split('.')[1] || 'N/A'}
+                          {formatModelName(getAllOptimizations()[0].metadata.cortex.cortexModel.core || getAllOptimizations()[0].metadata.cortex.cortexModel.processor) || 'N/A'}
                         </div>
                       </div>
                       <div className="p-1.5 text-center rounded-lg bg-white/50 dark:bg-black/20 sm:p-2">
                         <div className="mb-0.5 text-[10px] font-body text-secondary-600 dark:text-secondary-300 sm:text-xs">Decoder</div>
                         <div className="text-[10px] font-medium truncate font-display text-secondary-900 dark:text-white sm:text-xs">
-                          {getAllOptimizations()[0].metadata.cortex.cortexModel.decoder?.split('.')[1] || 'N/A'}
+                          {formatModelName(getAllOptimizations()[0].metadata.cortex.cortexModel.decoder) || 'N/A'}
                         </div>
                       </div>
                     </div>

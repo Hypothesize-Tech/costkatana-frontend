@@ -99,6 +99,9 @@ export class MemoryService {
      * Get user preferences
      */
     static async getUserPreferences(userId: string): Promise<{ preferences: UserPreference; summary: string; hasPreferences: boolean }> {
+        if (!userId) {
+            throw new Error('User ID is required to fetch preferences');
+        }
         try {
             const response = await apiClient.get(`${this.baseUrl}/${userId}/preferences`);
             return response.data.data;

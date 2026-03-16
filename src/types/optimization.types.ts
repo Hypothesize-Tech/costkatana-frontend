@@ -54,6 +54,8 @@ export interface Optimization {
   costSaved: number;
   savings?: number; // Alternative field name for costSaved
   improvementPercentage: number;
+  /** True when tokens/cost increased (Cortex answer mode); use for "Token Increase" / "Cost Increase" labels */
+  isIncrease?: boolean;
   service: string;
   model: string;
   category: OptimizationCategory;
@@ -95,6 +97,8 @@ export interface Optimization {
       actualCostWithCortex: number;
       costSavings: number;
       savingsPercentage: number;
+      isAdjusted?: boolean;
+      minimalFee?: number;
     };
     justification?: {
       optimizationTechniques: string[];
@@ -172,6 +176,8 @@ export interface OptimizationRequest {
     preserveIntent?: boolean;
     suggestAlternatives?: boolean;
   };
+  /** Optional client-side network/performance data to merge with server-captured requestTracking */
+  requestTracking?: Partial<OptimizationRequestTracking>;
 }
 
 export interface OptimizationOpportunity {

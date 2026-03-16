@@ -115,10 +115,13 @@ class VercelService {
 
     /**
      * List user's Vercel connections
+     * @param skipCache - When true, adds cache-busting param to ensure fresh data (e.g. after disconnect)
      */
-    async listConnections(): Promise<VercelConnection[]> {
-        const response = await api.get('/vercel/connections');
-        return response.data.data;
+    async listConnections(skipCache = false): Promise<VercelConnection[]> {
+        const config = skipCache ? { params: { _t: Date.now() } } : {};
+        const response = await api.get('/vercel/connections', config);
+        const data = response.data?.data ?? response.data?.connections;
+        return Array.isArray(data) ? data : [];
     }
 
     /**
@@ -273,19 +276,28 @@ class VercelService {
                 }
 
                 // Poll for popup closure
-                const checkPopup = setInterval(() => {
+                const checkPopup = setInterval(async () => {
                     if (popup.closed) {
                         clearInterval(checkPopup);
-                        // Check for new connection
-                        this.listConnections().then(connections => {
-                            if (connections.length > 0) {
-                                resolve({ connectionId: connections[0]._id });
-                            } else {
+                        // Allow redirect/callback to complete; retry a few times (backend may need a moment)
+                        const checkWithRetry = async (attempt = 0, maxAttempts = 4): Promise<void> => {
+                            try {
+                                const connections = await this.listConnections(true);
+                                if (connections.length > 0) {
+                                    resolve({ connectionId: connections[0]._id });
+                                    return;
+                                }
+                                if (attempt < maxAttempts - 1) {
+                                    await new Promise(r => setTimeout(r, 800));
+                                    return checkWithRetry(attempt + 1, maxAttempts);
+                                }
+                                resolve(null);
+                            } catch {
                                 resolve(null);
                             }
-                        }).catch(() => {
-                            resolve(null);
-                        });
+                        };
+                        await new Promise(r => setTimeout(r, 500));
+                        await checkWithRetry();
                     }
                 }, 500);
 

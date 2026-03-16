@@ -24,10 +24,12 @@ export interface MongoDBContext {
 }
 
 class MongoDBService {
-    async listConnections(): Promise<MongoDBConnection[]> {
+    async listConnections(skipCache = false): Promise<MongoDBConnection[]> {
         try {
-            const response = await apiClient.get('/mcp/mongodb/connections');
-            return response.data.data || [];
+            const config = skipCache ? { params: { _t: Date.now() } } : {};
+            const response = await apiClient.get('/mcp/mongodb/connections', config);
+            const data = response.data?.data ?? response.data?.connections;
+            return Array.isArray(data) ? data : [];
         } catch (error) {
             console.error('Failed to fetch MongoDB connections:', error);
             throw error;
@@ -37,7 +39,9 @@ class MongoDBService {
     async getConnection(connectionId: string): Promise<MongoDBConnection> {
         try {
             const response = await apiClient.get(`/mcp/mongodb/connections/${connectionId}`);
-            return response.data.data;
+            const data = response.data?.data ?? response.data?.connection ?? response.data;
+            if (!data || typeof data !== 'object') throw new Error('Invalid connection response');
+            return data as MongoDBConnection;
         } catch (error) {
             console.error('Failed to fetch MongoDB connection:', error);
             throw error;

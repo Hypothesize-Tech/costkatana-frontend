@@ -111,7 +111,20 @@ export const UsageOverview: React.FC = () => {
         );
     }
 
-    const { current, limits, percentages, plan, recommendations, predictions } = usageStats;
+    // Normalize response shape: NestJS guardrails may return workflows, frontend expects agentTraces
+    const current = usageStats.current ?? {};
+    const limits = usageStats.limits ?? {};
+    const rawPercentages = usageStats.percentages ?? {};
+    const percentages = {
+        tokens: rawPercentages.tokens ?? 0,
+        requests: rawPercentages.requests ?? 0,
+        logs: rawPercentages.logs ?? 0,
+        projects: rawPercentages.projects ?? 0,
+        agentTraces: rawPercentages.agentTraces ?? rawPercentages.workflows ?? 0,
+    };
+    const plan = usageStats.plan ?? 'free';
+    const recommendations = usageStats.recommendations ?? [];
+    const predictions = usageStats.predictions;
 
     return (
         <div className="space-y-4 sm:space-y-6 md:space-y-8">
@@ -146,8 +159,8 @@ export const UsageOverview: React.FC = () => {
                             />
                         </div>
                         <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                            <span>{formatNumber(current.tokens)}</span>
-                            <span>{formatLimit(limits.tokensPerMonth)}</span>
+                            <span>{formatNumber(current.tokens ?? 0)}</span>
+                            <span>{formatLimit(limits.tokensPerMonth ?? -1)}</span>
                         </div>
                         <p className={`text-sm font-display font-bold ${getStatusColor(percentages.tokens)}`}>
                             {percentages.tokens.toFixed(1)}% used
@@ -170,8 +183,8 @@ export const UsageOverview: React.FC = () => {
                             />
                         </div>
                         <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                            <span>{formatNumber(current.requests)}</span>
-                            <span>{formatLimit(limits.requestsPerMonth)}</span>
+                            <span>{formatNumber(current.requests ?? 0)}</span>
+                            <span>{formatLimit(limits.requestsPerMonth ?? -1)}</span>
                         </div>
                         <p className={`text-sm font-display font-bold ${getStatusColor(percentages.requests)}`}>
                             {percentages.requests.toFixed(1)}% used
@@ -194,8 +207,8 @@ export const UsageOverview: React.FC = () => {
                             />
                         </div>
                         <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                            <span>{formatNumber(current.logs)}</span>
-                            <span>{formatLimit(limits.logsPerMonth)}</span>
+                            <span>{formatNumber(current.logs ?? 0)}</span>
+                            <span>{formatLimit(limits.logsPerMonth ?? -1)}</span>
                         </div>
                         <p className={`text-sm font-display font-bold ${getStatusColor(percentages.logs)}`}>
                             {limits.logsPerMonth === -1 ? 'Unlimited' : `${percentages.logs.toFixed(1)}% used`}
@@ -218,8 +231,8 @@ export const UsageOverview: React.FC = () => {
                             />
                         </div>
                         <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                            <span>{current.projects}</span>
-                            <span>{formatLimit(limits.projects)}</span>
+                            <span>{current.projects ?? 0}</span>
+                            <span>{formatLimit(limits.projects ?? -1)}</span>
                         </div>
                         <p className={`text-sm font-display font-bold ${getStatusColor(percentages.projects)}`}>
                             {limits.projects === -1 ? 'Unlimited' : `${percentages.projects.toFixed(1)}% used`}
@@ -238,15 +251,15 @@ export const UsageOverview: React.FC = () => {
                         <div className="overflow-hidden mb-3 w-full h-3 rounded-full bg-warning-200/30 dark:bg-warning-800/30">
                             <div
                                 className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.agentTraces)}`}
-                                style={{ width: `${limits.agentTraces === -1 ? 0 : percentages.agentTraces}%` }}
+                                style={{ width: `${(limits.agentTraces ?? -1) === -1 ? 0 : percentages.agentTraces}%` }}
                             />
                         </div>
                         <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                            <span>{current.agentTraces}</span>
-                            <span>{formatLimit(limits.agentTraces)}</span>
+                            <span>{current.agentTraces ?? current.workflows ?? 0}</span>
+                            <span>{formatLimit(limits.agentTraces ?? -1)}</span>
                         </div>
                         <p className={`text-sm font-display font-bold ${getStatusColor(percentages.agentTraces)}`}>
-                            {limits.agentTraces === -1 ? 'Unlimited' : `${percentages.agentTraces.toFixed(1)}% used`}
+                            {(limits.agentTraces ?? -1) === -1 ? 'Unlimited' : `${percentages.agentTraces.toFixed(1)}% used`}
                         </p>
                     </div>
 
@@ -262,7 +275,7 @@ export const UsageOverview: React.FC = () => {
                             </div>
                         </div>
                         <div className="mb-2 text-2xl sm:text-3xl font-bold font-display gradient-text-primary">
-                            ${current.cost.toFixed(2)}
+                            ${(current.cost ?? 0).toFixed(2)}
                         </div>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                             Current month spend

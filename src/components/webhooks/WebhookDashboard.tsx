@@ -15,7 +15,8 @@ import { WebhookForm } from './WebhookForm';
 import { WebhookDetails } from './WebhookDetails';
 import { WebhookStats } from './WebhookStats';
 import { WebhookShimmer } from '../shimmer/WebhookShimmer';
-import { IWebhook, IWebhookDelivery } from '../../types/webhook.types';
+import { Modal } from '../common/Modal';
+import { IWebhook, IWebhookDelivery, WebhookFormData } from '../../types/webhook.types';
 
 export const WebhookDashboard: React.FC = () => {
     const [webhooks, setWebhooks] = useState<IWebhook[]>([]);
@@ -30,6 +31,8 @@ export const WebhookDashboard: React.FC = () => {
         completed: number;
         failed: number;
     } | null>(null);
+    const [webhookToDelete, setWebhookToDelete] = useState<IWebhook | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -51,7 +54,7 @@ export const WebhookDashboard: React.FC = () => {
         try {
             setLoading(true);
             const data = await webhookApi.getWebhooks();
-            setWebhooks(data.webhooks);
+            setWebhooks(Array.isArray(data?.webhooks) ? data.webhooks : []);
         } catch (error) {
             showToast('Failed to load webhooks', 'error');
             console.error('Error loading webhooks:', error);
@@ -63,7 +66,7 @@ export const WebhookDashboard: React.FC = () => {
     const loadDeliveries = async (webhookId: string) => {
         try {
             const data = await webhookApi.getDeliveries(webhookId);
-            setDeliveries(data.deliveries);
+            setDeliveries(Array.isArray(data?.deliveries) ? data.deliveries : []);
         } catch (error) {
             showToast('Failed to load deliveries', 'error');
             console.error('Error loading deliveries:', error);
@@ -73,26 +76,26 @@ export const WebhookDashboard: React.FC = () => {
     const loadQueueStats = async () => {
         try {
             const data = await webhookApi.getQueueStats();
-            setQueueStats(data.queue);
+            setQueueStats(data?.queue && typeof data.queue === 'object' ? data.queue : null);
         } catch (error) {
             console.error('Error loading queue stats:', error);
         }
     };
 
-    const handleCreateWebhook = async (webhookData: any) => {
+    const handleCreateWebhook = async (webhookData: WebhookFormData) => {
         try {
             const data = await webhookApi.createWebhook(webhookData);
             showToast('Webhook created successfully', 'success');
             setShowForm(false);
             await loadWebhooks();
-            setSelectedWebhook(data.webhook);
+            setSelectedWebhook(data?.webhook ?? null);
         } catch (error) {
             showToast('Failed to create webhook', 'error');
             console.error('Error creating webhook:', error);
         }
     };
 
-    const handleUpdateWebhook = async (webhookId: string, updates: any) => {
+    const handleUpdateWebhook = async (webhookId: string, updates: Partial<WebhookFormData>) => {
         try {
             await webhookApi.updateWebhook(webhookId, updates);
             showToast('Webhook updated successfully', 'success');
@@ -104,21 +107,42 @@ export const WebhookDashboard: React.FC = () => {
         }
     };
 
-    const handleDeleteWebhook = async (webhookId: string) => {
-        if (!confirm('Are you sure you want to delete this webhook?')) {
-            return;
+    const handleDeleteWebhook = (webhookId: string) => {
+        const webhook = (webhooks ?? []).find((w) => w.id === webhookId);
+        if (webhook) setWebhookToDelete(webhook);
+    };
+
+    const handleCancelDelete = () => {
+        setWebhookToDelete(null);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!webhookToDelete) return;
+
+        const webhookId = webhookToDelete.id;
+        // Optimistic update: remove from UI immediately
+        const previousWebhooks = [...webhooks];
+        const previousSelected = selectedWebhook;
+        setWebhooks(prev => prev.filter(w => w.id !== webhookId));
+        if (selectedWebhook?.id === webhookId) {
+            setSelectedWebhook(null);
         }
+        setWebhookToDelete(null);
 
         try {
+            setIsDeleting(true);
             await webhookApi.deleteWebhook(webhookId);
             showToast('Webhook deleted successfully', 'success');
+            // Refresh to ensure sync with server (handles any edge cases)
             await loadWebhooks();
-            if (selectedWebhook?.id === webhookId) {
-                setSelectedWebhook(null);
-            }
         } catch (error) {
+            // Revert optimistic update on failure
+            setWebhooks(previousWebhooks);
+            setSelectedWebhook(previousSelected);
             showToast('Failed to delete webhook', 'error');
             console.error('Error deleting webhook:', error);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -300,6 +324,39 @@ export const WebhookDashboard: React.FC = () => {
                         </div>
                     </div>
                 )}
+
+                {/* Delete Confirmation Modal */}
+                <Modal
+                    isOpen={!!webhookToDelete}
+                    onClose={handleCancelDelete}
+                    title="Delete Webhook"
+                    maxWidth="md"
+                    closeOnBackdropClick={!isDeleting}
+                    footer={
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={handleCancelDelete}
+                                disabled={isDeleting}
+                                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmDelete}
+                                disabled={isDeleting}
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isDeleting ? 'Deleting...' : 'Delete'}
+                            </button>
+                        </div>
+                    }
+                >
+                    <p className="text-gray-600 dark:text-gray-400">
+                        {webhookToDelete
+                            ? `Are you sure you want to delete "${webhookToDelete.name}"? This action cannot be undone.`
+                            : ''}
+                    </p>
+                </Modal>
             </div>
         </div>
     );

@@ -6,8 +6,10 @@ export interface UsageMetrics {
     logs: number;
     projects: number;
     agentTraces: number;
-    cost: number;
-    period: 'daily' | 'monthly';
+    /** @deprecated Use agentTraces. Kept for NestJS backend compatibility. */
+    workflows?: number;
+    cost?: number;
+    period?: 'daily' | 'monthly';
 }
 
 export interface PlanLimits {
@@ -30,6 +32,8 @@ export interface UsageStats {
         logs: number;
         projects: number;
         agentTraces: number;
+        /** @deprecated Use agentTraces. Kept for NestJS backend compatibility. */
+        workflows?: number;
     };
     plan: string;
     recommendations: string[];

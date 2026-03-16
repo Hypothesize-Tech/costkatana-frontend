@@ -108,18 +108,21 @@ export const Alerts: React.FC = () => {
     return <AlertsShimmer />;
   }
 
+  const alertList = Array.isArray(alerts?.data) ? alerts.data : [];
+  const unreadData = unreadCount?.data;
   const summary = {
-    total: alerts?.pagination.total || 0,
-    unread: unreadCount?.data.count || 0,
-    critical: unreadCount?.data.critical || 0,
-    high: unreadCount?.data.high || 0,
-    medium: unreadCount?.data.medium || 0,
-    low: unreadCount?.data.low || 0,
+    total: alerts?.pagination?.total ?? 0,
+    unread: unreadData?.count ?? 0,
+    critical: unreadData?.critical ?? 0,
+    high: unreadData?.high ?? 0,
+    medium: unreadData?.medium ?? 0,
+    low: unreadData?.low ?? 0,
     byType:
-      alerts?.data.reduce((acc: Record<string, number>, alert: Alert) => {
-        acc[alert.type] = (acc[alert.type] || 0) + 1;
+      alertList.reduce<Record<string, number>>((acc, alert) => {
+        const type = alert?.type ?? "unknown";
+        acc[type] = (acc[type] ?? 0) + 1;
         return acc;
-      }, {}) || {},
+      }, {}),
   };
 
   return (
@@ -174,13 +177,13 @@ export const Alerts: React.FC = () => {
               </span>
             </div>
           </div>
-        ) : alerts.data.length === 0 ? (
+        ) : alertList.length === 0 ? (
           <div className="p-6 sm:p-8 text-center text-sm sm:text-base text-secondary-600 dark:text-secondary-300">No alerts found.</div>
         ) : (
           <>
             <div className="mt-4 sm:mt-6">
               <AlertList
-                alerts={alerts.data}
+                alerts={alertList}
                 onMarkAsRead={handleMarkAsRead}
                 onDelete={handleDelete}
                 onSnooze={handleSnooze}
@@ -189,7 +192,7 @@ export const Alerts: React.FC = () => {
             <div className="mt-6 sm:mt-8 pt-4 border-t border-primary-200/20 dark:border-primary-500/10">
               <Pagination
                 currentPage={page}
-                totalPages={alerts.pagination.pages}
+                totalPages={alerts?.pagination?.pages ?? 1}
                 onPageChange={setPage}
               />
             </div>

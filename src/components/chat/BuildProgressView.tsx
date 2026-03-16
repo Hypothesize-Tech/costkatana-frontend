@@ -247,14 +247,17 @@ export const BuildProgressView: React.FC<BuildProgressViewProps> = ({
                             <div className={`w-12 h-12 mx-auto mb-3 opacity-50 rounded-lg bg-gradient-to-br ${taskConfig.gradient} flex items-center justify-center animate-pulse`}>
                                 <taskConfig.Icon className="w-6 h-6 text-white" />
                             </div>
-                            <p className="text-sm">Waiting for {taskConfig.title.toLowerCase()}...</p>
+                            <p className="text-sm font-medium">Preparing build...</p>
+                            <p className="text-xs mt-2 opacity-80">Your execution plan will appear here shortly.</p>
                         </div>
                     ) : (
                         <div className="divide-y divide-secondary-200/30 dark:divide-secondary-700/30">
                             {progressUpdates.map((update, idx) => (
                                 <div
-                                    key={idx}
-                                    className={`p-4 border-l-4 ${getStatusColor(update.status)} transition-all duration-300 animate-fade-in`}
+                                    key={`${idx}-${update.status}`}
+                                    className={`p-4 border-l-4 ${getStatusColor(update.status)} transition-all duration-300 ease-out ${
+                                        update.status === 'running' ? 'animate-pulse' : ''
+                                    }`}
                                 >
                                     <div className="flex items-start gap-3">
                                         <div className="flex-shrink-0 mt-0.5">

@@ -61,7 +61,7 @@ export const Profile: React.FC = () => {
     }
   }, [searchParams]);
 
-  const { data: profile, isLoading: profileLoading } = useQuery(
+  const { data: profile, isLoading: profileLoading, isError: profileError, refetch: refetchProfile } = useQuery(
     ['user-profile', user?.id],
     () => userService.getProfile(),
     {
@@ -80,6 +80,7 @@ export const Profile: React.FC = () => {
     () => userService.getUserStats(),
     {
       enabled: !!user?.id && activeTab === 'overview',
+      retry: false, // Avoid retrying 404 on missing /api/user/stats
     }
   );
 
@@ -105,14 +106,9 @@ export const Profile: React.FC = () => {
     {
       onSuccess: (data: User) => {
         updateUser(data);
-        queryClient.setQueryData(['user-profile', user?.id], (oldData: any) => {
-          return {
-            ...oldData,
-            data: {
-              ...oldData.data,
-              ...data
-            }
-          }
+        queryClient.setQueryData(['user-profile', user?.id], (oldData: User | undefined) => {
+          if (!oldData) return data;
+          return { ...oldData, ...data };
         });
         showNotification('Profile updated successfully', 'success');
       },
@@ -145,6 +141,24 @@ export const Profile: React.FC = () => {
 
   if (profileLoading) {
     return <ProfileShimmer activeTab={activeTab} />;
+  }
+
+  if (profileError || !profile) {
+    return (
+      <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center">
+        <div className="p-6 rounded-xl border shadow-lg glass border-primary-200/30 dark:border-primary-700/30 text-center max-w-md">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-4">
+            {profileError ? "Failed to load profile." : "Profile not available."}
+          </p>
+          <button
+            onClick={() => refetchProfile()}
+            className="px-4 py-2 rounded-lg font-display font-semibold bg-gradient-primary text-white hover:opacity-90 transition-opacity"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const tabs = [

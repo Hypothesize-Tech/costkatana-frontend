@@ -28,12 +28,13 @@ const GitHubConnector: React.FC<GitHubConnectorProps> = ({
     const loadConnections = async () => {
         try {
             setLoading(true);
-            const conns = await githubService.listConnections();
-            setConnections(conns);
+            const conns = await githubService.listConnections(true);
+            const connList = Array.isArray(conns) ? conns : [];
+            setConnections(connList);
 
-            if (conns.length > 0) {
-                setSelectedConnection(conns[0]);
-                setRepositories(conns[0].repositories);
+            if (connList.length > 0 && connList[0]) {
+                setSelectedConnection(connList[0]);
+                setRepositories(connList[0]?.repositories ?? []);
                 setStep('select-repo');
             }
         } catch (err: unknown) {

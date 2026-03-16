@@ -152,9 +152,9 @@ describe('CortexToggle', () => {
         const mockOnChange = vi.fn();
         const mockOnConfigChange = vi.fn();
         const mockConfig = {
-            encodingModel: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
-            coreProcessingModel: 'anthropic.claude-opus-4-1-20250805-v1:0',
-            decodingModel: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+            encodingModel: 'anthropic.claude-3-5-haiku-20241022-v2:0',
+            coreProcessingModel: 'anthropic.claude-sonnet-4-5-20250929-v1:0',
+            decodingModel: 'mistral.mistral-large-3-675b-instruct',
             processingOperation: 'optimize' as const,
             optimizationLevel: 'balanced' as const,
             outputStyle: 'technical' as const,

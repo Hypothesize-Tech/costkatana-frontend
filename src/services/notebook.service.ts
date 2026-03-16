@@ -82,7 +82,7 @@ export class NotebookService {
    */
   static async getNotebooks(): Promise<Notebook[]> {
     const response = await apiClient.get('/notebooks/notebooks');
-    return response.data.notebooks;
+    return response.data?.notebooks ?? response.data?.data ?? [];
   }
 
   /**
@@ -90,7 +90,7 @@ export class NotebookService {
    */
   static async getNotebook(id: string): Promise<Notebook> {
     const response = await apiClient.get(`/notebooks/notebooks/${id}`);
-    return response.data.notebook;
+    return response.data?.notebook ?? response.data?.data;
   }
 
   /**
@@ -102,7 +102,7 @@ export class NotebookService {
       description,
       template_type
     });
-    return response.data.notebook;
+    return response.data?.notebook ?? response.data?.data;
   }
 
   /**
@@ -110,7 +110,7 @@ export class NotebookService {
    */
   static async updateNotebook(id: string, updates: Partial<Notebook>): Promise<Notebook> {
     const response = await apiClient.put(`/notebooks/notebooks/${id}`, updates);
-    return response.data.notebook;
+    return response.data?.notebook ?? response.data?.data;
   }
 
   /**
@@ -125,7 +125,7 @@ export class NotebookService {
    */
   static async executeNotebook(id: string): Promise<NotebookExecution> {
     const response = await apiClient.post(`/notebooks/notebooks/${id}/execute`);
-    return response.data.execution;
+    return response.data?.execution ?? response.data?.data;
   }
 
   /**
@@ -133,7 +133,7 @@ export class NotebookService {
    */
   static async getExecution(executionId: string): Promise<NotebookExecution> {
     const response = await apiClient.get(`/notebooks/executions/${executionId}`);
-    return response.data.execution;
+    return response.data?.execution ?? response.data?.data;
   }
 
   /**
@@ -141,7 +141,7 @@ export class NotebookService {
    */
   static async getTemplates(): Promise<NotebookTemplate[]> {
     const response = await apiClient.get('/notebooks/notebooks/templates');
-    return response.data.templates;
+    return response.data?.templates ?? response.data?.data ?? [];
   }
 
   /**

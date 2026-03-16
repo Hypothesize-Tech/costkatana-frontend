@@ -166,7 +166,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                             Total Users
                         </h3>
                         <p className="text-2xl sm:text-3xl font-bold font-display gradient-text">
-                            {formatNumber(stats.totalUsers)}
+                            {formatNumber(stats?.totalUsers ?? 0)}
                         </p>
                         <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             All registered users in the system
@@ -186,7 +186,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                             Active Users
                         </h3>
                         <p className="text-2xl sm:text-3xl font-bold font-display gradient-text">
-                            {formatNumber(stats.activeUsers)}
+                            {formatNumber(stats?.activeUsers ?? 0)}
                         </p>
                         <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Users currently active on the platform
@@ -206,7 +206,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                             Admin Users
                         </h3>
                         <p className="text-2xl sm:text-3xl font-bold font-display gradient-text">
-                            {formatNumber(stats.adminUsers)}
+                            {formatNumber(stats?.adminUsers ?? 0)}
                         </p>
                         <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Users with administrator privileges
@@ -226,7 +226,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                             Verified Users
                         </h3>
                         <p className="text-2xl sm:text-3xl font-bold font-display gradient-text">
-                            {formatNumber(stats.verifiedUsers)}
+                            {formatNumber(stats?.verifiedUsers ?? 0)}
                         </p>
                         <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Users with verified email addresses

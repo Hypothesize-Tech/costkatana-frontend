@@ -24,6 +24,8 @@ class OptimizationService {
       enableCompression?: boolean;
       enableContextTrimming?: boolean;
       enableRequestFusion?: boolean;
+      /** Client-side network/performance data to merge with server-captured requestTracking */
+      requestTracking?: Partial<OptimizationRequestTracking>;
       // Cortex-specific parameters
       enableCortex?: boolean;
       cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast' | 'answer';

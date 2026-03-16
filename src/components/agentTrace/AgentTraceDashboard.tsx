@@ -150,22 +150,24 @@ const AgentTraceDashboard: React.FC = () => {
 
       const response = await agentTraceService.getObservabilityDashboard();
       const data = response as unknown as ObservabilityDashboardApiResponse;
+      const ov = data?.overview;
+      if (!ov) throw new Error('Dashboard overview is missing');
 
       const transformedData: DashboardData = {
         overview: {
-          totalExecutions: data.overview.totalExecutions,
-          successRate: data.overview.successRate,
-          averageDuration: data.overview.averageDuration,
-          totalCost: data.overview.totalCost,
-          activeTraces: data.overview.activeTraces
+          totalExecutions: ov.totalExecutions ?? 0,
+          successRate: ov.successRate ?? 0,
+          averageDuration: ov.averageDuration ?? 0,
+          totalCost: ov.totalCost ?? 0,
+          activeTraces: ov.activeTraces ?? 0,
         },
-        performanceMetrics: data.performanceMetrics,
-        costAnalysis: data.costAnalysis,
-        alerts: (data.alerts || []).map(alert => ({
+        performanceMetrics: data.performanceMetrics ?? { throughput: { period: 'hour', values: [] }, latency: { p50: 0, p95: 0, p99: 0 }, errorRate: { current: 0, trend: 0 } },
+        costAnalysis: data.costAnalysis ?? { totalSpend: 0, breakdown: [], trend: { daily: [] } },
+        alerts: (data.alerts ?? []).map(alert => ({
           ...alert,
           timestamp: new Date(alert.timestamp)
         })),
-        recentExecutions: data.recentExecutions.map((exec: { traceId: string; traceName: string; totalCost: number; totalTokens: number; requestCount: number; averageCost: number; startTime: string; endTime: string; duration: number; steps: Array<{ step: string; sequence: number; cost: number; tokens: number; responseTime: number; model: string; service: string; timestamp: string }> }) => ({
+        recentExecutions: (data.recentExecutions ?? []).map((exec: { traceId: string; traceName: string; totalCost: number; totalTokens: number; requestCount: number; averageCost: number; startTime: string; endTime: string; duration: number; steps: Array<{ step: string; sequence: number; cost: number; tokens: number; responseTime: number; model: string; service: string; timestamp: string }> }) => ({
           id: exec.traceId,
           traceId: exec.traceId,
           traceName: exec.traceName,

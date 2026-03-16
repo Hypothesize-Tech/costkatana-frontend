@@ -136,12 +136,26 @@ export const AdminDiscountManagement: React.FC = () => {
     };
 
     const handleDeleteDiscount = async (id: string) => {
+        const discountToRemove = discounts.find((d) => d._id === id);
+        if (!discountToRemove) return;
+
+        // Optimistic update: remove from UI immediately
+        setDiscounts((prev) => prev.filter((d) => d._id !== id));
+        setPagination((prev) => ({ ...prev, total: Math.max(0, prev.total - 1) }));
+        setSelectedDiscounts((prev) => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+        });
+        setIsDeleteModalOpen(false);
+        setEditingDiscount(null);
+
         try {
             await AdminDiscountService.deleteDiscount(id);
             showNotification('Discount deleted successfully', 'success');
-            setIsDeleteModalOpen(false);
-            fetchDiscounts();
         } catch (error: any) {
+            // Revert on failure: refetch to restore server state
+            fetchDiscounts();
             showNotification(
                 error.response?.data?.message || 'Failed to delete discount',
                 'error'
@@ -152,26 +166,45 @@ export const AdminDiscountManagement: React.FC = () => {
     const handleBulkAction = async () => {
         if (!bulkAction || selectedDiscounts.size === 0) return;
 
-        try {
-            const ids = Array.from(selectedDiscounts);
-            let message = '';
+        const ids = Array.from(selectedDiscounts);
 
+        if (bulkAction === 'delete') {
+            // Optimistic update for bulk delete: remove selected discounts from UI immediately
+            const discountsToRemove = discounts.filter((d) => selectedDiscounts.has(d._id));
+            setDiscounts((prev) => prev.filter((d) => !selectedDiscounts.has(d._id)));
+            setPagination((prev) => ({
+                ...prev,
+                total: Math.max(0, prev.total - discountsToRemove.length),
+            }));
+            setSelectedDiscounts(new Set());
+            setIsBulkActionModalOpen(false);
+            setBulkAction(null);
+
+            try {
+                await AdminDiscountService.bulkDelete(ids);
+                showNotification('Discounts deleted successfully', 'success');
+            } catch (error: any) {
+                // Revert on failure: refetch to restore state
+                fetchDiscounts();
+                showNotification(
+                    error.response?.data?.message || 'Failed to delete discounts',
+                    'error'
+                );
+            }
+            return;
+        }
+
+        try {
             switch (bulkAction) {
                 case 'activate':
                     await AdminDiscountService.bulkActivate(ids);
-                    message = 'Discounts activated successfully';
+                    showNotification('Discounts activated successfully', 'success');
                     break;
                 case 'deactivate':
                     await AdminDiscountService.bulkDeactivate(ids);
-                    message = 'Discounts deactivated successfully';
-                    break;
-                case 'delete':
-                    await AdminDiscountService.bulkDelete(ids);
-                    message = 'Discounts deleted successfully';
+                    showNotification('Discounts deactivated successfully', 'success');
                     break;
             }
-
-            showNotification(message, 'success');
             setIsBulkActionModalOpen(false);
             setBulkAction(null);
             setSelectedDiscounts(new Set());

@@ -76,10 +76,13 @@ class GoogleService {
 
     /**
      * List user's Google connections
+     * @param skipCache - When true, adds cache-busting param for fresh data (e.g. after disconnect)
      */
-    async listConnections(): Promise<GoogleConnection[]> {
-        const response = await api.get('/google/connections');
-        return response.data.data;
+    async listConnections(skipCache = false): Promise<GoogleConnection[]> {
+        const config = skipCache ? { params: { _t: Date.now() } } : {};
+        const response = await api.get('/google/connections', config);
+        const data = response.data?.data ?? response.data?.connections;
+        return Array.isArray(data) ? data : [];
     }
 
     /**

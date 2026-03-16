@@ -14,6 +14,7 @@ import {
   WhatIfScenarios,
   RealTimeWhatIfSimulator,
   OptimizationLeaderboard,
+  ExperimentHistoryList,
 } from "../components/experimentation";
 import { ExperimentationService } from "../services/experimentation.service";
 import { ExperimentationShimmer } from "../components/shimmer/ExperimentationShimmer";
@@ -462,6 +463,17 @@ const Experimentation: React.FC = () => {
                 </div>
               </div>
             )}
+            {/* Experiment History - view past experiments */}
+            {stats.totalExperiments > 0 && !isLoading && (
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <ExperimentHistoryList
+                  type="model_comparison"
+                  limit={10}
+                  title="Recent Model Comparisons"
+                />
+              </div>
+            )}
+
             {/* Dynamic No Recommendations State */}
             {recommendations.length === 0 &&
               stats.totalExperiments > 0 &&

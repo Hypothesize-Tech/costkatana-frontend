@@ -43,8 +43,9 @@ export const useChatContext = (): UseChatContextReturn => {
     setState(prev => ({ ...prev, chatId }));
 
     const authToken = localStorage.getItem('access_token');
+    const baseUrl = apiClient.defaults.baseURL ?? '';
     const eventSource = new EventSource(
-      `${apiClient.defaults.baseURL}/chat/${chatId}/stream?token=${authToken}`
+      `${baseUrl}/chat/${chatId}/stream?token=${authToken}`
     );
 
     eventSource.onopen = () => {
@@ -103,8 +104,9 @@ export const useChatContext = (): UseChatContextReturn => {
   // Connect to task-specific SSE stream
   const connectToTask = useCallback((taskId: string) => {
     const authToken = localStorage.getItem('access_token');
+    const baseUrl = apiClient.defaults.baseURL ?? '';
     const eventSource = new EventSource(
-      `${apiClient.defaults.baseURL}/chat/governed/${taskId}/stream?token=${authToken}`
+      `${baseUrl}/chat/governed/${taskId}/stream?token=${authToken}`
     );
 
     eventSource.onopen = () => {
@@ -152,7 +154,13 @@ export const useChatContext = (): UseChatContextReturn => {
   const loadChatPlans = useCallback(async (chatId: string) => {
     try {
       const response = await apiClient.get(`/chat/${chatId}/plans`);
-      setState(prev => ({ ...prev, governedTasks: response.data.data }));
+      const raw = response.data?.data;
+      const governedTasks = Array.isArray(raw)
+        ? raw
+        : Array.isArray(raw?.tasks)
+          ? raw.tasks
+          : [];
+      setState(prev => ({ ...prev, governedTasks }));
     } catch (error) {
       console.error('Failed to load chat plans:', error);
     }
@@ -160,12 +168,15 @@ export const useChatContext = (): UseChatContextReturn => {
 
   // Update a task in state
   const updateTask = useCallback((taskId: string, update: Partial<GovernedTask>) => {
-    setState(prev => ({
-      ...prev,
-      governedTasks: prev.governedTasks.map(task =>
-        task.id === taskId ? { ...task, ...update } : task
-      )
-    }));
+    setState(prev => {
+      const tasks = Array.isArray(prev.governedTasks) ? prev.governedTasks : [];
+      return {
+        ...prev,
+        governedTasks: tasks.map(task =>
+          task.id === taskId ? { ...task, ...update } : task
+        )
+      };
+    });
   }, []);
 
   // Set active task
@@ -183,12 +194,13 @@ export const useChatContext = (): UseChatContextReturn => {
     };
   }, []);
 
-  const activeTask = state.governedTasks.find(task => task.id === state.activeTaskId) || null;
+  const governedTasks = Array.isArray(state.governedTasks) ? state.governedTasks : [];
+  const activeTask = governedTasks.find(task => task.id === state.activeTaskId) || null;
   const isConnected = state.sseConnections.size > 0;
 
   return {
     chatId: state.chatId,
-    governedTasks: state.governedTasks,
+    governedTasks,
     activeTask,
     isConnected,
     connectToChat,

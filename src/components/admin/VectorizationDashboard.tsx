@@ -55,11 +55,12 @@ export const VectorizationDashboardComponent: React.FC = () => {
         }
     };
 
-    const getHealthStatusBadge = (status: string) => {
-        const colors = getHealthStatusColor(status);
+    const getHealthStatusBadge = (status: string | undefined) => {
+        const safeStatus = status ?? 'unknown';
+        const colors = getHealthStatusColor(safeStatus);
         return (
             <span className={`px-3 py-1.5 rounded-full text-xs font-display font-semibold border ${colors}`}>
-                {status.toUpperCase()}
+                {String(safeStatus).toUpperCase()}
             </span>
         );
     };
@@ -123,7 +124,10 @@ export const VectorizationDashboardComponent: React.FC = () => {
         );
     }
 
-    const { health, processingStats, crossModalStats, alerts } = dashboardData;
+    const health = dashboardData?.health ?? {} as typeof dashboardData.health;
+    const processingStats = dashboardData?.processingStats ?? {} as typeof dashboardData.processingStats;
+    const crossModalStats = dashboardData?.crossModalStats ?? {} as typeof dashboardData.crossModalStats;
+    const alerts = Array.isArray(dashboardData?.alerts) ? dashboardData.alerts : [];
 
     return (
         <div className="p-6 space-y-6 animate-fade-in">
@@ -146,22 +150,22 @@ export const VectorizationDashboardComponent: React.FC = () => {
             </div>
 
             {/* Alerts */}
-            {alerts.length > 0 && (
+            {alerts?.length > 0 && (
                 <div className="space-y-3">
                     {alerts.map((alert, index) => (
                         <div
                             key={index}
-                            className={`p-4 rounded-xl border-l-4 shadow-lg glass backdrop-blur-xl animate-fade-in ${alert.level === 'error'
+                            className={`p-4 rounded-xl border-l-4 shadow-lg glass backdrop-blur-xl animate-fade-in ${(alert?.level ?? '') === 'error'
                                 ? 'bg-gradient-to-r from-danger-500/10 to-transparent border-danger-500 dark:border-danger-400'
-                                : alert.level === 'warning'
+                                : (alert?.level ?? '') === 'warning'
                                     ? 'bg-gradient-to-r from-warning-500/10 to-transparent border-warning-500 dark:border-warning-400'
                                     : 'bg-gradient-to-r from-primary-500/10 to-transparent border-primary-500 dark:border-primary-400'
                                 }`}
                         >
                             <div className="flex items-start gap-3">
                                 <div className="flex-1">
-                                    <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{alert.message}</p>
-                                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{alert.action}</p>
+                                    <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{alert?.message ?? ''}</p>
+                                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{alert?.action ?? ''}</p>
                                 </div>
                             </div>
                         </div>
@@ -174,7 +178,7 @@ export const VectorizationDashboardComponent: React.FC = () => {
                 <div className="group p-6 rounded-xl border shadow-xl glass backdrop-blur-xl transition-all duration-300 border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Embedding Service</h3>
-                        {getHealthStatusBadge(health.embeddingService)}
+                        {getHealthStatusBadge(health?.embeddingService)}
                     </div>
                     <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                         Amazon Titan Embed Text v2
@@ -184,7 +188,7 @@ export const VectorizationDashboardComponent: React.FC = () => {
                 <div className="group p-6 rounded-xl border shadow-xl glass backdrop-blur-xl transition-all duration-300 border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Vector Indexes</h3>
-                        {getHealthStatusBadge(health.vectorIndexes)}
+                        {getHealthStatusBadge(health?.vectorIndexes)}
                     </div>
                     <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                         MongoDB Atlas Vector Search
@@ -194,7 +198,7 @@ export const VectorizationDashboardComponent: React.FC = () => {
                 <div className="group p-6 rounded-xl border shadow-xl glass backdrop-blur-xl transition-all duration-300 border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Processing Status</h3>
-                        {health.currentlyProcessing ? (
+                        {health?.currentlyProcessing ? (
                             <span className="px-3 py-1.5 rounded-full text-xs font-display font-semibold border text-primary-700 dark:text-primary-300 bg-gradient-to-r from-primary-500/20 to-primary-600/20 border-primary-300/30 dark:border-primary-500/20">
                                 IN PROGRESS
                             </span>
@@ -217,11 +221,11 @@ export const VectorizationDashboardComponent: React.FC = () => {
                     <div className="space-y-3">
                         <div className="flex justify-between items-center">
                             <span className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">Current Storage</span>
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">{health.storageUsage.current}</span>
+                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">{health?.storageUsage?.current ?? '0'}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">Projected Storage</span>
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">{health.storageUsage.projected}</span>
+                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">{health?.storageUsage?.projected ?? '0'}</span>
                         </div>
                     </div>
                     <div className="space-y-4">
@@ -229,51 +233,51 @@ export const VectorizationDashboardComponent: React.FC = () => {
                             <div className="flex justify-between items-center mb-2">
                                 <span className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">User Memories</span>
                                 <span className="text-sm font-display font-bold gradient-text-primary">
-                                    {health.storageUsage.userMemories.percentage}%
+                                    {health?.storageUsage?.userMemories?.percentage ?? 0}%
                                 </span>
                             </div>
                             <div className="w-full bg-light-bg-secondary/50 dark:bg-dark-bg-secondary/50 rounded-full h-2.5 overflow-hidden">
                                 <div
                                     className="bg-gradient-to-r from-primary-500 to-primary-600 h-full rounded-full transition-all duration-500 glow-primary"
-                                    style={{ width: `${health.storageUsage.userMemories.percentage}%` }}
+                                    style={{ width: `${health?.storageUsage?.userMemories?.percentage ?? 0}%` }}
                                 ></div>
                             </div>
                             <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1.5">
-                                {health.storageUsage.userMemories.vectorized} / {health.storageUsage.userMemories.total} vectorized
+                                {health?.storageUsage?.userMemories?.vectorized ?? 0} / {health?.storageUsage?.userMemories?.total ?? 0} vectorized
                             </p>
                         </div>
                         <div>
                             <div className="flex justify-between items-center mb-2">
                                 <span className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">Conversations</span>
                                 <span className="text-sm font-display font-bold gradient-text-success">
-                                    {health.storageUsage.conversations.percentage}%
+                                    {health?.storageUsage?.conversations?.percentage ?? 0}%
                                 </span>
                             </div>
                             <div className="w-full bg-light-bg-secondary/50 dark:bg-dark-bg-secondary/50 rounded-full h-2.5 overflow-hidden">
                                 <div
                                     className="bg-gradient-to-r from-success-500 to-success-600 h-full rounded-full transition-all duration-500"
-                                    style={{ width: `${health.storageUsage.conversations.percentage}%` }}
+                                    style={{ width: `${health?.storageUsage?.conversations?.percentage ?? 0}%` }}
                                 ></div>
                             </div>
                             <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1.5">
-                                {health.storageUsage.conversations.vectorized} / {health.storageUsage.conversations.total} vectorized
+                                {health?.storageUsage?.conversations?.vectorized ?? 0} / {health?.storageUsage?.conversations?.total ?? 0} vectorized
                             </p>
                         </div>
                         <div>
                             <div className="flex justify-between items-center mb-2">
                                 <span className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">Messages</span>
                                 <span className="text-sm font-display font-bold text-purple-600 dark:text-purple-400">
-                                    {health.storageUsage.messages.percentage}%
+                                    {health?.storageUsage?.messages?.percentage ?? 0}%
                                 </span>
                             </div>
                             <div className="w-full bg-light-bg-secondary/50 dark:bg-dark-bg-secondary/50 rounded-full h-2.5 overflow-hidden">
                                 <div
                                     className="bg-gradient-to-r from-purple-500 to-purple-600 h-full rounded-full transition-all duration-500"
-                                    style={{ width: `${health.storageUsage.messages.percentage}%` }}
+                                    style={{ width: `${health?.storageUsage?.messages?.percentage ?? 0}%` }}
                                 ></div>
                             </div>
                             <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1.5">
-                                {health.storageUsage.messages.vectorized} / {health.storageUsage.messages.total} vectorized
+                                {health?.storageUsage?.messages?.vectorized ?? 0} / {health?.storageUsage?.messages?.total ?? 0} vectorized
                             </p>
                         </div>
                     </div>
@@ -286,23 +290,23 @@ export const VectorizationDashboardComponent: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30 hover:scale-105 transition-transform duration-200">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">User Memories</div>
-                        <div className="text-3xl font-display font-bold gradient-text-primary">{processingStats.userMemories.total}</div>
+                        <div className="text-3xl font-display font-bold gradient-text-primary">{processingStats?.userMemories?.total ?? 0}</div>
                         <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
-                            ~{Math.round(processingStats.userMemories.estimated / 60)} min estimated
+                            ~{Math.round((processingStats?.userMemories?.estimated ?? 0) / 60)} min estimated
                         </div>
                     </div>
                     <div className="p-5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30 hover:scale-105 transition-transform duration-200">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">Conversations</div>
-                        <div className="text-3xl font-display font-bold gradient-text-primary">{processingStats.conversations.total}</div>
+                        <div className="text-3xl font-display font-bold gradient-text-primary">{processingStats?.conversations?.total ?? 0}</div>
                         <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
-                            ~{Math.round(processingStats.conversations.estimated / 60)} min estimated
+                            ~{Math.round((processingStats?.conversations?.estimated ?? 0) / 60)} min estimated
                         </div>
                     </div>
                     <div className="p-5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30 hover:scale-105 transition-transform duration-200">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">Messages</div>
-                        <div className="text-3xl font-display font-bold gradient-text-primary">{processingStats.messages.total}</div>
+                        <div className="text-3xl font-display font-bold gradient-text-primary">{processingStats?.messages?.total ?? 0}</div>
                         <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
-                            ~{Math.round(processingStats.messages.estimated / 60)} min estimated
+                            ~{Math.round((processingStats?.messages?.estimated ?? 0) / 60)} min estimated
                         </div>
                     </div>
                 </div>
@@ -310,7 +314,7 @@ export const VectorizationDashboardComponent: React.FC = () => {
                     <div className="flex justify-between items-center">
                         <span className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary">Total Estimated Processing Time</span>
                         <span className="text-xl font-display font-bold gradient-text-primary">
-                            ~{Math.round(processingStats.totalEstimated / 60)} minutes
+                            ~{Math.round((processingStats?.totalEstimated ?? 0) / 60)} minutes
                         </span>
                     </div>
                 </div>
@@ -322,16 +326,16 @@ export const VectorizationDashboardComponent: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30 hover:scale-105 transition-transform duration-200">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">Total Vectors</div>
-                        <div className="text-3xl font-display font-bold gradient-text-primary">{crossModalStats.totalVectors.toLocaleString()}</div>
+                        <div className="text-3xl font-display font-bold gradient-text-primary">{(crossModalStats?.totalVectors ?? 0).toLocaleString()}</div>
                     </div>
                     <div className="p-5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30 hover:scale-105 transition-transform duration-200">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">Avg Dimensions</div>
-                        <div className="text-3xl font-display font-bold gradient-text-primary">{crossModalStats.avgEmbeddingDimensions}</div>
+                        <div className="text-3xl font-display font-bold gradient-text-primary">{crossModalStats?.avgEmbeddingDimensions ?? 0}</div>
                     </div>
                     <div className="p-5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30 hover:scale-105 transition-transform duration-200">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">Memory Efficiency</div>
                         <div className="mt-2">
-                            {getHealthStatusBadge(crossModalStats.memoryEfficiency)}
+                            {getHealthStatusBadge(crossModalStats?.memoryEfficiency)}
                         </div>
                     </div>
                 </div>
@@ -344,7 +348,7 @@ export const VectorizationDashboardComponent: React.FC = () => {
                     <div className="p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">User Memories</div>
                         <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                            {health.lastProcessing.userMemories
+                            {health?.lastProcessing?.userMemories
                                 ? new Date(health.lastProcessing.userMemories).toLocaleString()
                                 : 'Never'}
                         </div>
@@ -352,7 +356,7 @@ export const VectorizationDashboardComponent: React.FC = () => {
                     <div className="p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">Conversations</div>
                         <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                            {health.lastProcessing.conversations
+                            {health?.lastProcessing?.conversations
                                 ? new Date(health.lastProcessing.conversations).toLocaleString()
                                 : 'Never'}
                         </div>
@@ -360,7 +364,7 @@ export const VectorizationDashboardComponent: React.FC = () => {
                     <div className="p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-primary/30 dark:bg-dark-bg-primary/30">
                         <div className="text-sm font-display text-light-text-secondary dark:text-dark-text-secondary mb-2">Messages</div>
                         <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                            {health.lastProcessing.messages
+                            {health?.lastProcessing?.messages
                                 ? new Date(health.lastProcessing.messages).toLocaleString()
                                 : 'Never'}
                         </div>

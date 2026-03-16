@@ -46,9 +46,10 @@ export const VercelServicePanel: React.FC<VercelServicePanelProps> = ({
         try {
             setLoading(true);
             setError(null);
-            const connections = await vercelService.listConnections();
-            if (connections.length > 0 && connections[0].isActive) {
-                const conn = connections[0];
+            const connections = await vercelService.listConnections(true);
+            const list = Array.isArray(connections) ? connections : [];
+            if (list.length > 0 && list[0]?.isActive) {
+                const conn = list[0];
                 setConnection(conn);
 
                 // Load projects for this connection

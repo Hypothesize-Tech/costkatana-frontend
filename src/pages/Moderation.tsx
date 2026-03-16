@@ -8,10 +8,35 @@ import {
     EyeIcon,
     ClockIcon,
     DocumentTextIcon,
-    ArrowPathIcon
+    ArrowPathIcon,
+    TableCellsIcon,
+    ChartBarSquareIcon,
+    ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline';
+import {
+    FileText,
+    Table,
+    Eye,
+    CheckCircle,
+    XCircle,
+    X,
+    AlertTriangle,
+    DollarSign,
+    BarChart3,
+    Target,
+    Search
+} from 'lucide-react';
 import { moderationService } from '../services/moderation.service';
+import { securityService, type HumanReviewRequest } from '../services/security.service';
 import { ModerationShimmer } from '../components/shimmer/ModerationShimmer';
+import { Modal } from '../components/common/Modal';
+
+const TABS = [
+    { id: 'overview' as const, label: 'Overview', icon: ChartBarIcon },
+    { id: 'threatLog' as const, label: 'Threat Log', icon: TableCellsIcon },
+    { id: 'security' as const, label: 'Security Analytics', icon: ChartBarSquareIcon },
+    { id: 'reviews' as const, label: 'Human Reviews', icon: ClipboardDocumentListIcon },
+];
 
 interface ModerationAnalytics {
     input: {
@@ -63,6 +88,7 @@ interface ThreatLog {
         method?: string;
         threatLevel?: string;
         action?: string;
+        model?: string;
         violationCategories?: string[];
         matchedPatterns?: number;
     };
@@ -76,14 +102,21 @@ interface Pagination {
 }
 
 export const Moderation: React.FC = () => {
-    const [selectedTimeRange, setSelectedTimeRange] = useState<'24h' | '7d' | '30d'>('7d');
+    const [activeTab, setActiveTab] = useState<'overview' | 'threatLog' | 'security' | 'reviews'>('overview');
+    const [selectedTimeRange, setSelectedTimeRange] = useState<'24h' | '7d' | '30d' | '90d' | 'all'>('7d');
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [selectedStage, setSelectedStage] = useState<string>('all');
     const [threatPage, setThreatPage] = useState(1);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [selectedThreat, setSelectedThreat] = useState<ThreatLog | null>(null);
+    const [selectedReview, setSelectedReview] = useState<HumanReviewRequest | null>(null);
 
-    // Calculate date range
-    const getDateRange = () => {
+    // Calculate date range (undefined for 'all' = no filter)
+    const getDateRange = (): { startDate?: string; endDate?: string } => {
+        if (selectedTimeRange === 'all') {
+            return {};
+        }
+
         const end = new Date();
         const start = new Date();
 
@@ -96,6 +129,9 @@ export const Moderation: React.FC = () => {
                 break;
             case '30d':
                 start.setDate(start.getDate() - 30);
+                break;
+            case '90d':
+                start.setDate(start.getDate() - 90);
                 break;
         }
 
@@ -113,7 +149,7 @@ export const Moderation: React.FC = () => {
         refetch: refetchAnalytics
     } = useQuery<{ data: ModerationAnalytics }>({
         queryKey: ['moderationAnalytics', selectedTimeRange, refreshTrigger],
-        queryFn: () => moderationService.getAnalytics(getDateRange())
+        queryFn: () => moderationService.getAnalytics(getDateRange()),
     });
 
     // Fetch threat logs
@@ -122,7 +158,7 @@ export const Moderation: React.FC = () => {
         isLoading: threatsLoading,
         refetch: refetchThreats
     } = useQuery<{ data: { threats: ThreatLog[]; pagination: Pagination } }>({
-        queryKey: ['moderationThreats', selectedCategory, selectedStage, threatPage, refreshTrigger],
+        queryKey: ['moderationThreats', selectedCategory, selectedStage, selectedTimeRange, threatPage, refreshTrigger],
         queryFn: () => moderationService.getThreats({
             page: threatPage,
             limit: 20,
@@ -132,11 +168,52 @@ export const Moderation: React.FC = () => {
         })
     });
 
+    // Fetch pending human reviews (only when Reviews tab is active)
+    const {
+        data: reviewsData,
+        refetch: refetchReviews
+    } = useQuery({
+        queryKey: ['securityReviews', refreshTrigger],
+        queryFn: () => securityService.getPendingReviews(),
+        enabled: activeTab === 'reviews',
+        staleTime: 0,
+    });
+    const pendingReviews: HumanReviewRequest[] = Array.isArray(reviewsData?.data) ? reviewsData.data : [];
+
     const handleRefresh = () => {
         setRefreshTrigger(prev => prev + 1);
         refetchAnalytics();
         refetchThreats();
+        if (activeTab === 'reviews') refetchReviews();
     };
+
+    const handleReviewDecision = async (reviewId: string, decision: 'approved' | 'denied', comments?: string) => {
+        try {
+            await securityService.reviewRequest(reviewId, { decision, comments });
+            refetchReviews();
+            setSelectedReview(null);
+        } catch {
+            refetchReviews();
+        }
+    };
+
+    const exportSecurityReport = async (format: 'json' | 'csv' = 'json') => {
+        try {
+            const response = await securityService.exportReport(format);
+            const url = window.URL.createObjectURL(new Blob([response]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `security_report.${format}`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch {
+            // Export failed - could add toast
+        }
+    };
+
+    const getRiskScoreColor = (riskScore: number): string => securityService.getRiskScoreColor(riskScore);
+    const getThreatBadgeColor = (threatCategory: string): string => securityService.getThreatCategoryColor(threatCategory);
 
     const formatCurrency = (amount: number): string => {
         return new Intl.NumberFormat('en-US', {
@@ -177,6 +254,25 @@ export const Moderation: React.FC = () => {
         }
     };
 
+    // Derive Security tab data from moderation analytics
+    const data = analytics?.data;
+    const inputCat = data?.input?.threatsByCategory || {};
+    const outputCat = data?.output?.violationsByCategory || {};
+    const threatDistribution: Record<string, number> = { ...inputCat };
+    Object.entries(outputCat).forEach(([k, v]) => {
+        threatDistribution[k] = (threatDistribution[k] || 0) + (v as number);
+    });
+    const categories = data?.categories || [];
+    const topRiskyPatterns = categories.slice(0, 10).map((c: { category: string; count: number; avgConfidence?: number }) => ({
+        pattern: (c.category || '').replace(/_/g, ' '),
+        count: c.count ?? 0,
+        averageRiskScore: (c.avgConfidence ?? 0) <= 1 ? (c.avgConfidence ?? 0) : (c.avgConfidence ?? 0) / 100
+    }));
+    const mostCommonThreat = Object.keys(threatDistribution).reduce(
+        (a, b) => (threatDistribution[a] || 0) >= (threatDistribution[b] || 0) ? a : b,
+        'none'
+    ) || 'none';
+
     if (analyticsLoading) {
         return <ModerationShimmer />;
     }
@@ -203,8 +299,6 @@ export const Moderation: React.FC = () => {
         );
     }
 
-    const data = analytics?.data;
-
     return (
         <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
             <div className="px-3 py-4 mx-auto max-w-7xl sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8">
@@ -213,22 +307,24 @@ export const Moderation: React.FC = () => {
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                         <div className="mb-4 lg:mb-0 sm:mb-6">
                             <h1 className="mb-2 text-2xl font-bold font-display gradient-text-primary sm:text-3xl">
-                                Moderation Dashboard
+                                Security & Moderation Dashboard
                             </h1>
                             <p className="text-sm text-secondary-600 dark:text-secondary-300 sm:text-base">
-                                Monitor AI safety and content moderation across your system
+                                Monitor AI safety, content moderation, and security analytics
                             </p>
                         </div>
 
-                        <div className="flex flex-col gap-3 sm:flex-row">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                             <select
                                 value={selectedTimeRange}
-                                onChange={(e) => setSelectedTimeRange(e.target.value as '24h' | '7d' | '30d')}
+                                onChange={(e) => setSelectedTimeRange(e.target.value as '24h' | '7d' | '30d' | '90d' | 'all')}
                                 className="w-full text-sm input sm:w-auto"
                             >
                                 <option value="24h">Last 24 Hours</option>
                                 <option value="7d">Last 7 Days</option>
                                 <option value="30d">Last 30 Days</option>
+                                <option value="90d">Last 90 Days</option>
+                                <option value="all">All Time</option>
                             </select>
 
                             <button
@@ -238,10 +334,46 @@ export const Moderation: React.FC = () => {
                                 <ArrowPathIcon className="w-4 h-4" />
                                 Refresh
                             </button>
+
+                            <button
+                                onClick={() => exportSecurityReport('json')}
+                                className="flex gap-2 items-center justify-center px-4 py-2 text-sm rounded-xl btn-secondary sm:justify-start"
+                            >
+                                <FileText className="w-4 h-4" />
+                                Export JSON
+                            </button>
+                            <button
+                                onClick={() => exportSecurityReport('csv')}
+                                className="flex gap-2 items-center justify-center px-4 py-2 text-sm rounded-xl btn-secondary sm:justify-start"
+                            >
+                                <Table className="w-4 h-4" />
+                                Export CSV
+                            </button>
                         </div>
+                    </div>
+
+                    {/* Tabs */}
+                    <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-primary-200/30 dark:border-primary-700/30">
+                        {TABS.map(({ id, label, icon: Icon }) => (
+                            <button
+                                key={id}
+                                onClick={() => setActiveTab(id)}
+                                className={`flex gap-2 items-center px-4 py-2 text-sm font-medium rounded-xl transition-all ${
+                                    activeTab === id
+                                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300'
+                                        : 'text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800/50'
+                                }`}
+                            >
+                                <Icon className="w-4 h-4" />
+                                {label}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
+                {/* Overview Tab */}
+                {activeTab === 'overview' && (
+                <>
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 gap-4 mb-6 sm:gap-5 sm:mb-6 md:gap-6 md:grid-cols-2 md:mb-8 lg:grid-cols-4">
                     <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-2xl sm:p-5 md:p-6 lg:hover:scale-105">
@@ -405,8 +537,11 @@ export const Moderation: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                </>
+                )}
 
-                {/* Threat Log */}
+                {/* Threat Log Tab */}
+                {activeTab === 'threatLog' && (
                 <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="px-3 py-3 border-b border-primary-200/30 dark:border-primary-700/30 sm:px-4 sm:py-4 md:px-6">
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -467,6 +602,9 @@ export const Moderation: React.FC = () => {
                                             <th className="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300 md:px-6">
                                                 Reason
                                             </th>
+                                            <th className="px-4 py-3 text-xs font-medium tracking-wider text-center uppercase text-secondary-600 dark:text-secondary-300 whitespace-nowrap md:px-6">
+                                                Actions
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-gradient-to-br divide-y from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-primary-200/20 dark:divide-primary-700/20">
@@ -498,12 +636,19 @@ export const Moderation: React.FC = () => {
                                                         <td className="px-4 py-4 md:px-6">
                                                             <div className="w-64 h-4 rounded skeleton" />
                                                         </td>
+                                                        <td className="px-4 py-4 md:px-6">
+                                                            <div className="w-10 h-4 rounded skeleton" />
+                                                        </td>
                                                     </tr>
                                                 ))}
                                             </>
                                         ) : (threats?.data?.threats?.length ?? 0) > 0 ? (
                                             threats!.data!.threats!.map((threat) => (
-                                                <tr key={threat.id} className="transition-colors duration-200 hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-secondary-500/5">
+                                                <tr
+                                                    key={threat.id}
+                                                    onClick={() => setSelectedThreat(threat)}
+                                                    className="cursor-pointer transition-colors duration-200 hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-secondary-500/5"
+                                                >
                                                     <td className="px-4 py-4 text-sm whitespace-nowrap overflow-hidden text-secondary-900 dark:text-white md:px-6">
                                                         <div className="truncate">
                                                             <span className="hidden sm:inline">{new Date(threat.timestamp).toLocaleString()}</span>
@@ -558,11 +703,20 @@ export const Moderation: React.FC = () => {
                                                             {threat.reason}
                                                         </div>
                                                     </td>
+                                                    <td className="px-4 py-4 text-center md:px-6" onClick={(e) => e.stopPropagation()}>
+                                                        <button
+                                                            onClick={() => setSelectedThreat(threat)}
+                                                            className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-primary/20 text-primary-600 dark:text-primary-400 hover:bg-gradient-primary/30 hover:scale-110 transition-all duration-200"
+                                                            title="View details"
+                                                        >
+                                                            <EyeIcon className="w-5 h-5" />
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={7} className="px-4 py-8 text-center text-sm text-secondary-500 dark:text-secondary-400 md:px-6">
+                                                <td colSpan={8} className="px-4 py-8 text-center text-sm text-secondary-500 dark:text-secondary-400 md:px-6">
                                                     No threats found for the selected criteria
                                                 </td>
                                             </tr>
@@ -594,10 +748,332 @@ export const Moderation: React.FC = () => {
                                 >
                                     Next
                                 </button>
-                            </div>
+                                    </div>
                         </div>
                     )}
                 </div>
+                )}
+
+                {/* Threat Detail Modal - always mounted so it can show when selectedThreat is set */}
+                <Modal
+                    isOpen={!!selectedThreat}
+                    onClose={() => setSelectedThreat(null)}
+                    title="Threat Details"
+                    size="2xl"
+                >
+                    {selectedThreat && (
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Request ID</p>
+                                    <p className="mt-1 text-sm font-mono text-secondary-900 dark:text-white break-all">{selectedThreat.requestId}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Threat ID</p>
+                                    <p className="mt-1 text-sm font-mono text-secondary-900 dark:text-white break-all">{selectedThreat.id}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Timestamp</p>
+                                    <p className="mt-1 text-sm text-secondary-900 dark:text-white">{new Date(selectedThreat.timestamp).toLocaleString()}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Stage</p>
+                                    <div className="mt-1 flex items-center gap-2">
+                                        {getStageIcon(selectedThreat.stage)}
+                                        <span className="text-sm text-secondary-900 dark:text-white">{selectedThreat.stage}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Category</p>
+                                    <div className="mt-1">
+                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getThreatCategoryColor(selectedThreat.threatCategory)}`}>
+                                            {selectedThreat.threatCategory.replace(/_/g, ' ')}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Confidence</p>
+                                    <p className="mt-1 text-sm font-semibold text-secondary-900 dark:text-white">{formatPercentage(selectedThreat.confidence * 100)}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Cost Saved</p>
+                                    <p className="mt-1 text-sm font-semibold text-success-600 dark:text-success-400">{formatCurrency(selectedThreat.costSaved)}</p>
+                                </div>
+                                {selectedThreat.ipAddress && (
+                                    <div>
+                                        <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">IP Address</p>
+                                        <p className="mt-1 text-sm font-mono text-secondary-900 dark:text-white">{selectedThreat.ipAddress}</p>
+                                    </div>
+                                )}
+                            </div>
+                            <div>
+                                <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Reason</p>
+                                <p className="mt-1 text-sm text-secondary-900 dark:text-white">{selectedThreat.reason}</p>
+                            </div>
+                            {(selectedThreat.promptPreview || selectedThreat.promptHash) && (
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase">Prompt</p>
+                                    <div className="mt-1 p-3 rounded-lg bg-light-bg-300 dark:bg-dark-bg-300">
+                                        {selectedThreat.promptPreview && (
+                                            <p className="text-sm font-mono text-secondary-900 dark:text-white whitespace-pre-wrap break-words">{selectedThreat.promptPreview}</p>
+                                        )}
+                                        {selectedThreat.promptHash && (
+                                            <p className="mt-2 text-xs text-secondary-500 dark:text-secondary-400 font-mono">Hash: {selectedThreat.promptHash}</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            {selectedThreat.details && Object.keys(selectedThreat.details).length > 0 && (
+                                <div>
+                                    <p className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase mb-2">Details</p>
+                                    <div className="p-3 rounded-lg bg-light-bg-300 dark:bg-dark-bg-300 space-y-2">
+                                        {selectedThreat.details.method && <div><span className="text-xs text-secondary-500 dark:text-secondary-400">Method:</span> <span className="text-sm text-secondary-900 dark:text-white">{selectedThreat.details.method}</span></div>}
+                                        {selectedThreat.details.threatLevel && <div><span className="text-xs text-secondary-500 dark:text-secondary-400">Threat Level:</span> <span className="text-sm text-secondary-900 dark:text-white">{selectedThreat.details.threatLevel}</span></div>}
+                                        {selectedThreat.details.action && <div><span className="text-xs text-secondary-500 dark:text-secondary-400">Action:</span> <span className="text-sm text-secondary-900 dark:text-white">{selectedThreat.details.action}</span></div>}
+                                        {selectedThreat.details.matchedPatterns !== undefined && <div><span className="text-xs text-secondary-500 dark:text-secondary-400">Matched Patterns:</span> <span className="text-sm text-secondary-900 dark:text-white">{selectedThreat.details.matchedPatterns}</span></div>}
+                                        {selectedThreat.details.violationCategories?.length && (
+                                            <div>
+                                                <span className="text-xs text-secondary-500 dark:text-secondary-400">Violation Categories:</span>
+                                                <div className="mt-1 flex flex-wrap gap-1">
+                                                    {selectedThreat.details.violationCategories.map((cat: string) => (
+                                                        <span key={cat} className={`px-2 py-0.5 text-xs rounded border ${getThreatCategoryColor(cat)}`}>{cat.replace(/_/g, ' ')}</span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {selectedThreat.details.model && <div><span className="text-xs text-secondary-500 dark:text-secondary-400">Model:</span> <span className="text-sm text-secondary-900 dark:text-white">{selectedThreat.details.model}</span></div>}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </Modal>
+
+                {/* Security Analytics Tab */}
+                {activeTab === 'security' && (
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:gap-6">
+                        <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-5 lg:p-6">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <p className="text-xs font-medium text-secondary-600 dark:text-secondary-300 sm:text-sm">Threats Detected</p>
+                                    <p className="text-xl font-bold font-display text-secondary-900 dark:text-white sm:text-2xl">{data?.summary?.totalThreats ?? 0}</p>
+                                </div>
+                                <div className="p-2 bg-gradient-to-br rounded-xl from-danger-500/20 to-danger-600/20 dark:from-danger-900/30 dark:to-danger-800/30 sm:p-3">
+                                    <AlertTriangle className="w-4 h-4 text-danger-600 dark:text-danger-400 sm:w-5 sm:h-5" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-5 lg:p-6">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <p className="text-xs font-medium text-secondary-600 dark:text-secondary-300 sm:text-sm">Cost Saved</p>
+                                    <p className="text-xl font-bold font-display text-success-600 dark:text-success-400 sm:text-2xl">${(data?.summary?.totalCostSaved ?? 0).toFixed(2)}</p>
+                                </div>
+                                <div className="p-2 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20 dark:from-success-900/30 dark:to-success-800/30 sm:p-3">
+                                    <DollarSign className="w-4 h-4 text-success-600 dark:text-success-400 sm:w-5 sm:h-5" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-5 lg:p-6">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <p className="text-xs font-medium text-secondary-600 dark:text-secondary-300 sm:text-sm">Detection Rate</p>
+                                    <p className="text-xl font-bold font-display text-primary-600 dark:text-primary-400 sm:text-2xl">
+                                        {((data?.summary?.overallBlockRate ?? 0)).toFixed(1)}%
+                                    </p>
+                                </div>
+                                <div className="p-2 bg-gradient-to-br rounded-xl from-primary-500/20 to-primary-600/20 dark:from-primary-900/30 dark:to-primary-800/30 sm:p-3">
+                                    <Target className="w-4 h-4 text-primary-600 dark:text-primary-400 sm:w-5 sm:h-5" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-5 lg:p-6">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <p className="text-xs font-medium text-secondary-600 dark:text-secondary-300 sm:text-sm">Top Threat</p>
+                                    <p className="text-xs font-bold capitalize text-secondary-900 dark:text-white sm:text-sm">
+                                        {mostCommonThreat.replace(/_/g, ' ') || 'None'}
+                                    </p>
+                                </div>
+                                <div className="p-2 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20 dark:from-accent-900/30 dark:to-accent-800/30 sm:p-3">
+                                    <Search className="w-4 h-4 text-accent-600 dark:text-accent-400 sm:w-5 sm:h-5" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-5 lg:p-6">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <p className="text-xs font-medium text-secondary-600 dark:text-secondary-300 sm:text-sm">Avg Risk (Patterns)</p>
+                                    <p className="text-xl font-display font-bold text-secondary-900 dark:text-white sm:text-2xl">
+                                        {topRiskyPatterns.length > 0
+                                            ? ((topRiskyPatterns.reduce((s, p) => s + p.averageRiskScore, 0) / topRiskyPatterns.length) * 100).toFixed(1)
+                                            : '0.0'}%
+                                    </p>
+                                </div>
+                                <div className="p-2 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20 dark:from-highlight-900/30 dark:to-highlight-800/30 sm:p-3">
+                                    <BarChart3 className="w-4 h-4 text-highlight-600 dark:text-highlight-400 sm:w-5 sm:h-5" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+                        <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                            <div className="p-4 border-b border-primary-200/30 sm:p-5 lg:p-6">
+                                <h2 className="text-lg font-bold font-display text-secondary-900 dark:text-white sm:text-xl">Threat Distribution</h2>
+                            </div>
+                            <div className="p-4 sm:p-5 lg:p-6">
+                                <div className="space-y-2 sm:space-y-3">
+                                    {Object.entries(threatDistribution).map(([threat, count]) => (
+                                        <div key={threat} className="flex justify-between items-center">
+                                            <span className={`px-2 py-1 text-xs rounded-full truncate ${getThreatBadgeColor(threat)}`}>{threat.replace(/_/g, ' ')}</span>
+                                            <span className="text-xs font-semibold text-secondary-900 dark:text-white sm:text-sm ml-2 flex-shrink-0">{count}</span>
+                                        </div>
+                                    ))}
+                                    {Object.keys(threatDistribution).length === 0 && (
+                                        <p className="py-4 text-xs text-center text-secondary-500 dark:text-secondary-400 sm:text-sm">No threats detected recently</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                            <div className="p-4 border-b border-primary-200/30 sm:p-5 lg:p-6">
+                                <h2 className="text-lg font-bold font-display text-secondary-900 dark:text-white sm:text-xl">Top Risky Patterns</h2>
+                            </div>
+                            <div className="p-3 sm:p-4 lg:p-6">
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full text-xs sm:text-sm">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30">
+                                                <th className="py-2 px-2 font-semibold text-left text-secondary-700 dark:text-secondary-300 sm:px-4">Pattern</th>
+                                                <th className="py-2 px-2 font-semibold text-right text-secondary-700 dark:text-secondary-300 sm:px-4">Count</th>
+                                                <th className="py-2 px-2 font-semibold text-right text-secondary-700 dark:text-secondary-300 sm:px-4">Avg Risk</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {topRiskyPatterns.map((pattern, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/20 hover:bg-primary-50/30 dark:hover:bg-primary-900/10">
+                                                    <td className="py-2 px-2 font-mono text-xs text-secondary-700 dark:text-secondary-300 sm:px-4 max-w-[200px] truncate">{pattern.pattern}</td>
+                                                    <td className="py-2 px-2 text-right text-secondary-900 dark:text-white sm:px-4">{pattern.count}</td>
+                                                    <td className={`text-right py-2 px-2 font-semibold sm:px-4 ${getRiskScoreColor(pattern.averageRiskScore)}`}>
+                                                        {(pattern.averageRiskScore * 100).toFixed(1)}%
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {topRiskyPatterns.length === 0 && (
+                                                <tr>
+                                                    <td colSpan={3} className="py-4 text-center text-xs text-secondary-500 dark:text-secondary-400 sm:text-sm">No risky patterns detected</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                )}
+
+                {/* Human Reviews Tab */}
+                {activeTab === 'reviews' && (
+                <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="p-4 border-b border-primary-200/30 sm:p-5 lg:p-6">
+                        <h2 className="text-lg font-bold font-display text-secondary-900 dark:text-white sm:text-xl">Pending Human Reviews ({pendingReviews.length})</h2>
+                    </div>
+                    <div className="p-4 sm:p-5 lg:p-6">
+                        {pendingReviews.length > 0 ? (
+                            <div className="space-y-3 sm:space-y-4">
+                                {pendingReviews.map((review) => (
+                                    <div key={review.id} className="p-3 bg-gradient-to-br rounded-lg border glass border-warning-200/30 from-warning-50/30 to-accent-50/30 dark:from-warning-900/20 dark:to-accent-900/20 sm:p-4">
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex flex-wrap gap-2 items-center mb-2">
+                                                    <span className={`px-2 py-1 text-xs rounded-full ${getThreatBadgeColor(review.threatResult.threatCategory)}`}>
+                                                        {review.threatResult.threatCategory.replace(/_/g, ' ')}
+                                                    </span>
+                                                    <span className={`text-xs font-semibold sm:text-sm ${getRiskScoreColor(review.threatResult.riskScore || 0)}`}>
+                                                        Risk: {((review.threatResult.riskScore || 0) * 100).toFixed(0)}%
+                                                    </span>
+                                                </div>
+                                                <p className="mb-2 text-xs text-secondary-700 dark:text-secondary-300 sm:text-sm break-words">{review.threatResult.reason}</p>
+                                                <p className="text-xs text-secondary-500 dark:text-secondary-400 break-all">
+                                                    Request ID: {review.requestId} • Created: {new Date(review.createdAt).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <button
+                                                onClick={() => setSelectedReview(review)}
+                                                className="flex gap-2 items-center justify-center btn btn-secondary w-full sm:w-auto"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                                <span className="text-xs sm:text-sm">Review</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="py-8 text-center text-sm text-secondary-500 dark:text-secondary-400">No pending reviews</p>
+                        )}
+                    </div>
+                </div>
+                )}
+
+                {/* Human Review Modal */}
+                {selectedReview && (
+                    <Modal
+                        isOpen={!!selectedReview}
+                        onClose={() => setSelectedReview(null)}
+                        title="Security Review Required"
+                        size="2xl"
+                    >
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block mb-1 text-xs font-medium text-secondary-700 dark:text-secondary-300 sm:text-sm">Threat Category</label>
+                                <span className={`inline-block px-2 py-1 text-xs rounded-full ${getThreatBadgeColor(selectedReview.threatResult.threatCategory)}`}>
+                                    {selectedReview.threatResult.threatCategory.replace(/_/g, ' ')}
+                                </span>
+                            </div>
+                            <div>
+                                <label className="block mb-1 text-xs font-medium text-secondary-700 dark:text-secondary-300 sm:text-sm">Risk Score</label>
+                                <span className={`text-sm font-bold sm:text-base ${getRiskScoreColor(selectedReview.threatResult.riskScore || 0)}`}>
+                                    {((selectedReview.threatResult.riskScore || 0) * 100).toFixed(1)}%
+                                </span>
+                            </div>
+                            <div>
+                                <label className="block mb-1 text-xs font-medium text-secondary-700 dark:text-secondary-300 sm:text-sm">Detection Reason</label>
+                                <p className="p-3 text-xs rounded text-secondary-900 dark:text-white bg-secondary-50 dark:bg-secondary-900/20 sm:text-sm break-words">{selectedReview.threatResult.reason}</p>
+                            </div>
+                            <div>
+                                <label className="block mb-1 text-xs font-medium text-secondary-700 dark:text-secondary-300 sm:text-sm">Original Prompt (Sanitized)</label>
+                                <p className="overflow-auto p-3 max-h-32 text-xs rounded text-secondary-900 dark:text-white bg-secondary-50 dark:bg-secondary-900/20 sm:text-sm break-words">{selectedReview.originalPrompt}</p>
+                            </div>
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3 pt-2">
+                                <button
+                                    onClick={() => handleReviewDecision(selectedReview.id, 'approved')}
+                                    className="flex flex-1 gap-2 justify-center items-center btn btn-success w-full sm:w-auto"
+                                >
+                                    <CheckCircle className="w-4 h-4" />
+                                    Approve Request
+                                </button>
+                                <button
+                                    onClick={() => handleReviewDecision(selectedReview.id, 'denied')}
+                                    className="flex flex-1 gap-2 justify-center items-center btn btn-danger w-full sm:w-auto"
+                                >
+                                    <XCircle className="w-4 h-4" />
+                                    Deny Request
+                                </button>
+                                <button
+                                    onClick={() => setSelectedReview(null)}
+                                    className="flex gap-2 justify-center items-center btn btn-ghost w-full sm:w-auto"
+                                >
+                                    <X className="w-4 h-4" />
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
             </div>
         </div>
     );

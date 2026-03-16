@@ -1165,7 +1165,7 @@ const Memory: React.FC = () => {
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('insights');
 
-    if (!user) {
+    if (!user?.id) {
         return (
             <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6 flex items-center justify-center">
                 <div className="glass rounded-xl border border-danger-200/30 dark:border-danger-500/20 bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 p-6 text-center max-w-md">

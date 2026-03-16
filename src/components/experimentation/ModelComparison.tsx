@@ -10,10 +10,14 @@ import {
   Beaker,
   Rocket,
   Check,
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
 } from "lucide-react";
 import { ExperimentationService } from "../../services/experimentation.service";
 import { Modal } from "../common/Modal";
 import { useDebounce } from "../../hooks/useDebounce";
+import { AWS_BEDROCK_PRICING } from "../../utils/pricing";
 
 interface ModelConfig {
   provider: string;
@@ -27,6 +31,7 @@ interface AvailableModel {
   model: string;
   modelName?: string;
   modelId?: string;
+  status?: "available" | "unavailable";
   pricing: {
     input: number;
     output: number;
@@ -39,9 +44,53 @@ interface AvailableModel {
   notes?: string;
 }
 
+/** AI evaluation reasoning - can be string or per-criterion object from AI judge */
+type AIReasoning =
+  | string
+  | Record<
+      string,
+      string | { strengths?: string[]; weaknesses?: string[] } | undefined
+    >;
+
 interface ComparisonResult {
+  id?: string;
   model: string;
   provider: string;
+  response?: string;
+  bedrockOutput?: string;
+  metrics?: {
+    cost: number;
+    latency: number;
+    tokenCount: number;
+    qualityScore: number;
+    errorRate: number;
+  };
+  performance?: {
+    responseTime: number;
+    throughput: number;
+    reliability: number;
+  };
+  costBreakdown?: {
+    inputTokens: number;
+    outputTokens: number;
+    inputCost: number;
+    outputCost: number;
+    totalCost: number;
+  };
+  actualCost?: number;
+  executionTime?: number;
+  aiEvaluation?: {
+    model?: string;
+    overall_score?: number;
+    overallScore?: number;
+    criteria_scores?: Record<string, number>;
+    criterion_scores?: Record<string, number>;
+    criteriaScores?: Record<string, number>;
+    reasoning?: AIReasoning;
+    recommendation?: string;
+    strengths?: string[];
+    weaknesses?: string[];
+  };
   actualUsage?: {
     totalCalls: number;
     avgCost: number;
@@ -52,7 +101,7 @@ interface ComparisonResult {
   };
   noUsageData?: boolean;
   estimatedCostPer1K?: number;
-  recommendation: string;
+  recommendation?: string;
   analysis?: {
     strengths: string[];
     considerations: string[];
@@ -62,6 +111,12 @@ interface ComparisonResult {
     outputCost: number;
     contextWindow: number;
   };
+}
+
+interface ComparisonAnalysis {
+  winner?: { model: string; reason: string };
+  costPerformanceAnalysis?: string;
+  useCaseRecommendations?: string[];
 }
 
 const ModelComparison: React.FC = () => {
@@ -85,10 +140,15 @@ const ModelComparison: React.FC = () => {
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
   const [realTimeMode, setRealTimeMode] = useState(false);
   const [progressData, setProgressData] = useState<any>(null);
+  const [comparisonAnalysis, setComparisonAnalysis] =
+    useState<ComparisonAnalysis | null>(null);
   const [comparisonMode, setComparisonMode] = useState<
     "quality" | "cost" | "speed" | "comprehensive"
   >("comprehensive");
   const [executeOnBedrock, setExecuteOnBedrock] = useState(true);
+  const [modelsLoading, setModelsLoading] = useState(true);
+  const [allModels, setAllModels] = useState<AvailableModel[]>([]);
+  const [expandedResponseIndex, setExpandedResponseIndex] = useState<number | null>(null);
 
   // Add debouncing for prompt to prevent API calls on every keystroke
   const debouncedPrompt = useDebounce(prompt, 800); // Wait 800ms after user stops typing
@@ -127,50 +187,92 @@ const ModelComparison: React.FC = () => {
 
   const loadAvailableModels = async () => {
     try {
+      setModelsLoading(true);
       const response = await ExperimentationService.getAvailableModels();
-      console.log("Available models response:", response); // Debug log
 
-      // Normalize the response data structure
-      const normalizedModels = (Array.isArray(response) ? response : []).map(
-        (model: any) => ({
-          provider: model.provider || "Unknown",
-          model: model.model || model.modelId || model.modelName || "",
-          modelName: model.modelName || model.model || "",
-          pricing: {
-            input: model.pricing?.input || 0,
-            output: model.pricing?.output || 0,
-            unit: model.pricing?.unit || "Per 1M tokens",
-          },
-          capabilities: model.capabilities || ["text"],
-          contextWindow: model.contextWindow || 8192,
-          category: model.category || "general",
-          isLatest: model.isLatest !== false,
-          notes: model.notes || "",
-        }),
+      const rawModels = Array.isArray(response) ? response : [];
+      const normalize = (model: Record<string, unknown>) => ({
+        provider: (model.provider as string) || "Unknown",
+        model: String(model.model || model.modelId || model.modelName || ""),
+        modelName: String(model.modelName || model.model || ""),
+        status: (model.status as "available" | "unavailable") ?? "available",
+        pricing: {
+          input: Number((model.pricing as { input?: number })?.input) || 0,
+          output: Number((model.pricing as { output?: number })?.output) || 0,
+          unit: String((model.pricing as { unit?: string })?.unit) || "Per 1M tokens",
+        },
+        capabilities: (model.capabilities as string[]) || ["text"],
+        contextWindow: Number(model.contextWindow) || 8192,
+        category: (model.category as string) || "general",
+        isLatest: model.isLatest !== false,
+        notes: (model.notes as string) || "",
+      });
+
+      const normalizedAll = rawModels.map(normalize);
+      const availableOnly = normalizedAll.filter(
+        (m) => !m.status || m.status === "available",
       );
 
-      console.log("Normalized models:", normalizedModels);
-      console.log("Sample model pricing:", normalizedModels[0]?.pricing);
-      setAvailableModels(normalizedModels);
+      setAllModels(normalizedAll);
+      setAvailableModels(availableOnly);
+      setError(null);
 
-      if (normalizedModels.length === 0) {
+      if (availableOnly.length === 0 && normalizedAll.length > 0) {
+        setError(
+          "No models available. All models from the backend are currently unavailable.",
+        );
+      } else if (availableOnly.length === 0) {
         setError(
           "No models available from the backend. Please check your AWS Bedrock configuration.",
         );
-      } else {
-        setError(null); // Clear any previous errors
-        // Trigger initial cost estimation if we have selected models
-        if (selectedModels.length > 0) {
-          setTimeout(estimateComparisonCost, 200);
-        }
       }
-    } catch (error: any) {
+
+      if (selectedModels.length > 0) {
+        setTimeout(estimateComparisonCost, 200);
+      }
+    } catch (error: unknown) {
       console.error("Error loading available models:", error);
       setError(
         "Failed to load available models: " +
-        (error.message || "Unknown error"),
+          (error instanceof Error ? error.message : "Unknown error"),
       );
-      setAvailableModels([]); // Set empty array instead of fallback models
+      setAvailableModels([]);
+      setAllModels([]);
+      // Fallback: use AWS Bedrock pricing for common models
+      try {
+        const { AWS_BEDROCK_PRICING } = await import("../../utils/pricing");
+        const fallback = AWS_BEDROCK_PRICING.filter(
+          (m) =>
+            (m.category === "text" || m.category === "multimodal") &&
+            m.inputPrice > 0 &&
+            m.outputPrice > 0,
+        )
+          .sort((a, b) => a.inputPrice + a.outputPrice - (b.inputPrice + b.outputPrice))
+          .slice(0, 15)
+          .map((m) => ({
+            provider: m.provider,
+            model: m.model,
+            modelName: m.model,
+            status: "available" as const,
+            pricing: {
+              input: m.inputPrice * 1000,
+              output: m.outputPrice * 1000,
+              unit: "Per 1M tokens",
+            },
+            capabilities: m.capabilities || ["text"],
+            contextWindow: m.contextWindow || 8192,
+            category: m.category || "general",
+            isLatest: m.isLatest !== false,
+            notes: "",
+          }));
+        setAvailableModels(fallback);
+        setAllModels(fallback);
+        setError("Using fallback model list. Check your connection.");
+      } catch {
+        // Keep empty
+      }
+    } finally {
+      setModelsLoading(false);
     }
   };
 
@@ -323,6 +425,8 @@ const ModelComparison: React.FC = () => {
     setError(null);
     setResults([]);
     setProgressData(null);
+    setComparisonAnalysis(null);
+    setExpandedResponseIndex(null);
 
     try {
       if (realTimeMode) {
@@ -402,6 +506,8 @@ const ModelComparison: React.FC = () => {
       `${API_URL}/api/experimentation/comparison-progress/${sessionId}`,
     );
 
+    let hasCompleted = false;
+
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -418,9 +524,10 @@ const ModelComparison: React.FC = () => {
 
           case "progress":
             setProgressData(data);
-
             if (data.stage === "completed" && data.results) {
+              hasCompleted = true;
               setResults(data.results);
+              setComparisonAnalysis(data.analysis ?? null);
               setIsRunning(false);
             } else if (data.stage === "failed") {
               setError(data.error || "Comparison failed");
@@ -430,13 +537,27 @@ const ModelComparison: React.FC = () => {
 
           case "close":
             eventSource.close();
-            if (!progressData || progressData.stage !== "completed") {
-              setIsRunning(false);
-            }
+            if (!hasCompleted) setIsRunning(false);
             break;
 
           case "heartbeat":
             // Keep connection alive
+            break;
+
+          default:
+            // Backend sends progress events without type (sessionId, stage, progress, message)
+            if (data.stage != null) {
+              setProgressData(data);
+              if (data.stage === "completed" && data.results) {
+                hasCompleted = true;
+                setResults(data.results);
+                setComparisonAnalysis(data.analysis ?? null);
+                setIsRunning(false);
+              } else if (data.stage === "failed") {
+                setError(data.error || "Comparison failed");
+                setIsRunning(false);
+              }
+            }
             break;
         }
       } catch (error) {
@@ -444,11 +565,13 @@ const ModelComparison: React.FC = () => {
       }
     };
 
-    eventSource.onerror = (error) => {
-      console.error("SSE connection error:", error);
+    eventSource.onerror = () => {
+      eventSource.close();
+      // EventSource fires error when server closes connection (e.g. after completion).
+      // Treat as success if we already received completed results.
+      if (hasCompleted) return;
       setError("Lost connection to comparison stream");
       setIsRunning(false);
-      eventSource.close();
     };
 
     // Clean up on unmount
@@ -488,10 +611,35 @@ const ModelComparison: React.FC = () => {
     );
     if (
       modelData?.pricing &&
-      modelData.pricing.input &&
-      modelData.pricing.output
+      (modelData.pricing.input > 0 || modelData.pricing.output > 0)
     ) {
       return modelData.pricing;
+    }
+
+    // Normalize model ID: strip AWS region prefix (us., eu., ap-south-1., etc.)
+    const withoutRegion = model.replace(
+      /^(us|eu|ap|sa|ca|me|af)(-[a-z0-9-]+)?\./i,
+      "",
+    );
+
+    // AWS Bedrock pricing (inputPrice/outputPrice are $/1K; convert to $/1M)
+    const bedrockMatch = AWS_BEDROCK_PRICING.find(
+      (m) =>
+        m.model === model ||
+        m.model === withoutRegion ||
+        model.includes(m.model) ||
+        withoutRegion.includes(m.model),
+    );
+    if (
+      bedrockMatch &&
+      bedrockMatch.inputPrice > 0 &&
+      bedrockMatch.outputPrice > 0
+    ) {
+      return {
+        input: bedrockMatch.inputPrice * 1000,
+        output: bedrockMatch.outputPrice * 1000,
+        unit: "Per 1M tokens",
+      };
     }
 
     // Fallback pricing data for common models
@@ -557,6 +705,11 @@ const ModelComparison: React.FC = () => {
         output: 15.0,
         unit: "Per 1M tokens",
       },
+      "anthropic.claude-sonnet-4-5-20250929-v1:0": {
+        input: 3.0,
+        output: 15.0,
+        unit: "Per 1M tokens",
+      },
       "anthropic.claude-3-5-haiku-20241022-v1:0": {
         input: 0.8,
         output: 4.0,
@@ -567,7 +720,7 @@ const ModelComparison: React.FC = () => {
         output: 25.0,
         unit: "Per 1M tokens",
       },
-      "anthropic.claude-sonnet-4-6-v1:0": {
+      "anthropic.claude-sonnet-4-6": {
         input: 3.0,
         output: 15.0,
         unit: "Per 1M tokens",
@@ -1138,10 +1291,19 @@ const ModelComparison: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2 sm:gap-0">
             <label className="label text-xs sm:text-sm">
               Selected Models ({selectedModels.length})
+              {availableModels.length > 0 && (
+                <span className="font-normal text-primary-600 dark:text-primary-400 ml-1">
+                  • {availableModels.length} available
+                </span>
+              )}
             </label>
             <button
               onClick={addModel}
-              disabled={selectedModels.length >= availableModels.length}
+              disabled={
+                modelsLoading ||
+                selectedModels.length >= availableModels.length ||
+                availableModels.length === 0
+              }
               className="btn btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm w-full sm:w-auto"
             >
               <Plus className="w-4 h-4" />
@@ -1160,38 +1322,73 @@ const ModelComparison: React.FC = () => {
                     <select
                       value={`${model.provider}:${model.model}`}
                       onChange={(e) => {
-                        console.log(
-                          "Dropdown selection changed to:",
-                          e.target.value,
-                        );
-                        const [provider, ...modelParts] =
-                          e.target.value.split(":");
-                        const selectedModel = modelParts.join(":"); // Handle model names with colons
-
-                        console.log("Parsed selection:", {
-                          provider,
-                          model: selectedModel,
-                        });
-
-                        // Update both provider and model at once to avoid conflicts
+                        const val = e.target.value;
+                        if (!val) return;
+                        const [provider, ...modelParts] = val.split(":");
+                        const selectedModel = modelParts.join(":");
                         const updated = [...selectedModels];
                         updated[index] = {
                           ...updated[index],
-                          provider: provider,
+                          provider,
                           model: selectedModel,
                         };
                         setSelectedModels(updated);
                       }}
                       className="input text-xs sm:text-sm w-full"
                     >
-                      {availableModels.map((m) => (
-                        <option
-                          key={`${m.provider}:${m.model}`}
-                          value={`${m.provider}:${m.model}`}
-                        >
-                          {m.provider} - {m.modelName || m.model}
-                        </option>
-                      ))}
+                      {modelsLoading ? (
+                        <option value="">Loading models...</option>
+                      ) : (
+                        <>
+                          {allModels.length === 0 && (
+                            <option value="">No models available</option>
+                          )}
+                          {(() => {
+                            const available = allModels.filter(
+                              (m) => !m.status || m.status === "available",
+                            );
+                            const unavailable = allModels.filter(
+                              (m) => m.status === "unavailable",
+                            );
+                            const currentKey = `${model.provider}:${model.model}`;
+                            const currentInList = allModels.some(
+                              (m) => `${m.provider}:${m.model}` === currentKey,
+                            );
+                            return (
+                              <>
+                                {!currentInList && (
+                                  <option value={currentKey}>
+                                    {model.provider} - {model.model}
+                                  </option>
+                                )}
+                                {available.map((m) => (
+                                  <option
+                                    key={`${m.provider}:${m.model}`}
+                                    value={`${m.provider}:${m.model}`}
+                                  >
+                                    {m.provider} - {m.modelName || m.model}
+                                  </option>
+                                ))}
+                                {unavailable.length > 0 && (
+                                  <>
+                                    <option disabled>── Unavailable ──</option>
+                                    {unavailable.map((m) => (
+                                      <option
+                                        key={`${m.provider}:${m.model}`}
+                                        value={`${m.provider}:${m.model}`}
+                                        disabled
+                                      >
+                                        {m.provider} - {m.modelName || m.model}{" "}
+                                        (unavailable)
+                                      </option>
+                                    ))}
+                                  </>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </>
+                      )}
                     </select>
                     {/* Show duplicate warning */}
                     {selectedModels.filter(
@@ -1211,15 +1408,32 @@ const ModelComparison: React.FC = () => {
                         model.provider,
                         model.model,
                       );
+                      if (!pricing) return null;
+                      const estCost1K =
+                        (pricing.input + pricing.output) / 2000;
+                      const modelMeta = availableModels.find(
+                        (m) => m.provider === model.provider && m.model === model.model,
+                      ) ?? AWS_BEDROCK_PRICING.find(
+                        (m) =>
+                          m.model === model.model ||
+                          model.model.includes(m.model),
+                      );
                       return (
-                        pricing && (
-                          <div className="glass p-2 rounded-lg border border-primary-200/30 mt-2">
-                            <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
-                              <span className="font-display font-semibold text-success-600">Input:</span> ${pricing.input.toFixed(2)}/1M •
-                              <span className="font-display font-semibold text-primary-600">Output:</span> ${pricing.output.toFixed(2)}/1M
-                            </div>
+                        <div className="glass p-2 sm:p-3 rounded-lg border border-primary-200/30 mt-2 space-y-1">
+                          <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            <span className="font-display font-semibold text-success-600">Input:</span> ${pricing.input.toFixed(2)}/1M •
+                            <span className="font-display font-semibold text-primary-600">Output:</span> ${pricing.output.toFixed(2)}/1M
                           </div>
-                        )
+                          <div className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                            <span className="font-display font-semibold">Est. Cost/1K:</span> ${estCost1K.toFixed(6)}
+                            {modelMeta?.contextWindow && (
+                              <>
+                                {" • "}
+                                <span className="font-display font-semibold">Context:</span> {modelMeta.contextWindow.toLocaleString()} tokens
+                              </>
+                            )}
+                          </div>
+                        </div>
                       );
                     })()}
                   </div>
@@ -1279,9 +1493,22 @@ const ModelComparison: React.FC = () => {
                 <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <Beaker className="h-8 w-8 text-white" />
                 </div>
-                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                  No models selected. Click <span className="font-display font-semibold text-primary-500">"Add Model"</span> to get started.
-                </div>
+                {modelsLoading ? (
+                  <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    Loading models...
+                  </div>
+                ) : (
+                  <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    No models selected. Click{" "}
+                    <span className="font-display font-semibold text-primary-500">"Add Model"</span>{" "}
+                    to get started.
+                    {availableModels.length > 0 && (
+                      <span className="block mt-1 text-xs text-primary-600 dark:text-primary-400">
+                        {availableModels.length} model{availableModels.length !== 1 ? "s" : ""} available
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1373,19 +1600,82 @@ const ModelComparison: React.FC = () => {
 
           {results.length > 0 && (
             <div className="space-y-4 sm:space-y-6">
-              {results.map((result, index) => (
+              {/* Winner banner - real-time comparison */}
+              {comparisonAnalysis?.winner && (
+                <div className="glass p-4 sm:p-5 shadow-lg backdrop-blur-xl border-2 border-primary-400/50 rounded-xl bg-gradient-to-r from-primary-500/10 to-success-500/10 animate-fade-in">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl" aria-hidden>
+                      &#127942;
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-base sm:text-lg font-display font-bold text-primary-700 dark:text-primary-300">
+                        Winner: {comparisonAnalysis.winner.model}
+                      </h4>
+                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1 leading-relaxed">
+                        {comparisonAnalysis.winner.reason}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {results.map((result, index) => {
+                const isRealTime =
+                  result.costBreakdown != null ||
+                  result.aiEvaluation != null;
+                const overallScore =
+                  result.aiEvaluation?.overall_score ??
+                  result.aiEvaluation?.overallScore;
+                const criteriaScores =
+                  result.aiEvaluation?.criteria_scores ??
+                  result.aiEvaluation?.criterion_scores ??
+                  result.aiEvaluation?.criteriaScores ??
+                  {};
+                const actualCost =
+                  result.actualCost ??
+                  result.costBreakdown?.totalCost ??
+                  0;
+                const latency =
+                  result.executionTime ?? result.metrics?.latency ?? 0;
+                const inputTokens =
+                  result.costBreakdown?.inputTokens ?? 0;
+                const outputTokens =
+                  result.costBreakdown?.outputTokens ?? 0;
+                const recommendationText =
+                  result.aiEvaluation?.recommendation ??
+                  result.recommendation ??
+                  "";
+
+                return (
                 <div
-                  key={index}
+                  key={result.id ?? index}
                   className="glass p-4 sm:p-5 md:p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 sm:hover:scale-105 transition-all duration-300 animate-fade-in"
                 >
                   <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-3 sm:gap-0">
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-lg sm:text-xl font-display font-bold gradient-text break-words">
-                        {result.provider} - {result.model}
-                      </h4>
-                      <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
-                        {result.recommendation}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h4 className="text-lg sm:text-xl font-display font-bold gradient-text break-words">
+                          {result.provider} - {result.model}
+                        </h4>
+                        {isRealTime && overallScore != null && (
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                              overallScore >= 90
+                                ? "bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300"
+                                : overallScore >= 75
+                                  ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                                  : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+                            }`}
+                          >
+                            Score: {overallScore}/100
+                          </span>
+                        )}
+                      </div>
+                      {(recommendationText || !isRealTime) && (
+                        <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
+                          {recommendationText || result.recommendation}
+                        </p>
+                      )}
                     </div>
                     <button
                       onClick={() => {
@@ -1434,9 +1724,162 @@ const ModelComparison: React.FC = () => {
                         </div>
                       </div>
                     </div>
+                  ) : isRealTime ? (
+                    <div className="space-y-4">
+                      {/* Row 2: 4-column metric grid */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                          <div className="text-xs sm:text-sm font-display font-semibold text-success-700 dark:text-success-300">
+                            Actual Cost
+                          </div>
+                          <div className="text-lg sm:text-xl font-display font-bold text-success-600 dark:text-success-400">
+                            ${actualCost.toFixed(4)}
+                          </div>
+                        </div>
+                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                          <div className="text-xs sm:text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
+                            Latency
+                          </div>
+                          <div className="text-lg sm:text-xl font-display font-bold text-accent-600 dark:text-accent-400">
+                            {latency.toLocaleString()}ms
+                          </div>
+                        </div>
+                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                          <div className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
+                            Input Tokens
+                          </div>
+                          <div className="text-lg sm:text-xl font-display font-bold gradient-text">
+                            {inputTokens.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
+                          <div className="text-xs sm:text-sm font-display font-semibold text-secondary-700 dark:text-secondary-300">
+                            Output Tokens
+                          </div>
+                          <div className="text-lg sm:text-xl font-display font-bold text-secondary-600 dark:text-secondary-400">
+                            {outputTokens.toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Row 3: Pricing rates ($/1M tokens) */}
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                        <div className="glass rounded-xl p-3 bg-gradient-primary/10 border-l-4 border-primary-500">
+                          <div className="text-xs font-display font-semibold text-primary-700 dark:text-primary-300">
+                            Input Rate
+                          </div>
+                          <div className="text-sm font-display font-bold gradient-text">
+                            $
+                            {result.costBreakdown?.inputTokens
+                              ? (
+                                  (result.costBreakdown.inputCost /
+                                    result.costBreakdown.inputTokens) *
+                                  1_000_000
+                                ).toFixed(2)
+                              : getModelPricing(
+                                    result.provider,
+                                    result.model,
+                                  )?.input?.toFixed(2) ?? "N/A"}
+                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                              /1M tokens
+                            </span>
+                          </div>
+                        </div>
+                        <div className="glass rounded-xl p-3 bg-gradient-success/10 border-l-4 border-success-500">
+                          <div className="text-xs font-display font-semibold text-success-700 dark:text-success-300">
+                            Output Rate
+                          </div>
+                          <div className="text-sm font-display font-bold text-success-600 dark:text-success-400">
+                            $
+                            {result.costBreakdown?.outputTokens
+                              ? (
+                                  (result.costBreakdown.outputCost /
+                                    result.costBreakdown.outputTokens) *
+                                  1_000_000
+                                ).toFixed(2)
+                              : getModelPricing(
+                                    result.provider,
+                                    result.model,
+                                  )?.output?.toFixed(2) ?? "N/A"}
+                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                              /1M tokens
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Row 4: Criteria score progress bars */}
+                      {Object.keys(criteriaScores).length > 0 && (
+                        <div className="space-y-2">
+                          <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                            Evaluation Criteria
+                          </div>
+                          <div className="space-y-2">
+                            {Object.entries(criteriaScores).map(
+                              ([criterion, score]) => (
+                                <div
+                                  key={criterion}
+                                  className="flex items-center gap-2"
+                                >
+                                  <span className="text-xs font-body capitalize w-24 sm:w-28 truncate">
+                                    {criterion.replace(/_/g, " ")}
+                                  </span>
+                                  <div className="flex-1 h-2 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full bg-primary-500 rounded-full transition-all duration-500"
+                                      style={{
+                                        width: `${Math.min(
+                                          100,
+                                          Math.max(0, score),
+                                        )}%`,
+                                      }}
+                                    />
+                                  </div>
+                                  <span className="text-xs font-display font-semibold w-10 text-right">
+                                    {score}%
+                                  </span>
+                                </div>
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Row 5: Model response - collapsible */}
+                      {(result.response ?? result.bedrockOutput) && (
+                        <div className="mt-4 pt-4 border-t border-primary-200/30">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedResponseIndex(
+                                expandedResponseIndex === index ? null : index,
+                              )
+                            }
+                            className="flex items-center gap-2 w-full text-left text-sm font-display font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                            {expandedResponseIndex === index
+                              ? "Hide model response"
+                              : "View model response"}
+                            {expandedResponseIndex === index ? (
+                              <ChevronUp className="w-4 h-4" />
+                            ) : (
+                              <ChevronDown className="w-4 h-4" />
+                            )}
+                          </button>
+                          {expandedResponseIndex === index && (
+                            <div className="mt-2 max-h-48 overflow-y-auto rounded-lg border border-primary-200/30 bg-light-bg-100 dark:bg-dark-bg-100 p-4">
+                              <pre className="text-xs text-secondary-700 dark:text-secondary-300 whitespace-pre-wrap font-sans">
+                                {result.response ?? result.bedrockOutput}
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   ) : (
                     <div className="space-y-3">
-                      {/* Pricing Information */}
+                      {/* Pricing Information - legacy static comparison */}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                         <div className="glass rounded-xl p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
                           <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
@@ -1545,53 +1988,136 @@ const ModelComparison: React.FC = () => {
                             )}
                           </div>
                         )}
+
+                        {/* Model response - collapsible (legacy branch) */}
+                        {(result.response ?? result.bedrockOutput) && (
+                          <div className="mt-4 pt-4 border-t border-primary-200/30">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setExpandedResponseIndex(
+                                  expandedResponseIndex === index ? null : index,
+                                )
+                              }
+                              className="flex items-center gap-2 w-full text-left text-sm font-display font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                            >
+                              <MessageSquare className="w-4 h-4" />
+                              {expandedResponseIndex === index
+                                ? "Hide model response"
+                                : "View model response"}
+                              {expandedResponseIndex === index ? (
+                                <ChevronUp className="w-4 h-4" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4" />
+                              )}
+                            </button>
+                            {expandedResponseIndex === index && (
+                              <div className="mt-2 max-h-48 overflow-y-auto rounded-lg border border-primary-200/30 bg-light-bg-100 dark:bg-dark-bg-100 p-4">
+                                <pre className="text-xs text-secondary-700 dark:text-secondary-300 whitespace-pre-wrap font-sans">
+                                  {result.response ?? result.bedrockOutput}
+                                </pre>
+                              </div>
+                            )}
+                          </div>
+                        )}
                     </div>
                   )}
                 </div>
-              ))}
+                );
+              })}
 
-              {currentExperiment && currentExperiment.results && (
+              {/* Comparison summary - real-time (comparisonAnalysis) or static (currentExperiment) */}
+              {(comparisonAnalysis || (currentExperiment && currentExperiment.results)) && (
                 <div className="mt-8 glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
                   <h4 className="text-lg font-display font-bold gradient-text mb-4">
                     Overall Analysis
                   </h4>
-                  <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary mb-4 leading-relaxed">
-                    {currentExperiment.results.recommendation}
-                  </p>
 
-                  {currentExperiment.results.costComparison && (
-                    <div className="glass p-3 rounded-xl border border-success-200/30 bg-success-500/5 mb-3">
-                      <div className="text-sm font-body text-success-700 dark:text-success-300">
-                        <span className="font-display font-semibold">Cost Comparison:</span>{" "}
-                        {currentExperiment.results.costComparison}
+                  {comparisonAnalysis ? (
+                    <>
+                      {results.length > 0 && (
+                        <div className="glass p-3 rounded-xl border border-success-200/30 bg-success-500/5 mb-3">
+                          <div className="text-sm font-body text-success-700 dark:text-success-300">
+                            <span className="font-display font-semibold">Total session cost:</span>{" "}
+                            $
+                            {results
+                              .reduce(
+                                (sum, r) =>
+                                  sum +
+                                  (r.actualCost ?? r.costBreakdown?.totalCost ?? 0),
+                                0,
+                              )
+                              .toFixed(4)}
+                          </div>
+                        </div>
+                      )}
+
+                      {comparisonAnalysis.costPerformanceAnalysis && (
+                        <div className="glass p-3 rounded-xl border border-primary-200/30 bg-primary-500/5 mb-3">
+                          <div className="text-sm font-body text-primary-700 dark:text-primary-300">
+                            <span className="font-display font-semibold">Cost & performance:</span>{" "}
+                            {comparisonAnalysis.costPerformanceAnalysis}
+                          </div>
+                        </div>
+                      )}
+
+                      {comparisonAnalysis.useCaseRecommendations &&
+                        comparisonAnalysis.useCaseRecommendations.length > 0 && (
+                          <div className="glass p-3 rounded-xl border border-accent-200/30 bg-accent-500/5 mb-3">
+                            <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300 mb-2">
+                              Use case recommendations
+                            </div>
+                            <ul className="text-sm font-body text-accent-600 dark:text-accent-400 space-y-1 list-disc list-inside">
+                              {comparisonAnalysis.useCaseRecommendations.map(
+                                (rec, i) => (
+                                  <li key={i}>{rec}</li>
+                                ),
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary mb-4 leading-relaxed">
+                        {currentExperiment.results.recommendation}
+                      </p>
+
+                      {currentExperiment.results.costComparison && (
+                        <div className="glass p-3 rounded-xl border border-success-200/30 bg-success-500/5 mb-3">
+                          <div className="text-sm font-body text-success-700 dark:text-success-300">
+                            <span className="font-display font-semibold">Cost Comparison:</span>{" "}
+                            {currentExperiment.results.costComparison}
+                          </div>
+                        </div>
+                      )}
+
+                      {currentExperiment.results.useCaseAnalysis && (
+                        <div className="glass p-3 rounded-xl border border-primary-200/30 bg-primary-500/5 mb-3">
+                          <div className="text-sm font-body text-primary-700 dark:text-primary-300">
+                            <span className="font-display font-semibold">Use Case Analysis:</span>{" "}
+                            {currentExperiment.results.useCaseAnalysis}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="glass p-3 rounded-xl border border-accent-200/30 bg-accent-500/5">
+                        <div className="text-xs font-body text-accent-700 dark:text-accent-300">
+                          <span className="font-display font-semibold">Confidence:</span>{" "}
+                          <span className="gradient-text font-display font-bold">
+                            {(
+                              (currentExperiment.metadata.confidence || 0) * 100
+                            ).toFixed(1)}%
+                          </span>
+                          {" "} • Based on{" "}
+                          <span className="font-display font-semibold">
+                            {currentExperiment.results.basedOnActualUsage || 0}
+                          </span>{" "}
+                          models with usage data
+                        </div>
                       </div>
-                    </div>
+                    </>
                   )}
-
-                  {currentExperiment.results.useCaseAnalysis && (
-                    <div className="glass p-3 rounded-xl border border-primary-200/30 bg-primary-500/5 mb-3">
-                      <div className="text-sm font-body text-primary-700 dark:text-primary-300">
-                        <span className="font-display font-semibold">Use Case Analysis:</span>{" "}
-                        {currentExperiment.results.useCaseAnalysis}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="glass p-3 rounded-xl border border-accent-200/30 bg-accent-500/5">
-                    <div className="text-xs font-body text-accent-700 dark:text-accent-300">
-                      <span className="font-display font-semibold">Confidence:</span>{" "}
-                      <span className="gradient-text font-display font-bold">
-                        {(
-                          (currentExperiment.metadata.confidence || 0) * 100
-                        ).toFixed(1)}%
-                      </span>
-                      {" "} • Based on{" "}
-                      <span className="font-display font-semibold">
-                        {currentExperiment.results.basedOnActualUsage || 0}
-                      </span>{" "}
-                      models with usage data
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
@@ -1608,17 +2134,230 @@ const ModelComparison: React.FC = () => {
         >
           <div className="space-y-6">
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-2">
+              <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                 Recommendation
               </h4>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-800">
-                  {selectedResult.recommendation}
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <p className="text-sm text-gray-800 dark:text-gray-200">
+                  {selectedResult.aiEvaluation?.recommendation ??
+                    selectedResult.recommendation ??
+                    "—"}
                 </p>
               </div>
             </div>
 
-            {selectedResult.actualUsage ? (
+            {(selectedResult.costBreakdown != null ||
+              selectedResult.aiEvaluation != null) ? (
+              <div className="space-y-4">
+                {/* Token cost breakdown table */}
+                {selectedResult.costBreakdown && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                      Token Cost Breakdown
+                    </h4>
+                    <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                      <table className="min-w-full text-sm">
+                        <thead className="bg-gray-100 dark:bg-gray-800">
+                          <tr>
+                            <th className="px-4 py-2 text-left font-semibold text-gray-900 dark:text-gray-100">
+                              Metric
+                            </th>
+                            <th className="px-4 py-2 text-right font-semibold text-gray-900 dark:text-gray-100">
+                              Value
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                          <tr>
+                            <td className="px-4 py-2 text-gray-700 dark:text-gray-300">
+                              Input Tokens
+                            </td>
+                            <td className="px-4 py-2 text-right font-mono">
+                              {selectedResult.costBreakdown.inputTokens.toLocaleString()}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-2 text-gray-700 dark:text-gray-300">
+                              Output Tokens
+                            </td>
+                            <td className="px-4 py-2 text-right font-mono">
+                              {selectedResult.costBreakdown.outputTokens.toLocaleString()}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-2 text-gray-700 dark:text-gray-300">
+                              Input Cost
+                            </td>
+                            <td className="px-4 py-2 text-right font-mono">
+                              $
+                              {selectedResult.costBreakdown.inputCost.toFixed(6)}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-2 text-gray-700 dark:text-gray-300">
+                              Output Cost
+                            </td>
+                            <td className="px-4 py-2 text-right font-mono">
+                              $
+                              {selectedResult.costBreakdown.outputCost.toFixed(6)}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-2 text-gray-700 dark:text-gray-300 font-semibold">
+                              Total Cost
+                            </td>
+                            <td className="px-4 py-2 text-right font-mono font-semibold">
+                              $
+                              {selectedResult.costBreakdown.totalCost.toFixed(4)}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Per-criterion reasoning */}
+                {selectedResult.aiEvaluation?.reasoning &&
+                  typeof selectedResult.aiEvaluation.reasoning === "object" && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                        Evaluation Reasoning
+                      </h4>
+                      <div className="space-y-3">
+                        {Object.entries(
+                          selectedResult.aiEvaluation.reasoning as Record<
+                            string,
+                            unknown
+                          >,
+                        ).map(([criterion, value]) => {
+                          if (typeof value === "string") {
+                            return (
+                              <div
+                                key={criterion}
+                                className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3"
+                              >
+                                <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 capitalize mb-1">
+                                  {criterion.replace(/_/g, " ")}
+                                </div>
+                                <p className="text-sm text-gray-800 dark:text-gray-200">
+                                  {value}
+                                </p>
+                              </div>
+                            );
+                          }
+                          if (
+                            value &&
+                            typeof value === "object" &&
+                            !Array.isArray(value)
+                          ) {
+                            const v = value as {
+                              strengths?: string[];
+                              weaknesses?: string[];
+                            };
+                            return (
+                              <div
+                                key={criterion}
+                                className="space-y-2"
+                              >
+                                <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 capitalize">
+                                  {criterion.replace(/_/g, " ")}
+                                </div>
+                                {v.strengths?.length ? (
+                                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                                    <div className="text-xs font-semibold text-green-800 dark:text-green-300 mb-1">
+                                      Strengths
+                                    </div>
+                                    <ul className="text-sm text-green-700 dark:text-green-200 space-y-1 list-disc list-inside">
+                                      {v.strengths.map((s, i) => (
+                                        <li key={i}>{s}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ) : null}
+                                {v.weaknesses?.length ? (
+                                  <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
+                                    <div className="text-xs font-semibold text-amber-800 dark:text-amber-300 mb-1">
+                                      Weaknesses
+                                    </div>
+                                    <ul className="text-sm text-amber-700 dark:text-amber-200 space-y-1 list-disc list-inside">
+                                      {v.weaknesses.map((w, i) => (
+                                        <li key={i}>{w}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ) : null}
+                              </div>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Fallback: reasoning as string */}
+                {selectedResult.aiEvaluation?.reasoning &&
+                  typeof selectedResult.aiEvaluation.reasoning === "string" && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                        Evaluation Reasoning
+                      </h4>
+                      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                        <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                          {selectedResult.aiEvaluation.reasoning}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {/* Strengths / Weaknesses (top-level) */}
+                {(selectedResult.aiEvaluation?.strengths?.length ??
+                  0) > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                      Strengths
+                    </h4>
+                    <ul className="text-sm text-gray-800 dark:text-gray-200 space-y-1 list-disc list-inside">
+                      {selectedResult.aiEvaluation?.strengths?.map(
+                        (s, i) => (
+                          <li key={i}>{s}</li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+                )}
+                {(selectedResult.aiEvaluation?.weaknesses?.length ?? 0) > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                      Weaknesses
+                    </h4>
+                    <ul className="text-sm text-gray-800 dark:text-gray-200 space-y-1 list-disc list-inside">
+                      {selectedResult.aiEvaluation?.weaknesses?.map(
+                        (w, i) => (
+                          <li key={i}>{w}</li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Model response */}
+                {(selectedResult.response ?? selectedResult.bedrockOutput) && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                      Model Response
+                    </h4>
+                    <div className="max-h-64 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4">
+                      <pre className="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
+                        {selectedResult.response ??
+                          selectedResult.bedrockOutput}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : selectedResult.actualUsage ? (
               <div>
                 <h4 className="text-sm font-medium text-gray-900 mb-2">
                   Usage Statistics

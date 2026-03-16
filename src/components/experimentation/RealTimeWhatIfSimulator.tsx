@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ExperimentationService } from '../../services/experimentation.service';
 import { AWS_BEDROCK_PRICING } from '../../utils/pricing';
 import { Beaker, AlertTriangle, Sparkles, Lightbulb, DollarSign, BarChart3, Target, Zap, Settings } from 'lucide-react';
@@ -56,39 +56,54 @@ const RealTimeWhatIfSimulator: React.FC = () => {
     const [temperature, setTemperature] = useState(0.7);
     const [maxTokens, setMaxTokens] = useState(1000);
     const [trimPercentage, setTrimPercentage] = useState(30);
+    const [availableModels, setAvailableModels] = useState<string[]>([]);
+    const [modelsLoading, setModelsLoading] = useState(true);
     const debounceTimeout = useRef<number>();
 
-    // Get available Bedrock models from pricing data
-    const availableModels = useMemo(() => {
-        return AWS_BEDROCK_PRICING
-            .filter(model =>
-                // Only include text and multimodal models that are suitable for general use
-                (model.category === 'text' || model.category === 'multimodal') &&
-                // Only include models with pricing data
-                model.inputPrice > 0 && model.outputPrice > 0 &&
-                // Prefer latest models and popular ones
-                (model.isLatest || model.model.includes('claude') || model.model.includes('llama') || model.model.includes('nova'))
-            )
-            .sort((a, b) => {
-                // Sort by price (ascending) for better user experience
-                const aCost = a.inputPrice + a.outputPrice;
-                const bCost = b.inputPrice + b.outputPrice;
-                return aCost - bCost;
-            })
-            .map(model => model.model);
+    // Fetch available models from API (only models accessible in user's AWS account)
+    useEffect(() => {
+        let mounted = true;
+        const loadModels = async () => {
+            try {
+                setModelsLoading(true);
+                setError(null);
+                const response = await ExperimentationService.getAvailableModels();
+                const rawModels = Array.isArray(response) ? response : [];
+                const filtered = rawModels
+                    .filter((m: Record<string, unknown>) => !m.status || m.status === 'available')
+                    .map((m: Record<string, unknown>) => (m.model || m.modelId || m.modelName || '').toString().trim())
+                    .filter(Boolean);
+                if (mounted) {
+                    setAvailableModels(filtered);
+                    setError(null);
+                }
+            } catch (err) {
+                if (mounted) {
+                    setError('Failed to load available models. Using fallback list.');
+                    // Fallback: use AWS_BEDROCK_PRICING (text/multimodal only)
+                    const fallback = AWS_BEDROCK_PRICING
+                        .filter(m => (m.category === 'text' || m.category === 'multimodal') && m.inputPrice > 0 && m.outputPrice > 0)
+                        .sort((a, b) => (a.inputPrice + a.outputPrice) - (b.inputPrice + b.outputPrice))
+                        .map(m => m.model);
+                    setAvailableModels(fallback);
+                }
+            } finally {
+                if (mounted) setModelsLoading(false);
+            }
+        };
+        loadModels();
+        return () => { mounted = false; };
     }, []);
 
-    // Initialize current model with the first available Bedrock model  
-    const [currentModel, setCurrentModel] = useState(() =>
-        availableModels.length > 0 ? availableModels[0] : 'amazon-nova-micro'
-    );
+    // Initialize current model when available models load
+    const [currentModel, setCurrentModel] = useState('');
 
-    // Update current model if it's not in the available models list
+    // Update current model when available models change (ensure it's in the list)
     useEffect(() => {
-        if (availableModels.length > 0 && !availableModels.includes(currentModel)) {
-            setCurrentModel(availableModels[0]);
+        if (availableModels.length > 0) {
+            setCurrentModel((prev) => (prev && availableModels.includes(prev) ? prev : availableModels[0]));
         }
-    }, [availableModels, currentModel]);
+    }, [availableModels]);
 
     const simulationTypes = [
         { value: 'real_time_analysis', label: 'Complete Analysis', description: 'Full optimization suite', icon: 'target' },
@@ -129,7 +144,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
         } finally {
             setIsSimulating(false);
         }
-    }, [prompt, currentModel, simulationType, availableModels]);
+    }, [prompt, currentModel, simulationType, availableModels, temperature, maxTokens, trimPercentage]);
 
     // Auto-simulate when prompt changes (debounced)
     useEffect(() => {
@@ -176,32 +191,35 @@ const RealTimeWhatIfSimulator: React.FC = () => {
         return tokens > 1000 ? `${(tokens / 1000).toFixed(1)}k` : tokens.toString();
     };
 
-    // Get model display info including pricing
+    /** Find pricing entry for a model ID (API may return ids with region prefix e.g. us.anthropic.claude-...) */
+    const findPricingForModel = useCallback((modelId: string) => {
+        const exact = AWS_BEDROCK_PRICING.find(m => m.model === modelId);
+        if (exact) return exact;
+        const withoutRegion = modelId.replace(/^[a-z]{2}\.[a-z0-9-]+\./, '').replace(/^[a-z]{2}\./, '');
+        return AWS_BEDROCK_PRICING.find(m => m.model === withoutRegion) ?? AWS_BEDROCK_PRICING.find(m => modelId.endsWith(m.model) || m.model.endsWith(modelId));
+    }, []);
+
     const getModelDisplayInfo = useCallback((modelId: string) => {
-        const modelData = AWS_BEDROCK_PRICING.find(m => m.model === modelId);
-        if (!modelData) return { name: modelId, pricing: '' };
+        const modelData = findPricingForModel(modelId);
+        if (!modelData) return { name: modelId.split(/[.:]/).pop() ?? modelId, pricing: '' };
 
-        const inputPrice = modelData.inputPrice < 1 ?
-            `$${(modelData.inputPrice * 1000).toFixed(1)}k` :
-            `$${modelData.inputPrice.toFixed(2)}/1M`;
+        const inputPrice = modelData.inputPrice < 1
+            ? `$${(modelData.inputPrice * 1000).toFixed(1)}k`
+            : `$${modelData.inputPrice.toFixed(2)}/1M`;
+        const outputPrice = modelData.outputPrice < 1
+            ? `$${(modelData.outputPrice * 1000).toFixed(1)}k`
+            : `$${modelData.outputPrice.toFixed(2)}/1M`;
 
-        const outputPrice = modelData.outputPrice < 1 ?
-            `$${(modelData.outputPrice * 1000).toFixed(1)}k` :
-            `$${modelData.outputPrice.toFixed(2)}/1M`;
-
-        // Create friendly name
-        const friendlyName = modelId
+        const base = (modelData.model ?? modelId);
+        const friendlyName = base
             .replace(/-/g, ' ')
             .replace(/\b\w/g, l => l.toUpperCase())
             .replace('Amazon ', '')
             .replace('Claude ', 'Claude ')
             .replace('Llama ', 'Llama ');
 
-        return {
-            name: friendlyName,
-            pricing: `(${inputPrice}→${outputPrice})`
-        };
-    }, []);
+        return { name: friendlyName, pricing: `(${inputPrice}→${outputPrice})` };
+    }, [findPricingForModel]);
 
     return (
         <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 md:space-y-8 light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden">
@@ -259,14 +277,23 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         {/* Model Selection */}
                         <div>
                             <label className="label mb-2 sm:mb-3 text-xs sm:text-sm">
-                                Current Model
+                                Current Model {availableModels.length > 0 && (
+                                    <span className="text-primary-600 dark:text-primary-400 font-normal">({availableModels.length} available)</span>
+                                )}
                             </label>
                             <select
                                 value={currentModel}
                                 onChange={(e) => setCurrentModel(e.target.value)}
-                                className="input text-xs sm:text-sm"
+                                disabled={modelsLoading || availableModels.length === 0}
+                                className="input text-xs sm:text-sm disabled:opacity-70"
                             >
-                                {availableModels.map(model => {
+                                {modelsLoading && (
+                                    <option value="">Loading models...</option>
+                                )}
+                                {!modelsLoading && availableModels.length === 0 && (
+                                    <option value="">No models available</option>
+                                )}
+                                {!modelsLoading && availableModels.map(model => {
                                     const displayInfo = getModelDisplayInfo(model);
                                     return (
                                         <option key={model} value={model}>
@@ -404,7 +431,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         {/* Simulate Button */}
                         <button
                             onClick={runSimulation}
-                            disabled={isSimulating || !prompt.trim() || !currentModel}
+                            disabled={isSimulating || modelsLoading || !prompt.trim() || !currentModel || availableModels.length === 0}
                             className="btn btn-primary w-full py-3 sm:py-4 font-display font-bold text-sm sm:text-base md:text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl glow-primary flex items-center justify-center gap-2"
                         >
                             {isSimulating ? (

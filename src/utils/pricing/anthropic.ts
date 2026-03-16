@@ -1,7 +1,18 @@
 import { ModelPricing } from "../cost";
 
 export const ANTHROPIC_PRICING: ModelPricing[] = [
-  // === Claude 4.5 Series (Latest) ===
+  // === Claude 4.6 Series (Latest) ===
+  {
+    provider: "Anthropic",
+    model: "claude-sonnet-4-6",
+    inputPrice: 0.003, // $3.00/1M tokens = $0.003/1K tokens (same as 4.5)
+    outputPrice: 0.015, // $15.00/1M tokens = $0.015/1K tokens
+    contextWindow: 200000,
+    capabilities: ["text", "vision", "multimodal", "reasoning", "coding", "agents", "computer-use"],
+    category: "text",
+    isLatest: true,
+  },
+  // === Claude 4.5 Series ===
   {
     provider: "Anthropic",
     model: "claude-sonnet-4-5",
@@ -9,6 +20,16 @@ export const ANTHROPIC_PRICING: ModelPricing[] = [
     outputPrice: 0.015, // $15.00/1M tokens = $0.015/1K tokens
     contextWindow: 200000,
     capabilities: ["text", "vision", "multimodal", "reasoning", "extended-thinking", "multilingual"],
+    category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "AWS Bedrock",
+    model: "anthropic.claude-sonnet-4-6",
+    inputPrice: 0.003,
+    outputPrice: 0.015,
+    contextWindow: 200000,
+    capabilities: ["text", "vision", "multimodal", "reasoning", "coding", "agents", "computer-use"],
     category: "text",
     isLatest: true,
   },

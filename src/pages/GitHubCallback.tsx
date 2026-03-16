@@ -72,7 +72,7 @@ const GitHubCallback: React.FC = () => {
 
     const fetchConnectionDetails = async (connectionId: string) => {
         try {
-            const connections = await githubService.listConnections();
+            const connections = await githubService.listConnections(true);
             const foundConnection = connections.find(c => c._id === connectionId);
 
             if (foundConnection) {

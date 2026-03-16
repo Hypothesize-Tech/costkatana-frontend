@@ -1,11 +1,12 @@
-import { 
-  MetricsResponse, 
-  TraceResponse, 
-  DashboardResponse, 
-  DependencyResponse, 
+import {
+  MetricsResponse,
+  TraceResponse,
+  DashboardResponse,
+  DependencyResponse,
   BackendMetrics,
   TelemetryQueryParams,
-  TelemetrySearchResponse
+  TelemetrySearchResponse,
+  TelemetryRecord,
 } from '../../types/telemetry';
 import { apiClient } from '../../config/api';
 
@@ -15,7 +16,11 @@ export class TelemetryAPI {
   static async queryTelemetry(params: TelemetryQueryParams): Promise<TelemetrySearchResponse> {
     try {
       const response = await apiClient.get(`${BASE_URL}`, { params });
-      return response.data as TelemetrySearchResponse;
+      const body = response.data as { data?: TelemetryRecord[]; pagination?: TelemetrySearchResponse['pagination'] };
+      return {
+        data: (Array.isArray(body?.data) ? body.data : []) as TelemetryRecord[],
+        pagination: body?.pagination ?? { page: 1, limit: 20, total: 0, total_pages: 1 },
+      };
     } catch (error: any) {
       console.error('Error querying telemetry:', 
         error.response ? {
@@ -56,7 +61,8 @@ export class TelemetryAPI {
   static async getMetricsDetail(timeframe: string = '1h'): Promise<BackendMetrics> {
     try {
       const response = await apiClient.get(`${BASE_URL}/metrics`, { params: { timeframe } });
-      return response.data.metrics as BackendMetrics;
+      const metrics = response.data?.metrics ?? {};
+      return metrics as BackendMetrics;
     } catch (error: any) {
       console.error('Error fetching detailed metrics:', 
         error.response ? {

@@ -32,6 +32,8 @@ interface CortexImpactMetrics {
         actualCostWithCortex: number;
         costSavings: number;
         savingsPercentage: number;
+        isAdjusted?: boolean;
+        minimalFee?: number;
     };
     justification: {
         optimizationTechniques: string[];
@@ -123,6 +125,11 @@ export const CortexImpactDisplay: React.FC<CortexImpactDisplayProps> = ({
                         <span className={`text-lg font-display font-bold sm:text-xl md:text-2xl ${metrics.costImpact.costSavings >= 0 ? 'gradient-text-success' : 'text-danger-600 dark:text-danger-400'}`}>
                             {formatCurrency(Math.abs(metrics.costImpact.costSavings))} ({Math.abs(metrics.costImpact.savingsPercentage).toFixed(1)}%)
                         </span>
+                        {metrics.costImpact.isAdjusted && (
+                            <span className="text-[10px] font-body text-success-600 dark:text-success-400 italic block">
+                                Minimal fee applied
+                            </span>
+                        )}
                         <div className="flex flex-col gap-1 justify-between text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:flex-row sm:text-sm">
                             <span>Original: {formatCurrency(metrics.costImpact.estimatedCostWithoutCortex)}</span>
                             <span>Optimized: {formatCurrency(metrics.costImpact.actualCostWithCortex)}</span>

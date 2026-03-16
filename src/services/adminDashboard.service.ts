@@ -232,7 +232,17 @@ export class AdminDashboardService {
             if (filters.endDate) params.append('endDate', filters.endDate);
 
             const response = await apiClient.get(`/admin/analytics/engagement?${params.toString()}`);
-            return response.data.data;
+            const data = response.data?.data ?? response.data;
+            return {
+                totalUsers: data?.totalUsers ?? 0,
+                activeUsers: data?.activeUsers ?? 0,
+                inactiveUsers: data?.inactiveUsers ?? 0,
+                newUsersThisMonth: data?.newUsersThisMonth ?? 0,
+                retentionRate: data?.retentionRate ?? 0,
+                averageEngagementScore: data?.averageEngagementScore ?? 0,
+                peakUsageHour: data?.peakUsageHour ?? 0,
+                averageSessionsPerUser: data?.averageSessionsPerUser ?? 0,
+            };
         } catch (error: any) {
             console.error('Error fetching user engagement metrics:', error);
             throw error;
@@ -579,7 +589,21 @@ export class AdminDashboardService {
     static async getUserStats(): Promise<UserStats> {
         try {
             const response = await apiClient.get('/admin/users/stats');
-            return response.data.data;
+            const data = response.data?.data ?? response.data;
+            return {
+                totalUsers: data?.totalUsers ?? 0,
+                activeUsers: data?.activeUsers ?? 0,
+                inactiveUsers: data?.inactiveUsers ?? 0,
+                adminUsers: data?.adminUsers ?? 0,
+                verifiedUsers: data?.verifiedUsers ?? 0,
+                unverifiedUsers: data?.unverifiedUsers ?? 0,
+                byPlan: {
+                    free: data?.byPlan?.free ?? 0,
+                    pro: data?.byPlan?.pro ?? 0,
+                    enterprise: data?.byPlan?.enterprise ?? 0,
+                    plus: data?.byPlan?.plus ?? 0,
+                },
+            };
         } catch (error: any) {
             console.error('Error fetching user stats:', error);
             throw error;
@@ -700,7 +724,8 @@ export class AdminDashboardService {
             if (startDate) params.startDate = startDate;
             if (endDate) params.endDate = endDate;
             const response = await apiClient.get('/admin/analytics/endpoints/performance', { params });
-            return response.data.data;
+            const data = response.data?.data;
+            return Array.isArray(data) ? data : [];
         } catch (error: any) {
             console.error('Error fetching endpoint performance:', error);
             throw error;
@@ -724,7 +749,8 @@ export class AdminDashboardService {
     static async getTopEndpoints(metric: 'requests' | 'cost' | 'responseTime' | 'errors' = 'requests', limit: number = 10): Promise<TopEndpoint[]> {
         try {
             const response = await apiClient.get('/admin/analytics/endpoints/top', { params: { metric, limit } });
-            return response.data.data;
+            const data = response.data?.data;
+            return Array.isArray(data) ? data : [];
         } catch (error: any) {
             console.error('Error fetching top endpoints:', error);
             throw error;
@@ -901,15 +927,94 @@ export class AdminDashboardService {
     }
     /**
      * Get vectorization dashboard data
+     * Transforms backend response to match VectorizationDashboard interface with safe defaults
      */
     static async getVectorizationDashboard(): Promise<VectorizationDashboard> {
         try {
             const response = await apiClient.get('/admin/dashboard/vectorization');
-            return response.data.data;
-        } catch (error: any) {
+            const raw = response.data?.data;
+            if (!raw) {
+                return AdminDashboardService.getVectorizationDashboardDefaults();
+            }
+            return AdminDashboardService.transformVectorizationResponse(raw);
+        } catch (error: unknown) {
             console.error('Error fetching vectorization dashboard:', error);
             throw error;
         }
+    }
+
+    private static getVectorizationDashboardDefaults(): VectorizationDashboard {
+        return {
+            health: {
+                embeddingService: 'healthy',
+                vectorIndexes: 'optimal',
+                storageUsage: {
+                    current: '0',
+                    projected: '0',
+                    userMemories: { total: 0, vectorized: 0, percentage: 0 },
+                    conversations: { total: 0, vectorized: 0, percentage: 0 },
+                    messages: { total: 0, vectorized: 0, percentage: 0 },
+                },
+                lastProcessing: {},
+                currentlyProcessing: false,
+            },
+            processingStats: {
+                userMemories: { total: 0, estimated: 0 },
+                conversations: { total: 0, estimated: 0 },
+                messages: { total: 0, estimated: 0 },
+                totalEstimated: 0,
+            },
+            crossModalStats: {
+                totalVectors: 0,
+                avgEmbeddingDimensions: 0,
+                memoryEfficiency: 'building',
+            },
+            alerts: [],
+        };
+    }
+
+    private static transformVectorizationResponse(raw: Record<string, unknown>): VectorizationDashboard {
+        const health = raw.health as Record<string, unknown> | undefined;
+        const overallHealth = (health?.overallHealth as string) ?? 'healthy';
+        const runningJobs = (health?.runningJobs as number) ?? 0;
+
+        return {
+            health: {
+                embeddingService: (overallHealth === 'healthy' ? 'healthy' : overallHealth === 'warning' ? 'degraded' : 'error') as 'healthy' | 'degraded' | 'error',
+                vectorIndexes: (overallHealth === 'healthy' ? 'optimal' : overallHealth === 'warning' ? 'suboptimal' : 'error') as 'optimal' | 'suboptimal' | 'error',
+                storageUsage: {
+                    current: '0',
+                    projected: '0',
+                    userMemories: { total: 0, vectorized: 0, percentage: 0 },
+                    conversations: { total: 0, vectorized: 0, percentage: 0 },
+                    messages: { total: 0, vectorized: 0, percentage: 0 },
+                },
+                lastProcessing: {},
+                currentlyProcessing: runningJobs > 0,
+            },
+            processingStats: (() => {
+                const ps = raw.processingStats as Record<string, unknown> | undefined;
+                const totalProcessed = (ps?.totalProcessedItems as number) ?? 0;
+                return {
+                    userMemories: { total: Math.floor(totalProcessed / 3), estimated: 0 },
+                    conversations: { total: Math.floor(totalProcessed / 3), estimated: 0 },
+                    messages: { total: Math.floor(totalProcessed / 3), estimated: 0 },
+                    totalEstimated: (ps?.averageProcessingTime as number) ?? 0,
+                };
+            })(),
+            crossModalStats: {
+                totalVectors: 0,
+                avgEmbeddingDimensions: 0,
+                memoryEfficiency: 'building',
+            },
+            alerts: Array.isArray(raw.alerts)
+                ? raw.alerts.map((a: { level?: string; message?: string; action?: string }) => ({
+                    level: a?.level ?? 'info',
+                    message: a?.message ?? '',
+                    action: a?.action ?? '',
+                }))
+                : [],
+        };
     }
 }
 
@@ -1166,7 +1271,8 @@ export interface BudgetAlert {
     spent: number;
     utilization: number;
     threshold: number;
-    alertType: 'warning' | 'critical' | 'over_budget';
+    alertType?: 'warning' | 'critical' | 'over_budget';
+    severity?: 'warning' | 'critical';
     message: string;
 }
 
@@ -1175,15 +1281,20 @@ export interface ProjectBudgetStatus {
     projectName: string;
     workspaceId?: string;
     workspaceName?: string;
-    budgetAmount: number;
-    spent: number;
-    remaining: number;
-    utilization: number;
-    period: 'monthly' | 'quarterly' | 'yearly' | 'one-time';
-    startDate: string;
+    budgetAmount?: number;
+    budget?: number;
+    spent?: number;
+    currentSpending?: number;
+    remaining?: number;
+    utilization?: number;
+    budgetUtilization?: number;
+    monthlyUtilization?: number;
+    dailyUtilization?: number;
+    period?: 'monthly' | 'quarterly' | 'yearly' | 'one-time';
+    startDate?: string;
     endDate?: string;
-    status: 'on_track' | 'near_limit' | 'over_budget';
-    alerts: Array<{
+    status: 'on_track' | 'near_limit' | 'over_budget' | 'warning' | 'critical';
+    alerts?: Array<{
         threshold: number;
         triggered: boolean;
     }>;
@@ -1191,9 +1302,10 @@ export interface ProjectBudgetStatus {
 
 export interface BudgetTrend {
     date: string;
-    budget: number;
-    spent: number;
-    utilization: number;
+    budget?: number;
+    spent?: number;
+    spending?: number;
+    utilization?: number;
 }
 
 // ============ Integration Analytics Interfaces ============

@@ -66,10 +66,11 @@ export const MongoDBIntegrationPanel: React.FC<MongoDBIntegrationPanelProps> = (
             setLoading(true);
             setError(null);
             const list = await mongodbService.listConnections();
-            setConnections(list);
+            const connectionsList = Array.isArray(list) ? list : [];
+            setConnections(connectionsList);
 
             // Auto-select first active connection
-            const activeConnection = list.find((c: MongoDBConnection) => c.isActive);
+            const activeConnection = connectionsList.find((c: MongoDBConnection) => c?.isActive);
             if (activeConnection) {
                 setSelectedConnection(activeConnection);
             }

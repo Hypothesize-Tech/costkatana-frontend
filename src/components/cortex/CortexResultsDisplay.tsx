@@ -175,7 +175,7 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
                 <MetricCard
                     title="Token Reduction"
                     value={`${Math.round(cortex.reductionPercentage)}%`}
-                    subtitle={`${cortex.tokensSaved} tokens saved`}
+                    subtitle={`${Math.abs(cortex.tokensSaved ?? 0)} tokens ${(cortex.tokensSaved ?? 0) >= 0 ? 'saved' : 'increased'}`}
                     icon={TrophyIcon}
                     trend="up"
                     color="green"
@@ -241,15 +241,15 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-6 text-xs sm:text-sm">
                     <div className="glass p-3 rounded-lg border border-primary-200/30 sm:p-4 md:rounded-xl">
                         <div className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-0.5 sm:mb-1">Encoder</div>
-                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary break-words">{cortex.cortexModel?.encoder || 'Claude Haiku'}</div>
+                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary break-words">{cortex.cortexModel?.encoder || 'Claude 3.5 Haiku'}</div>
                     </div>
                     <div className="glass p-3 rounded-lg border border-primary-200/30 sm:p-4 md:rounded-xl">
                         <div className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-0.5 sm:mb-1">Core Processor</div>
-                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary break-words">{cortex.cortexModel?.core || 'Claude Haiku'}</div>
+                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary break-words">{cortex.cortexModel?.core || 'Claude Sonnet 4.6'}</div>
                     </div>
                     <div className="glass p-3 rounded-lg border border-primary-200/30 sm:p-4 md:rounded-xl">
                         <div className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-0.5 sm:mb-1">Decoder</div>
-                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary break-words">{cortex.cortexModel?.decoder || 'Claude Haiku'}</div>
+                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary break-words">{cortex.cortexModel?.decoder || 'Mistral Large 3'}</div>
                     </div>
                 </div>
             </div>
@@ -276,7 +276,7 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
                         </>
                     ) : (
                         <>
-                            Cortex achieved <span className="font-display font-semibold gradient-text">{cortex.tokensSaved}</span> token savings while maintaining{' '}
+                            Cortex achieved <span className="font-display font-semibold gradient-text">{Math.abs(cortex.tokensSaved ?? 0)}</span> token savings while maintaining{' '}
                             <span className="font-display font-semibold gradient-text">{Math.round(cortex.semanticIntegrity * 100)}%</span> semantic integrity
                         </>
                     )}

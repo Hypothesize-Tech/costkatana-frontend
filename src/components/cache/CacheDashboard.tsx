@@ -47,11 +47,34 @@ export const CacheDashboard: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const fetchMetrics = async () => {
+        setError(null);
         try {
-            const response = await apiClient.get('/gateway/cache/stats', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
-            });
-            setMetrics(response.data);
+            const response = await apiClient.get('/gateway/cache/stats');
+            const body = response.data as Record<string, unknown>;
+            const payload = (body?.data ?? body) as Record<string, unknown> | undefined;
+            const redisRaw = (payload?.redis ?? payload) as Record<string, unknown> | undefined;
+            const configRaw = payload?.config as Record<string, unknown> | undefined;
+            const data: CacheMetrics['data'] = {
+                redis: {
+                    hits: Number(redisRaw?.hits ?? 0),
+                    misses: Number(redisRaw?.misses ?? 0),
+                    totalRequests: Number(redisRaw?.totalRequests ?? 0),
+                    hitRate: Number(redisRaw?.hitRate ?? 0),
+                    avgResponseTime: Number(redisRaw?.avgResponseTime ?? 0),
+                    costSaved: Number(redisRaw?.costSaved ?? 0),
+                    tokensSaved: Number(redisRaw?.tokensSaved ?? 0),
+                    deduplicationCount: Number(redisRaw?.deduplicationCount ?? 0),
+                    semanticMatches: Number(redisRaw?.semanticMatches ?? 0),
+                    cacheSize: Number(redisRaw?.cacheSize ?? 0),
+                    topModels: Array.isArray(redisRaw?.topModels) ? (redisRaw.topModels as { model: string; hits: number }[]) : [],
+                    topUsers: Array.isArray(redisRaw?.topUsers) ? (redisRaw.topUsers as { userId: string; hits: number }[]) : [],
+                },
+                config: {
+                    defaultTTL: Number(configRaw?.defaultTTL ?? 3600),
+                    defaultTTLHours: Number(configRaw?.defaultTTLHours ?? 1),
+                },
+            };
+            setMetrics({ success: true, data });
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -81,9 +104,12 @@ export const CacheDashboard: React.FC = () => {
         );
     }
 
-    if (!metrics) {
+    if (!metrics?.data?.redis) {
         return <CacheShimmer />;
     }
+
+    const redis = metrics.data.redis;
+    const config = metrics.data.config ?? { defaultTTL: 3600, defaultTTLHours: 1 };
 
     return (
         <div className="p-3 md:p-5 lg:p-6 mx-auto space-y-4 md:space-y-5 lg:space-y-6 max-w-7xl animate-fade-in">
@@ -140,7 +166,7 @@ export const CacheDashboard: React.FC = () => {
                     <div className="flex gap-2 items-center">
                         <ClockIcon className="w-4 h-4 md:w-5 md:h-5 text-primary-500 dark:text-primary-400 shrink-0" />
                         <p className="text-xs md:text-sm font-medium font-body text-light-text-secondary dark:text-dark-text-secondary">
-                            Default TTL: <span className="font-bold gradient-text-primary font-display">{metrics.data.config.defaultTTLHours} hours</span> <span className="hidden sm:inline">({metrics.data.config.defaultTTL} seconds)</span>
+                            Default TTL: <span className="font-bold gradient-text-primary font-display">{config.defaultTTLHours ?? 1} hours</span> <span className="hidden sm:inline">({config.defaultTTL ?? 3600} seconds)</span>
                         </p>
                     </div>
                 </div>
@@ -154,7 +180,7 @@ export const CacheDashboard: React.FC = () => {
                             <ChartBarIcon className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-primary">{metrics.data.redis.totalRequests.toLocaleString()}</h3>
+                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-primary">{(redis.totalRequests ?? 0).toLocaleString()}</h3>
                             <p className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Total Requests</p>
                         </div>
                     </div>
@@ -165,7 +191,7 @@ export const CacheDashboard: React.FC = () => {
                             <CheckCircleIcon className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-success">{metrics.data.redis.hits.toLocaleString()}</h3>
+                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-success">{(redis.hits ?? 0).toLocaleString()}</h3>
                             <p className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Cache Hits</p>
                         </div>
                     </div>
@@ -176,7 +202,7 @@ export const CacheDashboard: React.FC = () => {
                             <XMarkIcon className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-danger">{metrics.data.redis.misses.toLocaleString()}</h3>
+                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-danger">{(redis.misses ?? 0).toLocaleString()}</h3>
                             <p className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Cache Misses</p>
                         </div>
                     </div>
@@ -187,7 +213,7 @@ export const CacheDashboard: React.FC = () => {
                             <ArrowTrendingUpIcon className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-accent">{metrics.data.redis.hitRate.toFixed(1)}%</h3>
+                            <h3 className="mb-1 md:mb-2 text-2xl md:text-2xl lg:text-3xl font-bold font-display gradient-text-accent">{(redis.hitRate ?? 0).toFixed(1)}%</h3>
                             <p className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Hit Rate</p>
                         </div>
                     </div>
@@ -202,7 +228,7 @@ export const CacheDashboard: React.FC = () => {
                             <BanknotesIcon className="w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="mb-1 text-xl md:text-xl lg:text-2xl font-bold font-display gradient-text-accent">${metrics.data.redis.costSaved.toFixed(4)}</h3>
+                            <h3 className="mb-1 text-xl md:text-xl lg:text-2xl font-bold font-display gradient-text-accent">${(redis.costSaved ?? 0).toFixed(4)}</h3>
                             <p className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Cost Saved</p>
                         </div>
                     </div>
@@ -213,7 +239,7 @@ export const CacheDashboard: React.FC = () => {
                             <CpuChipIcon className="w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="mb-1 text-xl md:text-xl lg:text-2xl font-bold font-display gradient-text-secondary">{metrics.data.redis.tokensSaved.toLocaleString()}</h3>
+                            <h3 className="mb-1 text-xl md:text-xl lg:text-2xl font-bold font-display gradient-text-secondary">{(redis.tokensSaved ?? 0).toLocaleString()}</h3>
                             <p className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Tokens Saved</p>
                         </div>
                     </div>
@@ -224,7 +250,7 @@ export const CacheDashboard: React.FC = () => {
                             <ClockIcon className="w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="mb-1 text-xl md:text-xl lg:text-2xl font-bold font-display gradient-text-primary">{metrics.data.redis.avgResponseTime.toFixed(2)}ms</h3>
+                            <h3 className="mb-1 text-xl md:text-xl lg:text-2xl font-bold font-display gradient-text-primary">{(redis.avgResponseTime ?? 0).toFixed(2)}ms</h3>
                             <p className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Avg Response Time</p>
                         </div>
                     </div>
@@ -243,15 +269,15 @@ export const CacheDashboard: React.FC = () => {
                     <div className="space-y-3 md:space-y-4">
                         <div className="flex justify-between items-center p-3 md:p-4 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
                             <span className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Semantic Matches:</span>
-                            <span className="text-base md:text-lg font-bold font-display gradient-text-primary">{metrics.data.redis.semanticMatches.toLocaleString()}</span>
+                            <span className="text-base md:text-lg font-bold font-display gradient-text-primary">{(redis.semanticMatches ?? 0).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 md:p-4 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
                             <span className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Deduplication Count:</span>
-                            <span className="text-base md:text-lg font-bold font-display gradient-text-primary">{metrics.data.redis.deduplicationCount.toLocaleString()}</span>
+                            <span className="text-base md:text-lg font-bold font-display gradient-text-primary">{(redis.deduplicationCount ?? 0).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 md:p-4 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
                             <span className="text-xs md:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Cache Size:</span>
-                            <span className="text-base md:text-lg font-bold font-display gradient-text-primary">{(metrics.data.redis.cacheSize / 1024 / 1024).toFixed(2)} MB</span>
+                            <span className="text-base md:text-lg font-bold font-display gradient-text-primary">{((redis.cacheSize ?? 0) / 1024 / 1024).toFixed(2)} MB</span>
                         </div>
                     </div>
                 </div>
@@ -264,7 +290,7 @@ export const CacheDashboard: React.FC = () => {
                         <h2 className="text-lg md:text-xl font-bold font-display gradient-text-success">Top Performing Models</h2>
                     </div>
                     <div className="space-y-2 md:space-y-3">
-                        {metrics.data.redis.topModels.slice(0, 5).map((model: { model: string; hits: number }, index: number) => (
+                        {(redis.topModels ?? []).slice(0, 5).map((model: { model: string; hits: number }, index: number) => (
                             <div key={index} className="flex justify-between items-center p-3 md:p-4 rounded-xl border glass border-success-200/30 dark:border-success-500/20">
                                 <span className="mr-2 text-xs md:text-sm font-semibold truncate font-display text-light-text-secondary dark:text-dark-text-secondary">{model.model}</span>
                                 <span className="text-base md:text-lg font-bold font-display gradient-text-success shrink-0">{model.hits.toLocaleString()} hits</span>

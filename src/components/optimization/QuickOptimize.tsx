@@ -14,10 +14,11 @@ import {
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { optimizationService } from "@/services/optimization.service";
 import { useNotifications } from "../../contexts/NotificationContext";
-import { renderFormattedContent } from "@/utils/formatters";
+import { renderFormattedContent, formatModelName } from "@/utils/formatters";
 import { OptimizedPromptDisplay } from "../common/FormattedContent";
 import { CortexToggle } from "../cortex/CortexToggle";
 import { CortexConfigPanel } from "../cortex/CortexConfigPanel";
+import { getClientRequestTrackingInfo } from "@/utils/request-tracking.utils";
 import { OptimizationDetailsModal } from "./OptimizationDetailsModal";
 import type { CortexConfig } from "../../types/cortex.types";
 import type { Optimization } from "@/types/optimization.types";
@@ -45,13 +46,14 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
     mutationFn: () =>
       optimizationService.createOptimization({
         prompt,
-        service: "openai",
-        model: "gpt-4",
+        service: useCortex ? "anthropic" : "openai",
+        model: useCortex ? "claude-sonnet-4-6" : "gpt-4",
         useCortex,
         cortexConfig,
         enableCompression: true,
         enableContextTrimming: true,
         enableRequestFusion: true,
+        requestTracking: getClientRequestTrackingInfo(),
       }),
     onSuccess: (data) => {
       setOptimizationResult(data);
@@ -214,14 +216,14 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     <ChartBarIcon className="w-3 h-3 text-white sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                   </div>
                 </div>
-                <div className={`text-sm font-display font-bold sm:text-base md:text-lg ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
+                <div className={`text-sm font-display font-bold sm:text-base md:text-lg ${(optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0) || optimizationResult.isIncrease
                   ? 'text-danger-600 dark:text-danger-400'
                   : 'gradient-text-primary'
                   }`}>
                   {Math.abs(optimizationResult.improvementPercentage || 0).toFixed(1)}%
                 </div>
                 <div className="text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-xs">
-                  {optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0 ? 'Token Increase' : 'Improvement'}
+                  {(optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0) || optimizationResult.isIncrease ? 'Token Increase' : 'Improvement'}
                 </div>
               </div>
               <div className="glass rounded-lg p-2 border border-secondary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200 sm:p-3 md:p-4 md:rounded-xl">
@@ -230,14 +232,14 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     <CpuChipIcon className="w-3 h-3 text-white sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                   </div>
                 </div>
-                <div className={`text-sm font-display font-bold sm:text-base md:text-lg ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
+                <div className={`text-sm font-display font-bold sm:text-base md:text-lg ${(optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0) || optimizationResult.isIncrease
                   ? 'text-danger-600 dark:text-danger-400'
                   : 'gradient-text-secondary'
                   }`}>
-                  {optimizationResult.tokensSaved || 0}
+                  {Math.abs(optimizationResult.tokensSaved ?? 0)}
                 </div>
                 <div className="text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-xs">
-                  {optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0 ? 'Token Increase' : 'Tokens Saved'}
+                  {(optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0) || optimizationResult.isIncrease ? 'Token Increase' : 'Tokens Saved'}
                 </div>
               </div>
               <div className="glass rounded-lg p-2 border border-success-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200 sm:p-3 md:p-4 md:rounded-xl">
@@ -282,19 +284,19 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
                         <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Encoder</div>
                         <div className="text-xs font-medium font-display text-light-text-primary dark:text-dark-text-primary truncate">
-                          {optimizationResult.metadata.cortex.cortexModel.encoder?.split('.')[1] || 'N/A'}
+                          {formatModelName(optimizationResult.metadata.cortex.cortexModel.encoder) || 'N/A'}
                         </div>
                       </div>
                       <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
                         <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Core/Processor</div>
                         <div className="text-xs font-medium font-display text-light-text-primary dark:text-dark-text-primary truncate">
-                          {(optimizationResult.metadata.cortex.cortexModel.core || optimizationResult.metadata.cortex.cortexModel.processor)?.split('.')[1] || 'N/A'}
+                          {formatModelName(optimizationResult.metadata.cortex.cortexModel.core || optimizationResult.metadata.cortex.cortexModel.processor) || 'N/A'}
                         </div>
                       </div>
                       <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
                         <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Decoder</div>
                         <div className="text-xs font-medium font-display text-light-text-primary dark:text-dark-text-primary truncate">
-                          {optimizationResult.metadata.cortex.cortexModel.decoder?.split('.')[1] || 'N/A'}
+                          {formatModelName(optimizationResult.metadata.cortex.cortexModel.decoder) || 'N/A'}
                         </div>
                       </div>
                     </>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import {
   Key,
   Shield,
@@ -10,16 +11,23 @@ import {
   Lock,
   AlertCircle
 } from 'lucide-react';
-import { KeyVaultService, KeyVaultDashboard as DashboardData } from '../../services/keyVault.service';
+import { KeyVaultService, KeyVaultDashboard as DashboardData, ProviderKey, ProxyKey } from '../../services/keyVault.service';
 import { CreateProviderKeyModal } from './CreateProviderKeyModal';
 import { CreateProxyKeyModal } from './CreateProxyKeyModal';
 import { ProviderKeyCard } from './ProviderKeyCard';
 import { ProxyKeyCard } from './ProxyKeyCard';
 import { KeyVaultShimmer } from '../shimmer/KeyVaultShimmer';
+import { ConfirmationDialog } from '../chat/ConfirmationDialog';
+
+type DeleteConfirmState =
+  | { type: 'provider'; key: ProviderKey }
+  | { type: 'proxy'; key: ProxyKey }
+  | { type: null; key: null };
 
 export const KeyVaultDashboard: React.FC = () => {
   const [showCreateProviderModal, setShowCreateProviderModal] = useState(false);
   const [showCreateProxyModal, setShowCreateProxyModal] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({ type: null, key: null });
   const queryClient = useQueryClient();
 
   // Fetch dashboard data
@@ -31,21 +39,32 @@ export const KeyVaultDashboard: React.FC = () => {
   } = useQuery<DashboardData>({
     queryKey: ['keyVaultDashboard'],
     queryFn: KeyVaultService.getDashboard,
+    staleTime: 0, // Always consider stale so mutations trigger fresh refetch
   });
 
   // Delete provider key mutation
   const deleteProviderKeyMutation = useMutation({
     mutationFn: KeyVaultService.deleteProviderKey,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+      await queryClient.refetchQueries({ queryKey: ['keyVaultDashboard'] });
+    },
+    onError: (err: unknown) => {
+      console.error('Failed to delete provider key:', err);
+      toast.error('Failed to delete provider key. Please try again.');
     },
   });
 
   // Delete proxy key mutation
   const deleteProxyKeyMutation = useMutation({
     mutationFn: KeyVaultService.deleteProxyKey,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+      await queryClient.refetchQueries({ queryKey: ['keyVaultDashboard'] });
+    },
+    onError: (err: unknown) => {
+      console.error('Failed to delete proxy key:', err);
+      toast.error('Failed to delete proxy key. Please try again.');
     },
   });
 
@@ -53,21 +72,35 @@ export const KeyVaultDashboard: React.FC = () => {
   const toggleProxyKeyMutation = useMutation({
     mutationFn: ({ proxyKeyId, isActive }: { proxyKeyId: string; isActive: boolean }) =>
       KeyVaultService.updateProxyKeyStatus(proxyKeyId, isActive),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+      await queryClient.refetchQueries({ queryKey: ['keyVaultDashboard'] });
     },
   });
 
-  const handleDeleteProviderKey = async (providerKeyId: string) => {
-    if (window.confirm('Are you sure you want to delete this provider key? This will also delete all associated proxy keys.')) {
-      deleteProviderKeyMutation.mutate(providerKeyId);
+  const handleDeleteProviderKey = (providerKey: ProviderKey) => {
+    setDeleteConfirm({ type: 'provider', key: providerKey });
+  };
+
+  const handleDeleteProxyKey = (proxyKey: ProxyKey) => {
+    setDeleteConfirm({ type: 'proxy', key: proxyKey });
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteConfirm.key) return;
+    if (deleteConfirm.type === 'provider') {
+      deleteProviderKeyMutation.mutate(deleteConfirm.key._id, {
+        onSettled: () => setDeleteConfirm({ type: null, key: null }),
+      });
+    } else {
+      deleteProxyKeyMutation.mutate(deleteConfirm.key.keyId, {
+        onSettled: () => setDeleteConfirm({ type: null, key: null }),
+      });
     }
   };
 
-  const handleDeleteProxyKey = async (proxyKeyId: string) => {
-    if (window.confirm('Are you sure you want to delete this proxy key?')) {
-      deleteProxyKeyMutation.mutate(proxyKeyId);
-    }
+  const handleCancelDelete = () => {
+    setDeleteConfirm({ type: null, key: null });
   };
 
   const handleToggleProxyKey = async (proxyKeyId: string, currentStatus: boolean) => {
@@ -153,14 +186,26 @@ export const KeyVaultDashboard: React.FC = () => {
         {/* Analytics Cards */}
         {analytics && (
           <div className="p-4 sm:p-6 lg:p-8">
-            <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-5">
               <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
                 <div className="flex gap-3 sm:gap-4 items-center">
                   <div className="flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
+                    <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="mb-1 text-xs sm:text-sm font-body text-primary-600 dark:text-primary-400">Provider Keys</p>
+                    <p className="text-2xl sm:text-3xl font-bold font-display gradient-text-primary truncate">{analytics.totalProviderKeys ?? 0}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                <div className="flex gap-3 sm:gap-4 items-center">
+                  <div className="flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shadow-lg bg-gradient-secondary flex-shrink-0">
                     <Key className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="mb-1 text-xs sm:text-sm font-body text-primary-600 dark:text-primary-400">Total Keys</p>
+                    <p className="mb-1 text-xs sm:text-sm font-body text-primary-600 dark:text-primary-400">Proxy Keys</p>
                     <p className="text-2xl sm:text-3xl font-bold font-display gradient-text-primary truncate">{analytics.totalKeys}</p>
                   </div>
                 </div>
@@ -243,7 +288,7 @@ export const KeyVaultDashboard: React.FC = () => {
                 <ProviderKeyCard
                   key={providerKey._id}
                   providerKey={providerKey}
-                  onDelete={() => handleDeleteProviderKey(providerKey._id)}
+                  onDelete={() => handleDeleteProviderKey(providerKey)}
                 />
               ))}
             </div>
@@ -297,7 +342,7 @@ export const KeyVaultDashboard: React.FC = () => {
                 <ProxyKeyCard
                   key={proxyKey._id}
                   proxyKey={proxyKey}
-                  onDelete={() => handleDeleteProxyKey(proxyKey.keyId)}
+                  onDelete={() => handleDeleteProxyKey(proxyKey)}
                   onToggle={() => handleToggleProxyKey(proxyKey.keyId, proxyKey.isActive)}
                 />
               ))}
@@ -311,9 +356,10 @@ export const KeyVaultDashboard: React.FC = () => {
         <CreateProviderKeyModal
           isOpen={showCreateProviderModal}
           onClose={() => setShowCreateProviderModal(false)}
-          onSuccess={() => {
+          onSuccess={async () => {
             setShowCreateProviderModal(false);
-            queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+            await queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+            await queryClient.refetchQueries({ queryKey: ['keyVaultDashboard'] });
           }}
         />
       )}
@@ -323,12 +369,39 @@ export const KeyVaultDashboard: React.FC = () => {
           isOpen={showCreateProxyModal}
           onClose={() => setShowCreateProxyModal(false)}
           providerKeys={dashboardData?.providerKeys || []}
-          onSuccess={() => {
+          onSuccess={async () => {
             setShowCreateProxyModal(false);
-            queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+            await queryClient.invalidateQueries({ queryKey: ['keyVaultDashboard'] });
+            await queryClient.refetchQueries({ queryKey: ['keyVaultDashboard'] });
           }}
         />
       )}
+
+      {/* Delete confirmation modal */}
+      <ConfirmationDialog
+        isOpen={deleteConfirm.type !== null}
+        title={deleteConfirm.type === 'provider' ? 'Delete Provider Key' : 'Delete Proxy Key'}
+        message={
+          deleteConfirm.type === 'provider'
+            ? (
+                <>
+                  Are you sure you want to delete <strong>{deleteConfirm.key?.name}</strong>? This will also delete all
+                  associated proxy keys. This action cannot be undone.
+                </>
+              )
+            : (
+                <>
+                  Are you sure you want to delete <strong>{deleteConfirm.key?.name}</strong>? This action cannot be undone.
+                </>
+              )
+        }
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        danger
+        isLoading={deleteProviderKeyMutation.isPending || deleteProxyKeyMutation.isPending}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 };

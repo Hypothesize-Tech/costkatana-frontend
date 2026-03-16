@@ -23,7 +23,12 @@ export class UserService {
   static async getProfile(): Promise<User> {
     try {
       const response = await apiClient.get("/user/profile");
-      return response.data.data;
+      // Handle both { data: { data: user } } and { data: user } response structures
+      const profileData = response.data?.data ?? response.data;
+      if (!profileData) {
+        throw new Error("Invalid profile response: no user data returned");
+      }
+      return profileData;
     } catch (error) {
       console.error("Error fetching user profile:", error);
       throw error;
@@ -43,8 +48,15 @@ export class UserService {
   // Dashboard API Key Management
   static async getDashboardApiKeys(): Promise<DashboardApiKey[]> {
     try {
-      const response = await apiClient.get("/user/dashboard-api-keys");
-      return response.data.data;
+      // Cache-bust to avoid 304 responses after create/delete mutations
+      const response = await apiClient.get("/user/dashboard-api-keys", {
+        params: { _t: Date.now() },
+        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      });
+      const data = response.data;
+      // Backend returns array directly; handle both formats for robustness
+      const keys = Array.isArray(data) ? data : data?.data;
+      return Array.isArray(keys) ? keys : [];
     } catch (error) {
       console.error("Error fetching dashboard API keys:", error);
       // Return empty array instead of throwing to prevent crashes
@@ -72,7 +84,9 @@ export class UserService {
 
   static async deleteDashboardApiKey(keyId: string): Promise<void> {
     try {
-      await apiClient.delete(`/user/dashboard-api-keys/${keyId}`);
+      await apiClient.delete(`/user/dashboard-api-keys/${keyId}`, {
+        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      });
     } catch (error) {
       console.error("Error deleting dashboard API key:", error);
       throw error;
@@ -225,16 +239,29 @@ export class UserService {
   static async getUserStats(): Promise<any> {
     try {
       const response = await apiClient.get("/user/stats");
-      return response.data.data;
+      const data = response.data?.data ?? response.data;
+      return data ?? UserService.getDefaultStats();
     } catch (error) {
       console.error("Error fetching user stats:", error);
-      return {
-        totalProjects: 0,
-        totalCost: 0,
-        totalRequests: 0,
-        joinedDate: new Date().toISOString(),
-      };
+      return UserService.getDefaultStats();
     }
+  }
+
+  /** Fallback stats shape for ProfileStats when API is unavailable (404, etc.) */
+  private static getDefaultStats() {
+    return {
+      totalSpent: 0,
+      totalSaved: 0,
+      apiCalls: 0,
+      optimizations: 0,
+      currentMonthSpent: 0,
+      currentMonthSaved: 0,
+      avgDailyCost: 0,
+      mostUsedService: 'N/A',
+      mostUsedModel: 'N/A',
+      accountAge: 0,
+      savingsRate: 0,
+    };
   }
 
   static async getUserActivities(params?: {

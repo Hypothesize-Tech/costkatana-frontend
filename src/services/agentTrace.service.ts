@@ -217,10 +217,39 @@ class AgentTraceService {
         return response.data.data;
     }
 
-    async getObservabilityDashboard(timeRange?: string): Promise<ObservabilityDashboardResponse> {
+    async getObservabilityDashboard(timeRange?: string): Promise<ObservabilityDashboard> {
         const params = timeRange ? { timeRange } : {};
         const response = await api.get(`${AGENT_TRACE_BASE}/dashboard`, { params });
-        return response.data.data;
+        const raw = response.data;
+        // Normalize: Express/Nest return { success, data }; raw Nest may return payload directly
+        const payload = raw?.data ?? raw;
+        const empty = {
+            overview: {
+                totalExecutions: 0,
+                successRate: 0,
+                averageDuration: 0,
+                totalCost: 0,
+                activeTraces: 0,
+            },
+            recentExecutions: [] as ObservabilityDashboard['recentExecutions'],
+            performanceMetrics: {
+                throughput: { period: 'hour' as const, values: [] },
+                latency: { p50: 0, p95: 0, p99: 0 },
+                errorRate: { current: 0, trend: 0 },
+            },
+            costAnalysis: { totalSpend: 0, breakdown: [], trend: { daily: [] } },
+            alerts: [],
+        };
+        if (!payload?.overview) return empty;
+        const ov = payload.overview as { activeTraces?: number; activeWorkflows?: number } & typeof payload.overview;
+        return {
+            ...payload,
+            overview: {
+                ...payload.overview,
+                activeTraces: ov.activeTraces ?? ov.activeWorkflows ?? 0,
+            },
+            recentExecutions: Array.isArray(payload.recentExecutions) ? payload.recentExecutions : [],
+        } as ObservabilityDashboard;
     }
 
     async listTemplates(filters?: { createdBy?: string; tags?: string[]; limit?: number; offset?: number }): Promise<{ templates: AgentTraceTemplate[]; total: number }> {

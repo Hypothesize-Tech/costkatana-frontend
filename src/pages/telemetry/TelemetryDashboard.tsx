@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PerformanceOverview } from '../../components/telemetry/PerformanceOverview';
@@ -60,6 +60,62 @@ interface EnhancedDashboardData {
             routing_decision?: string;
             priority?: 'high' | 'medium' | 'low';
         }>;
+    };
+}
+
+/** Normalize Nest/Express enhanced dashboard to frontend shape */
+function normalizeEnhancedData(raw: Record<string, unknown> | null): EnhancedDashboardData | null {
+    if (!raw) return null;
+    const dash = raw.dashboard as Record<string, unknown> | undefined;
+    const enrichmentStats = raw.enrichmentStats as Record<string, unknown> | undefined;
+    const recommendations = (raw.recommendations ?? raw.ai_recommendations ?? []) as Array<Record<string, unknown>>;
+    const enrichment = raw.enrichment as Record<string, unknown> | undefined;
+    const existingStats = enrichment?.stats as Record<string, unknown> | undefined;
+
+    const totalSpans = (enrichmentStats?.totalSpans ?? existingStats?.total_spans ?? dash?.totalSpans ?? 0) as number;
+    const enrichedSpans = (enrichmentStats?.enrichedSpans ?? existingStats?.enriched_spans ?? 0) as number;
+    const coverage = (enrichmentStats?.coverage ?? existingStats?.enrichment_rate ?? 0) as number;
+    const enrichmentRate = Number(typeof coverage === 'number' ? (totalSpans > 0 ? (enrichedSpans / totalSpans) * 100 : 0) : coverage);
+
+    const cur = raw.current as Record<string, unknown> | undefined;
+    const hasValidCurrent = cur && typeof cur.requests_per_minute === 'number';
+    const defaultCurrent: EnhancedDashboardData['current'] = { requests_per_minute: 0, error_rate: 0, avg_latency_ms: 0, p95_latency_ms: 0 };
+    const builtCurrent: EnhancedDashboardData['current'] = hasValidCurrent
+        ? (cur as EnhancedDashboardData['current'])
+        : dash
+            ? {
+                requests_per_minute: ((dash.totalSpans as number) ?? 0) / 60 || 0,
+                error_rate: ((dash.errorRate as number) ?? 0) * 100,
+                avg_latency_ms: (dash.averageLatency as number) ?? 0,
+                p95_latency_ms: (dash.averageLatency as number) ?? 0,
+            }
+            : defaultCurrent;
+
+    return {
+        current: builtCurrent,
+        enrichment: {
+            stats: {
+                total_spans: totalSpans,
+                enriched_spans: enrichedSpans,
+                enrichment_rate: enrichmentRate,
+                cache_hit_spans: (existingStats?.cache_hit_spans as number) ?? 0,
+                routing_decisions: (existingStats?.routing_decisions as number) ?? 0,
+                timeframe: (existingStats?.timeframe as string) ?? '1h',
+                processing_types: Array.isArray(existingStats?.processing_types) ? existingStats.processing_types as EnhancedDashboardData['enrichment']['stats']['processing_types'] : [],
+            },
+            recent_insights: Array.isArray(enrichment?.recent_insights) ? enrichment.recent_insights as EnhancedDashboardData['enrichment']['recent_insights'] : [],
+            ai_recommendations: recommendations.map((r) => {
+                const impact = r.impact as Record<string, unknown> | undefined;
+                return {
+                    trace_id: String(r.trace_id ?? ''),
+                    operation: String(r.operation ?? r.title ?? ''),
+                    insight: String(r.insight ?? r.description ?? ''),
+                    cost_impact: typeof r.cost_impact === 'number' ? r.cost_impact : (typeof impact?.costSavings === 'number' ? impact.costSavings : undefined),
+                    routing_decision: r.routing_decision as string | undefined,
+                    priority: (r.priority as 'high' | 'medium' | 'low') ?? 'medium',
+                };
+            }),
+        },
     };
 }
 
@@ -138,25 +194,25 @@ const EnhancedTelemetryContent: React.FC = () => {
     });
 
     // Fetch enhanced dashboard data
-    const fetchEnhancedData = async () => {
+    const fetchEnhancedData = useCallback(async () => {
         setLoading(true);
         try {
             const response = await apiClient.get('/telemetry/dashboard/enhanced');
-            const data = response.data;
+            const data = response.data as { success?: boolean; enhanced_dashboard?: Record<string, unknown> };
 
-            if (data.success) {
-                setEnhancedData(data.enhanced_dashboard);
+            if (data.success && data.enhanced_dashboard) {
+                setEnhancedData(normalizeEnhancedData(data.enhanced_dashboard));
             }
         } catch (error) {
             console.error('Failed to fetch enhanced dashboard:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchEnhancedData();
-    }, []);
+    }, [fetchEnhancedData]);
 
     useEffect(() => {
         // Simulate loading when switching tabs
@@ -286,7 +342,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             <PerformanceOverview />
 
                             {/* Enhanced Metrics Row */}
-                            {enhancedData && (
+                            {enhancedData?.enrichment?.stats && (
                                 <div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                     <div className="p-3 sm:p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                         <div className="flex justify-between items-center">
