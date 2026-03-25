@@ -108,7 +108,9 @@ export interface Pagination {
   page: number;
   limit: number;
   total: number;
+  /** Total page count (some APIs send only `totalPages`) */
   pages: number;
+  totalPages?: number;
   hasNext?: boolean;
   hasPrev?: boolean;
 }

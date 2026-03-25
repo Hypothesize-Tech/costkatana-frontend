@@ -208,7 +208,12 @@ export class MixpanelService {
 
     private constructor() {
         const token = import.meta.env.VITE_MIXPANEL_TOKEN;
-        this.isEnabled = !!token && import.meta.env.NODE_ENV !== 'test';
+        const analyticsOptIn =
+            import.meta.env.VITE_ENABLE_ANALYTICS !== 'false';
+        this.isEnabled =
+            !!token &&
+            import.meta.env.NODE_ENV !== 'test' &&
+            analyticsOptIn;
         
         if (this.isEnabled && token) {
             try {
