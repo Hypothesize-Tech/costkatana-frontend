@@ -123,7 +123,35 @@ class OptimizationService {
   }): Promise<PaginatedResponse<Optimization>> {
     try {
       const response = await apiClient.get("/optimizations", { params });
-      return response.data;
+      const body = response.data as {
+        success?: boolean;
+        data?: Optimization[];
+        pagination?: {
+          page: number;
+          limit: number;
+          total: number;
+          /** Legacy / alternate backend field */
+          pages?: number;
+          /** Nest GET /api/optimizations returns this (see optimization.controller) */
+          totalPages?: number;
+          hasNext?: boolean;
+          hasPrev?: boolean;
+        };
+      };
+      const pag = body.pagination;
+      const pageCount =
+        pag?.pages ?? pag?.totalPages ?? 0;
+      return {
+        data: body.data ?? [],
+        pagination: {
+          page: pag?.page ?? 1,
+          limit: pag?.limit ?? 10,
+          total: pag?.total ?? 0,
+          pages: pageCount,
+          hasNext: pag?.hasNext,
+          hasPrev: pag?.hasPrev,
+        },
+      };
     } catch (error) {
       console.error("Error fetching optimizations:", error);
       return {
