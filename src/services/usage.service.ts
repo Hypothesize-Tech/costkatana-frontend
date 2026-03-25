@@ -6,6 +6,131 @@ import {
     DetailedUsageContext
 } from '../types';
 
+/** Property analytics row shape used by the dashboard */
+export type PropertyAnalyticsRow = {
+    propertyValue: string;
+    totalCost: number;
+    totalTokens: number;
+    totalRequests: number;
+    averageCost: number;
+    averageTokens: number;
+    averageResponseTime: number;
+};
+
+/** Normalized property analytics payload (Express returns this; Nest may return a raw array). */
+export type PropertyAnalyticsPayload = {
+    groupBy: string;
+    data: PropertyAnalyticsRow[];
+    totals: {
+        totalCost: number;
+        totalTokens: number;
+        totalRequests: number;
+    };
+    summary: {
+        uniqueValues: number;
+        totalCost: number;
+        totalTokens: number;
+        totalRequests: number;
+    };
+};
+
+function normalizePropertyAnalyticsRow(item: Record<string, unknown>): PropertyAnalyticsRow {
+    return {
+        propertyValue: String(item.propertyValue ?? item.value ?? ''),
+        totalCost: Number(item.totalCost ?? 0) || 0,
+        totalTokens: Number(item.totalTokens ?? 0) || 0,
+        totalRequests: Number(item.totalRequests ?? item.count ?? 0) || 0,
+        averageCost: Number(item.averageCost ?? item.avgCost ?? 0) || 0,
+        averageTokens: Number(item.averageTokens ?? 0) || 0,
+        averageResponseTime: Number(item.averageResponseTime ?? 0) || 0,
+    };
+}
+
+function normalizePropertyAnalyticsResponse(
+    raw: unknown,
+    groupBy: string
+): PropertyAnalyticsPayload {
+    if (
+        raw &&
+        typeof raw === 'object' &&
+        !Array.isArray(raw) &&
+        'data' in raw &&
+        Array.isArray((raw as { data: unknown }).data)
+    ) {
+        const o = raw as {
+            groupBy?: string;
+            data: Array<Record<string, unknown>>;
+            totals?: PropertyAnalyticsPayload['totals'];
+            summary?: PropertyAnalyticsPayload['summary'];
+        };
+        const data = o.data.map((row) => normalizePropertyAnalyticsRow(row));
+        const totals =
+            o.totals ??
+            data.reduce(
+                (acc, r) => ({
+                    totalCost: acc.totalCost + r.totalCost,
+                    totalTokens: acc.totalTokens + r.totalTokens,
+                    totalRequests: acc.totalRequests + r.totalRequests,
+                }),
+                { totalCost: 0, totalTokens: 0, totalRequests: 0 }
+            );
+        const summary = o.summary ?? {
+            uniqueValues: data.length,
+            totalCost: totals.totalCost,
+            totalTokens: totals.totalTokens,
+            totalRequests: totals.totalRequests,
+        };
+        return {
+            groupBy: o.groupBy ?? groupBy,
+            data,
+            totals,
+            summary: {
+                uniqueValues: summary.uniqueValues ?? data.length,
+                totalCost: summary.totalCost ?? totals.totalCost,
+                totalTokens: summary.totalTokens ?? totals.totalTokens,
+                totalRequests: summary.totalRequests ?? totals.totalRequests,
+            },
+        };
+    }
+
+    if (Array.isArray(raw)) {
+        const data = raw.map((item) =>
+            normalizePropertyAnalyticsRow(item as Record<string, unknown>)
+        );
+        const totals = data.reduce(
+            (acc, r) => ({
+                totalCost: acc.totalCost + r.totalCost,
+                totalTokens: acc.totalTokens + r.totalTokens,
+                totalRequests: acc.totalRequests + r.totalRequests,
+            }),
+            { totalCost: 0, totalTokens: 0, totalRequests: 0 }
+        );
+        return {
+            groupBy,
+            data,
+            totals,
+            summary: {
+                uniqueValues: data.length,
+                totalCost: totals.totalCost,
+                totalTokens: totals.totalTokens,
+                totalRequests: totals.totalRequests,
+            },
+        };
+    }
+
+    return {
+        groupBy,
+        data: [],
+        totals: { totalCost: 0, totalTokens: 0, totalRequests: 0 },
+        summary: {
+            uniqueValues: 0,
+            totalCost: 0,
+            totalTokens: 0,
+            totalRequests: 0,
+        },
+    };
+}
+
 class UsageService {
     async getUsage(params?: {
         page?: number;
@@ -473,32 +598,10 @@ class UsageService {
         startDate?: string;
         endDate?: string;
         projectId?: string;
-    }): Promise<{
-        groupBy: string;
-        data: Array<{
-            propertyValue: string;
-            totalCost: number;
-            totalTokens: number;
-            totalRequests: number;
-            averageCost: number;
-            averageTokens: number;
-            averageResponseTime: number;
-        }>;
-        totals: {
-            totalCost: number;
-            totalTokens: number;
-            totalRequests: number;
-        };
-        summary: {
-            uniqueValues: number;
-            totalCost: number;
-            totalTokens: number;
-            totalRequests: number;
-        };
-    }> {
+    }): Promise<PropertyAnalyticsPayload> {
         try {
             const response = await apiClient.get('/usage/properties/analytics', { params });
-            return response.data.data;
+            return normalizePropertyAnalyticsResponse(response.data.data, params.groupBy);
         } catch (error) {
             console.error('Error fetching property analytics:', error);
             throw error;
@@ -516,7 +619,19 @@ class UsageService {
     }>> {
         try {
             const response = await apiClient.get('/usage/properties/available', { params });
-            return response.data.data;
+            const raw = response.data.data;
+            if (!Array.isArray(raw)) {
+                return [];
+            }
+            return raw.map((item: { property?: string; count?: number; sampleValues?: string[]; values?: string[] }) => ({
+                property: String(item.property ?? ''),
+                count: Number(item.count ?? 0) || 0,
+                sampleValues: Array.isArray(item.sampleValues)
+                    ? item.sampleValues
+                    : Array.isArray(item.values)
+                      ? item.values
+                      : [],
+            }));
         } catch (error) {
             console.error('Error fetching available properties:', error);
             throw error;

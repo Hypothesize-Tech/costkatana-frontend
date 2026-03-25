@@ -72,11 +72,12 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
     });
 
     useEffect(() => {
-        if (properties && properties.length > 0) {
-            setAvailableProperties(properties);
-            if (!selectedProperty) {
-                setSelectedProperty(properties[0].property);
-            }
+        if (!Array.isArray(properties) || properties.length === 0) {
+            return;
+        }
+        setAvailableProperties(properties);
+        if (!selectedProperty && properties[0]?.property) {
+            setSelectedProperty(properties[0].property);
         }
     }, [properties, selectedProperty]);
 
@@ -130,7 +131,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
             </div>
 
             {/* Analytics Summary */}
-            {analytics && (
+            {analytics && analytics.summary && (
                 <>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
@@ -141,7 +142,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                 <div className="min-w-0 flex-1">
                                     <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Unique Values</p>
                                     <p className="text-xl font-display font-bold gradient-text-primary truncate">
-                                        {analytics.summary.uniqueValues}
+                                        {analytics.summary.uniqueValues ?? 0}
                                     </p>
                                 </div>
                             </div>
@@ -155,7 +156,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                 <div className="min-w-0 flex-1">
                                     <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Cost</p>
                                     <p className="text-xl font-display font-bold gradient-text-success truncate">
-                                        {formatCurrency(analytics.summary.totalCost)}
+                                        {formatCurrency(analytics.summary.totalCost ?? 0)}
                                     </p>
                                 </div>
                             </div>
@@ -169,7 +170,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                 <div className="min-w-0 flex-1">
                                     <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Tokens</p>
                                     <p className="text-xl font-display font-bold text-secondary-600 dark:text-secondary-400 truncate">
-                                        {formatNumber(analytics.summary.totalTokens)}
+                                        {formatNumber(analytics.summary.totalTokens ?? 0)}
                                     </p>
                                 </div>
                             </div>
@@ -183,7 +184,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                 <div className="min-w-0 flex-1">
                                     <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Requests</p>
                                     <p className="text-xl font-display font-bold gradient-text-accent truncate">
-                                        {formatNumber(analytics.summary.totalRequests)}
+                                        {formatNumber(analytics.summary.totalRequests ?? 0)}
                                     </p>
                                 </div>
                             </div>
@@ -245,9 +246,10 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                             </td>
                                         </tr>
                                     ) : (
-                                        analytics.data.map((item, index) => {
-                                            const costShare = analytics.summary.totalCost > 0
-                                                ? (item.totalCost / analytics.summary.totalCost) * 100
+                                        (Array.isArray(analytics.data) ? analytics.data : []).map((item, index) => {
+                                            const totalCostSum = analytics.summary?.totalCost ?? 0;
+                                            const costShare = totalCostSum > 0
+                                                ? (item.totalCost / totalCostSum) * 100
                                                 : 0;
 
                                             return (
@@ -258,21 +260,21 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                                                        {formatNumber(item.totalRequests)}
+                                                        {formatNumber(item.totalRequests ?? 0)}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span className="text-sm font-bold gradient-text">
-                                                            {formatCurrency(item.totalCost)}
+                                                            {formatCurrency(item.totalCost ?? 0)}
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                                                        {formatCurrency(item.averageCost)}
+                                                        {formatCurrency(item.averageCost ?? 0)}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                                                        {formatNumber(item.totalTokens)}
+                                                        {formatNumber(item.totalTokens ?? 0)}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
-                                                        {item.averageResponseTime}ms
+                                                        {Number(item.averageResponseTime ?? 0)}ms
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
