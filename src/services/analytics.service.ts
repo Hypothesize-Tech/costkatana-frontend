@@ -25,11 +25,17 @@ class AnalyticsService {
     }
   }
 
-  async getDashboardData(projectId?: string): Promise<any> {
+  async getDashboardData(
+    projectId?: string,
+    timeRange?: string
+  ): Promise<any> {
     try {
       const params: any = {};
       if (projectId && projectId !== "all") {
         params.projectId = projectId;
+      }
+      if (timeRange) {
+        params.timeRange = timeRange;
       }
 
       const response = await apiClient.get("/analytics/dashboard", { params });

@@ -17,6 +17,19 @@ import { TrendingUp, Zap, Coins, DollarSign, Calendar } from 'lucide-react';
 import { guardrailsService } from '../../services/guardrails.service';
 import { formatNumber } from '../../utils/formatters';
 
+/** Parse `YYYY-MM-DD` as local midnight (avoids UTC off-by-one vs trend buckets). */
+function parseLocalDateOnly(isoDate: string): Date {
+    const [y, m, d] = isoDate.split('-').map(Number);
+    return new Date(y, m - 1, d);
+}
+
+function formatInputDate(d: Date): string {
+    const y = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${month}-${day}`;
+}
+
 interface TrendData {
     date: string;
     requests: number;
@@ -43,39 +56,45 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     const [customStartDate, setCustomStartDate] = useState<Date | null>(startDate || null);
     const [customEndDate, setCustomEndDate] = useState<Date | null>(endDate || null);
 
-    useEffect(() => {
-        if (selectedRange === 'custom') {
-            if (customStartDate && customEndDate) {
-                fetchTrendData();
-            }
-        } else {
-            fetchTrendData();
-        }
-    }, [selectedRange, customStartDate, customEndDate]);
-
     const fetchTrendData = React.useCallback(async () => {
         try {
             setLoading(true);
-            let data;
+            let data: TrendData[] = [];
             if (selectedRange === 'custom' && customStartDate && customEndDate) {
-                data = await guardrailsService.getUsageTrendByDateRange(customStartDate, customEndDate);
-            } else {
+                data = await guardrailsService.getUsageTrendByDateRange(
+                    customStartDate,
+                    customEndDate
+                );
+            } else if (selectedRange !== 'custom') {
                 const rangeDays = {
                     '7d': 7,
                     '30d': 30,
                     '60d': 60,
                     '90d': 90,
-                    'custom': 7 // Fallback for custom range when dates not selected
                 }[selectedRange];
                 data = await guardrailsService.getUsageTrend(rangeDays);
             }
-            setTrendData(data);
+            setTrendData(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching trend data:', error);
+            setTrendData([]);
         } finally {
             setLoading(false);
         }
     }, [selectedRange, customStartDate, customEndDate]);
+
+    useEffect(() => {
+        if (selectedRange === 'custom') {
+            if (customStartDate && customEndDate) {
+                void fetchTrendData();
+            } else {
+                setTrendData([]);
+                setLoading(false);
+            }
+        } else {
+            void fetchTrendData();
+        }
+    }, [selectedRange, customStartDate, customEndDate, fetchTrendData]);
 
     const formatDate = (dateStr: string) => {
         const date = new Date(dateStr);
@@ -261,6 +280,7 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                             tickFormatter={formatDate}
                             stroke="#6B7280"
                             fontSize={12}
+                            minTickGap={28}
                         />
                         <YAxis
                             stroke="#6B7280"
@@ -282,6 +302,7 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                             tickFormatter={formatDate}
                             stroke="#6B7280"
                             fontSize={12}
+                            minTickGap={28}
                         />
                         <YAxis
                             stroke="#6B7280"
@@ -304,6 +325,7 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                             tickFormatter={formatDate}
                             stroke="#6B7280"
                             fontSize={12}
+                            minTickGap={28}
                         />
                         <YAxis
                             stroke="#6B7280"
@@ -424,15 +446,23 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center p-2 sm:p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
                             <input
                                 type="date"
-                                value={customStartDate?.toISOString().split('T')[0] || ''}
-                                onChange={(e) => setCustomStartDate(e.target.value ? new Date(e.target.value) : null)}
+                                value={customStartDate ? formatInputDate(customStartDate) : ''}
+                                onChange={(e) =>
+                                    setCustomStartDate(
+                                        e.target.value ? parseLocalDateOnly(e.target.value) : null
+                                    )
+                                }
                                 className="text-xs sm:text-sm input flex-1"
                             />
                             <span className="text-xs sm:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary text-center sm:text-left">to</span>
                             <input
                                 type="date"
-                                value={customEndDate?.toISOString().split('T')[0] || ''}
-                                onChange={(e) => setCustomEndDate(e.target.value ? new Date(e.target.value) : null)}
+                                value={customEndDate ? formatInputDate(customEndDate) : ''}
+                                onChange={(e) =>
+                                    setCustomEndDate(
+                                        e.target.value ? parseLocalDateOnly(e.target.value) : null
+                                    )
+                                }
                                 className="text-xs sm:text-sm input flex-1"
                             />
                         </div>

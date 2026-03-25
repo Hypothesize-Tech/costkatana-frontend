@@ -273,7 +273,20 @@ export class UserService {
   }): Promise<any> {
     try {
       const response = await apiClient.get("/user/activities", { params });
-      return response.data.data;
+      const body = response.data as {
+        success?: boolean;
+        message?: string;
+        data?: {
+          activities: unknown[];
+          pagination: Record<string, unknown>;
+        };
+        activities?: unknown[];
+      };
+      const payload = body?.data ?? body;
+      return payload as {
+        activities: unknown[];
+        pagination: Record<string, unknown>;
+      };
     } catch (error) {
       console.error("Error fetching user activities:", error);
       return {

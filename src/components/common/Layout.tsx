@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { useState, useEffect } from "react";
+import { GlobalSubscriptionBanner } from "../subscription/GlobalSubscriptionBanner";
 
 export const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -53,6 +54,7 @@ export const Layout = () => {
         >
           <div className="py-8">
             <div className="w-full px-6 sm:px-8 md:px-10">
+              <GlobalSubscriptionBanner />
               <Outlet />
             </div>
           </div>
