@@ -25,7 +25,7 @@ class FeedbackService {
      */
     async submitFeedback(requestId: string, feedback: FeedbackOptions): Promise<FeedbackSubmissionResult> {
         try {
-            const response = await apiClient.post(`/v1/request/${requestId}/feedback`, feedback);
+            const response = await apiClient.post(`/request-feedback/${requestId}/feedback`, feedback);
             
             return {
                 success: true,
@@ -45,7 +45,7 @@ class FeedbackService {
      */
     async updateImplicitSignals(requestId: string, signals: ImplicitSignals): Promise<FeedbackSubmissionResult> {
         try {
-            const response = await apiClient.put(`/v1/request/${requestId}/implicit-signals`, signals);
+            const response = await apiClient.put(`/request-feedback/${requestId}/implicit-signals`, signals);
             
             return {
                 success: true,
@@ -65,7 +65,7 @@ class FeedbackService {
      */
     async getFeedback(requestId: string): Promise<any> {
         try {
-            const response = await apiClient.get(`/v1/request/${requestId}/feedback`);
+            const response = await apiClient.get(`/request-feedback/${requestId}/feedback`);
             return response.data.data;
         } catch (error: any) {
             if (error.response?.status === 404) {
@@ -80,7 +80,7 @@ class FeedbackService {
      */
     async getFeedbackAnalytics(): Promise<any> {
         try {
-            const response = await apiClient.get('/v1/feedback/analytics');
+            const response = await apiClient.get('/request-feedback/analytics');
             return response.data.data;
         } catch (error: any) {
             console.error('Failed to get feedback analytics:', error);
@@ -106,7 +106,7 @@ class FeedbackService {
      */
     async getGlobalFeedbackAnalytics(): Promise<any> {
         try {
-            const response = await apiClient.get('/v1/feedback/analytics/global');
+            const response = await apiClient.get('/request-feedback/analytics/global');
             return response.data.data;
         } catch (error: any) {
             console.error('Failed to get global feedback analytics:', error);

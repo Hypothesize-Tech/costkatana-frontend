@@ -118,7 +118,7 @@ class SessionsService {
         page?: number;
         limit?: number;
     }): Promise<SessionsListResponse> {
-        const response = await api.get('/v1/sessions', { params });
+        const response = await api.get('/sessions', { params });
         return response.data.data;
     }
 
@@ -126,7 +126,7 @@ class SessionsService {
      * Get session graph
      */
     async getSessionGraph(sessionId: string): Promise<SessionGraph> {
-        const response = await api.get(`/v1/sessions/${sessionId}/graph`);
+        const response = await api.get(`/sessions/${sessionId}/graph`);
         return response.data.data;
     }
 
@@ -134,7 +134,7 @@ class SessionsService {
      * Get session details
      */
     async getSessionDetails(sessionId: string): Promise<SessionDetails> {
-        const response = await api.get(`/v1/sessions/${sessionId}/details`);
+        const response = await api.get(`/sessions/${sessionId}/details`);
         return response.data.data;
     }
 
@@ -142,7 +142,7 @@ class SessionsService {
      * End a session
      */
     async endSession(sessionId: string): Promise<Session> {
-        const response = await api.post(`/v1/sessions/${sessionId}/end`, {});
+        const response = await api.post(`/sessions/${sessionId}/end`, {});
         return response.data.data;
     }
 
@@ -150,7 +150,7 @@ class SessionsService {
      * Get sessions summary
      */
     async getSessionsSummary(): Promise<SessionsSummary> {
-        const response = await api.get('/v1/sessions/summary');
+        const response = await api.get('/sessions/summary');
         return response.data.data;
     }
 
@@ -179,7 +179,7 @@ class SessionsService {
         resourceIds?: string[];
         metadata?: Record<string, any>;
     }): Promise<{ traceId: string; sessionId: string }> {
-        const response = await api.post('/v1/traces/ingest', trace);
+        const response = await api.post('/traces/ingest', trace);
         return response.data.data;
     }
 }
