@@ -20,6 +20,10 @@ import stripeLogo from '../../assets/stripe-logo.png';
 import paypalLogo from '../../assets/paypal-logo.webp';
 import razorpayLogo from '../../assets/razorpay-logo.png';
 import { SubscriptionDashboardShimmer } from '../shimmer/SubscriptionPlansShimmer';
+import {
+    getPaymentUrgencyCopy,
+    resolvePaymentUrgency,
+} from '../../utils/subscriptionPaymentUrgency';
 
 export const SubscriptionDashboard: React.FC = () => {
     const { showNotification } = useNotifications();
@@ -29,6 +33,7 @@ export const SubscriptionDashboard: React.FC = () => {
     const { data: subscription, isLoading: subLoading } = useQuery(
         ['subscription'],
         () => SubscriptionService.getSubscription(),
+        { staleTime: 0, retry: 1 },
     );
 
     const { data: usage, isLoading: usageLoading } = useQuery(
@@ -36,6 +41,7 @@ export const SubscriptionDashboard: React.FC = () => {
         () => SubscriptionService.getUsageAnalytics(),
         {
             enabled: !!subscription,
+            staleTime: 0,
         }
     );
 
@@ -44,6 +50,7 @@ export const SubscriptionDashboard: React.FC = () => {
         () => SubscriptionService.getUserSpendingSummary(),
         {
             enabled: !!subscription,
+            staleTime: 0,
         }
     );
 
@@ -64,7 +71,19 @@ export const SubscriptionDashboard: React.FC = () => {
             past_due: (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
                     <ClockIcon className="w-4 h-4" />
-                    Past Due
+                    Past due
+                </span>
+            ),
+            unpaid: (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white">
+                    <XCircleIcon className="w-4 h-4" />
+                    Unpaid
+                </span>
+            ),
+            incomplete: (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+                    <ClockIcon className="w-4 h-4" />
+                    Incomplete
                 </span>
             ),
             canceled: (
@@ -125,6 +144,15 @@ export const SubscriptionDashboard: React.FC = () => {
         ? getDaysRemaining(subscription.trialEnd)
         : null;
 
+    const paymentUrgency = resolvePaymentUrgency(subscription);
+    const paymentAlertCopy =
+        paymentUrgency?.show &&
+        getPaymentUrgencyCopy({
+            kind: paymentUrgency.kind,
+            statusForCopy: paymentUrgency.statusForCopy,
+            subscription,
+        });
+
     return (
         <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Current Plan Card */}
@@ -156,6 +184,29 @@ export const SubscriptionDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
+
+                {paymentAlertCopy && (
+                    <div
+                        role="alert"
+                        className="mb-4 sm:mb-5 rounded-xl border border-amber-500/50 bg-amber-500/10 dark:bg-amber-950/35 p-4 sm:p-5"
+                    >
+                        <p className="text-sm sm:text-base font-semibold text-amber-950 dark:text-amber-100 mb-1">
+                            {paymentAlertCopy.title}
+                        </p>
+                        <p className="text-xs sm:text-sm text-amber-900/90 dark:text-amber-200/90 mb-4">
+                            {paymentAlertCopy.description}
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setShowUpgradeModal(true)}
+                                className="flex-1 btn btn-primary text-sm sm:text-base"
+                            >
+                                {paymentAlertCopy.primaryCta}
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Billing Info */}
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t sm:grid-cols-2 border-primary-200/20 dark:border-primary-800/20">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -52,6 +52,11 @@ export const Profile: React.FC = () => {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'preferences' | 'security' | 'subscription'>('overview');
+  const [activityDateRange, setActivityDateRange] = useState<
+    '7d' | '30d' | 'month' | '90d' | 'custom'
+  >('month');
+  const [activityCustomStart, setActivityCustomStart] = useState('');
+  const [activityCustomEnd, setActivityCustomEnd] = useState('');
 
   // Handle URL parameter to set active tab
   useEffect(() => {
@@ -66,6 +71,7 @@ export const Profile: React.FC = () => {
     () => userService.getProfile(),
     {
       enabled: !!user?.id,
+      staleTime: 0,
       onSuccess: (data) => {
         // Sync fresh profile data to AuthContext to update sidebar and other components
         if (data && updateUser) {
@@ -80,25 +86,95 @@ export const Profile: React.FC = () => {
     () => userService.getUserStats(),
     {
       enabled: !!user?.id && activeTab === 'overview',
+      staleTime: 0,
       retry: false, // Avoid retrying 404 on missing /api/user/stats
     }
   );
 
-  // Fetch recent usage for activity tab
+  const activityRangeBounds = useMemo(() => {
+    const now = new Date();
+    if (activityDateRange === 'custom' && activityCustomStart && activityCustomEnd) {
+      const start = new Date(activityCustomStart);
+      const end = new Date(activityCustomEnd);
+      end.setHours(23, 59, 59, 999);
+      return { startDate: start.toISOString(), endDate: end.toISOString() };
+    }
+    if (activityDateRange === 'custom') {
+      return { startDate: undefined as string | undefined, endDate: undefined as string | undefined };
+    }
+    const start = new Date(now);
+    switch (activityDateRange) {
+      case '7d':
+        start.setDate(now.getDate() - 7);
+        break;
+      case '30d':
+        start.setDate(now.getDate() - 30);
+        break;
+      case 'month':
+        start.setTime(new Date(now.getFullYear(), now.getMonth(), 1).getTime());
+        start.setHours(0, 0, 0, 0);
+        break;
+      case '90d':
+        start.setDate(now.getDate() - 90);
+        break;
+      default:
+        start.setDate(now.getDate() - 30);
+    }
+    return { startDate: start.toISOString(), endDate: now.toISOString() };
+  }, [activityDateRange, activityCustomStart, activityCustomEnd]);
+
+  const activityRangeReady =
+    activityDateRange !== 'custom' || (!!activityCustomStart && !!activityCustomEnd);
+
+  // Fetch recent usage for activity tab (date-filtered)
   const { data: recentUsage, isLoading: usageLoading } = useQuery(
-    ['recent-usage-profile', user?.id, activeTab],
-    () => analyticsService.getRecentUsage({ limit: 20 }),
+    [
+      'recent-usage-profile',
+      user?.id,
+      activeTab,
+      activityRangeBounds.startDate,
+      activityRangeBounds.endDate,
+    ],
+    () =>
+      analyticsService.getRecentUsage({
+        limit: 50,
+        startDate: activityRangeBounds.startDate,
+        endDate: activityRangeBounds.endDate,
+      }),
     {
-      enabled: !!user?.id && activeTab === 'activity',
+      enabled:
+        !!user?.id &&
+        activeTab === 'activity' &&
+        activityRangeReady &&
+        !!activityRangeBounds.startDate &&
+        !!activityRangeBounds.endDate,
+      staleTime: 0,
     }
   );
 
   // Also fetch user activities for additional context
   const { data: activityData, isLoading: activityLoading } = useQuery(
-    ['user-activity', user?.id, activeTab],
-    () => userService.getUserActivities({ limit: 10 }),
+    [
+      'user-activity',
+      user?.id,
+      activeTab,
+      activityRangeBounds.startDate,
+      activityRangeBounds.endDate,
+    ],
+    () =>
+      userService.getUserActivities({
+        limit: 50,
+        startDate: activityRangeBounds.startDate,
+        endDate: activityRangeBounds.endDate,
+      }),
     {
-      enabled: !!user?.id && activeTab === 'activity',
+      enabled:
+        !!user?.id &&
+        activeTab === 'activity' &&
+        activityRangeReady &&
+        !!activityRangeBounds.startDate &&
+        !!activityRangeBounds.endDate,
+      staleTime: 0,
     }
   );
   const updateProfileMutation = useMutation(
@@ -233,7 +309,9 @@ export const Profile: React.FC = () => {
 
   // Combine and sort activities
   const usageActivities = recentUsage?.map(formatUsageAsActivity) || [];
-  const systemActivities = activityData?.data?.map(formatActivity) || [];
+  const rawActivities = activityData as { activities?: unknown[] } | undefined;
+  const systemActivities =
+    (Array.isArray(rawActivities?.activities) ? rawActivities.activities : []).map(formatActivity);
   const allActivities = [...usageActivities, ...systemActivities]
     .sort((a, b) => {
       const aTime = a.timestamp === 'N/A' ? 0 : new Date(a.timestamp).getTime();
@@ -329,10 +407,90 @@ export const Profile: React.FC = () => {
             )}
 
             {activeTab === 'activity' && (
-              <ProfileActivity
-                activities={allActivities}
-                loading={usageLoading || activityLoading}
-              />
+              <div className="space-y-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between rounded-xl border p-4 shadow-lg glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <div>
+                    <label
+                      htmlFor="profile-activity-range"
+                      className="block text-xs font-semibold uppercase tracking-wide text-light-text-secondary dark:text-dark-text-secondary mb-1.5"
+                    >
+                      Usage period
+                    </label>
+                    <select
+                      id="profile-activity-range"
+                      value={activityDateRange}
+                      onChange={(e) =>
+                        setActivityDateRange(
+                          e.target.value as '7d' | '30d' | 'month' | '90d' | 'custom'
+                        )
+                      }
+                      className="w-full sm:w-auto min-w-[180px] rounded-lg border border-primary-200/40 dark:border-primary-600/40 bg-white/80 dark:bg-dark-card/80 px-3 py-2 text-sm text-light-text dark:text-dark-text"
+                    >
+                      <option value="month">This month (calendar)</option>
+                      <option value="7d">Last 7 days</option>
+                      <option value="30d">Last 30 days</option>
+                      <option value="90d">Last 90 days</option>
+                      <option value="custom">Custom range</option>
+                    </select>
+                  </div>
+                  {activityDateRange === 'custom' && (
+                    <div className="flex flex-wrap gap-3 items-end">
+                      <div>
+                        <label
+                          htmlFor="profile-activity-start"
+                          className="block text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+                        >
+                          From
+                        </label>
+                        <input
+                          id="profile-activity-start"
+                          type="date"
+                          value={activityCustomStart}
+                          onChange={(e) => setActivityCustomStart(e.target.value)}
+                          className="rounded-lg border border-primary-200/40 dark:border-primary-600/40 bg-white/80 dark:bg-dark-card/80 px-3 py-2 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="profile-activity-end"
+                          className="block text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+                        >
+                          To
+                        </label>
+                        <input
+                          id="profile-activity-end"
+                          type="date"
+                          value={activityCustomEnd}
+                          onChange={(e) => setActivityCustomEnd(e.target.value)}
+                          className="rounded-lg border border-primary-200/40 dark:border-primary-600/40 bg-white/80 dark:bg-dark-card/80 px-3 py-2 text-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {activityDateRange === 'custom' && (!activityCustomStart || !activityCustomEnd) && (
+                  <p className="text-sm text-amber-700 dark:text-amber-300">
+                    Select start and end dates to load activity for a custom range.
+                  </p>
+                )}
+                <ProfileActivity
+                  activities={allActivities}
+                  loading={usageLoading || activityLoading}
+                  dateRangeLabel={
+                    activityDateRange === 'custom' && activityCustomStart && activityCustomEnd
+                      ? `${activityCustomStart} → ${activityCustomEnd}`
+                      : activityDateRange === 'month'
+                        ? 'This calendar month'
+                        : activityDateRange === '7d'
+                          ? 'Last 7 days'
+                          : activityDateRange === '30d'
+                            ? 'Last 30 days'
+                            : activityDateRange === '90d'
+                              ? 'Last 90 days'
+                              : 'Custom range'
+                  }
+                />
+              </div>
             )}
 
             {activeTab === 'preferences' && (

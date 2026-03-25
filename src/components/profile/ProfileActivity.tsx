@@ -8,7 +8,9 @@ interface Activity {
   action: string;
   description: string;
   timestamp: string;
-  icon?: string;
+  /** Optional icon from activity feed (component or unused) */
+  icon?: string | React.ComponentType<{ className?: string }>;
+  iconColor?: string;
   metadata?: {
     cost?: number;
     tokens?: number;
@@ -20,11 +22,14 @@ interface Activity {
 interface ProfileActivityProps {
   activities: Activity[];
   loading?: boolean;
+  /** Human-readable description of the active date filter (shown under the title). */
+  dateRangeLabel?: string;
 }
 
 export const ProfileActivity: React.FC<ProfileActivityProps> = ({
   activities,
   loading = false,
+  dateRangeLabel,
 }) => {
   const getActivityIcon = (type: Activity["type"]) => {
     switch (type) {
@@ -172,9 +177,16 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
           <div className="flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
-            Recent Activity
-          </h2>
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
+              Recent Activity
+            </h2>
+            {dateRangeLabel && (
+              <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                Showing: {dateRangeLabel}
+              </p>
+            )}
+          </div>
         </div>
 
         {activities.length === 0 ? (

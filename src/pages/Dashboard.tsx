@@ -86,7 +86,10 @@ export const Dashboard: React.FC = () => {
       setRefreshing(true);
 
       // Get dashboard data
-      const dashboardData = await DashboardService.getDashboardData(projectId);
+      const dashboardData = await DashboardService.getDashboardData(
+        projectId,
+        timeRange,
+      );
 
       // Get recent activity separately for better data
       const recentActivityData = await DashboardService.getRecentActivity(5);
@@ -126,6 +129,7 @@ export const Dashboard: React.FC = () => {
           projects.map(async (project) => {
             const projectData = await DashboardService.getDashboardData(
               project._id,
+              timeRange,
             );
             return {
               projectId: project._id,
@@ -393,6 +397,7 @@ export const Dashboard: React.FC = () => {
                     <option value="7d">7d</option>
                     <option value="30d">30d</option>
                     <option value="90d">90d</option>
+                    <option value="365d">1y</option>
                   </select>
                   <ChevronDownIcon className="absolute right-1.5 top-1/2 transform -translate-y-1/2 w-3 h-3 text-primary-500 pointer-events-none" />
                 </div>
@@ -594,6 +599,7 @@ export const Dashboard: React.FC = () => {
                     <option value="7d">7d</option>
                     <option value="30d">30d</option>
                     <option value="90d">90d</option>
+                    <option value="365d">1y</option>
                   </select>
                   <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-primary-500 pointer-events-none" />
                 </div>

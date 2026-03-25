@@ -60,6 +60,25 @@ const addRefreshSubscriber = (callback: (token: string) => void) => {
     refreshSubscribers.push(callback);
 };
 
+/**
+ * Profile, subscription, usage, and recent-usage endpoints must not use browser HTTP cache
+ * (avoids stale data / 304 Not Modified when filters or subscription state change).
+ */
+function shouldBypassBrowserCache(url: string | undefined): boolean {
+    if (!url) return false;
+    const paths = [
+        '/user/profile',
+        '/user/stats',
+        '/user/subscription',
+        '/user/spending',
+        '/analytics/recent-usage',
+        '/user/activities',
+        '/usage',
+        '/guardrails/usage',
+    ];
+    return paths.some((p) => url.includes(p));
+}
+
 // Function to add auth interceptors to an axios instance
 const addAuthInterceptors = (instance: AxiosInstance) => {
     // Request interceptor to add auth token and logging
@@ -68,6 +87,11 @@ const addAuthInterceptors = (instance: AxiosInstance) => {
             const token = authService.getToken();
             if (token && config.headers) {
                 config.headers.Authorization = `Bearer ${token}`;
+            }
+
+            if (config.headers && shouldBypassBrowserCache(config.url)) {
+                config.headers['Cache-Control'] = 'no-cache, no-store';
+                config.headers['Pragma'] = 'no-cache';
             }
             
             // Log chat requests for debugging network issues

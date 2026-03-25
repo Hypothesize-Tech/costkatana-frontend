@@ -49,9 +49,12 @@ export class DashboardService {
   /**
    * Get dashboard data from analytics endpoint
    */
-  static async getDashboardData(projectId?: string): Promise<DashboardData> {
+  static async getDashboardData(
+    projectId?: string,
+    timeRange?: string
+  ): Promise<DashboardData> {
     try {
-      const cacheKey = `dashboard_${projectId || "all"}`;
+      const cacheKey = `dashboard_${projectId || "all"}_${timeRange || "default"}`;
       const cached = this.cache.get(cacheKey);
 
       if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
@@ -61,7 +64,10 @@ export class DashboardService {
       const safeNumber = (val: any) =>
         typeof val === "number" && !isNaN(val) ? val : 0;
 
-      const response = await analyticsService.getDashboardData(projectId);
+      const response = await analyticsService.getDashboardData(
+        projectId,
+        timeRange
+      );
 
       // Ensure the response has the expected structure
       const overview = response.overview || {};
