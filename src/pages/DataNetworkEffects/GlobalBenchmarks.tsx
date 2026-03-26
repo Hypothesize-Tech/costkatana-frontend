@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeftIcon,
@@ -15,19 +15,22 @@ import MetricCard from '../../components/DataNetworkEffects/MetricCard';
 import MetricShimmer from '../../components/DataNetworkEffects/Shimmer/MetricShimmer';
 import TableShimmer from '../../components/DataNetworkEffects/Shimmer/TableShimmer';
 import { sanitizeModelId, extractProviderFromModelId, sanitizeProvider } from '../../utils/modelIdSanitizer';
+import { RefreshCw } from 'lucide-react';
 
 const GlobalBenchmarks: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [benchmarks, setBenchmarks] = useState<any[]>([]);
   const [bestPractices, setBestPractices] = useState<any[]>([]);
   const [comparison, setComparison] = useState<any>(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = useCallback(async (options?: { isRefresh?: boolean }) => {
+    const isRefresh = options?.isRefresh === true;
+    if (isRefresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     try {
       const [benchmarksData, practicesData, comparisonData] = await Promise.all([
         DataNetworkEffectsService.getGlobalBenchmarks(),
@@ -58,8 +61,13 @@ const GlobalBenchmarks: React.FC = () => {
       setComparison(null);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    void loadData();
+  }, [loadData]);
 
   return (
     <div className="min-h-screen relative bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
@@ -150,11 +158,24 @@ const GlobalBenchmarks: React.FC = () => {
         {/* Benchmarks Table */}
         <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 overflow-hidden">
           <div className="p-6 border-b border-primary-200/30">
-            <div className="flex items-center gap-3 mb-2">
-              <ChartBarIcon className="w-6 h-6 text-primary-500 dark:text-primary-400" />
-              <h2 className="text-xl font-display font-semibold gradient-text-primary">
-                Model Benchmarks (Anonymized)
-              </h2>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+              <div className="flex items-center gap-3">
+                <ChartBarIcon className="w-6 h-6 text-primary-500 dark:text-primary-400" />
+                <h2 className="text-xl font-display font-semibold gradient-text-primary">
+                  Model Benchmarks (Anonymized)
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  void loadData({ isRefresh: true });
+                }}
+                disabled={loading || refreshing}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
             </div>
             <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary ml-9">
               Aggregated performance data across all tenants (k-anonymity: k≥3)

@@ -833,6 +833,13 @@ export const ConversationalAgent: React.FC = () => {
     }
   }, [location.state, location.pathname, navigate]);
 
+  // Reset Apps flyout when the attachments menu closes
+  useEffect(() => {
+    if (!showAttachmentsPopover) {
+      setShowAppsSubmenu(false);
+    }
+  }, [showAttachmentsPopover]);
+
   // Handle pre-attached Google files from URL parameters
   useEffect(() => {
     const googleFileAttachment = GoogleFileAttachmentService.parseFromURLParams();
@@ -4611,23 +4618,29 @@ export const ConversationalAgent: React.FC = () => {
                             </button>
                           </div>
 
-                          {/* Apps - Nested Menu */}
+                          {/* Apps - Nested Menu (click toggle: hover + ml-2 gap fired mouseLeave before submenu received clicks) */}
                           <div
                             className="mb-2 relative overflow-visible"
-                            onMouseEnter={() => setShowAppsSubmenu(true)}
-                            onMouseLeave={() => setShowAppsSubmenu(false)}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <button
+                              type="button"
+                              aria-expanded={showAppsSubmenu}
+                              aria-haspopup="menu"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setShowAppsSubmenu((prev) => !prev);
+                              }}
                               className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
                             >
                               <PuzzlePieceIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
                               <span className="text-sm font-medium text-secondary-900 dark:text-white">Apps</span>
-                              <ChevronRightIcon className="w-3 h-3 ml-auto text-secondary-400 dark:text-secondary-500 transition-transform" />
+                              <ChevronRightIcon className={`w-3 h-3 ml-auto text-secondary-400 dark:text-secondary-500 transition-transform ${showAppsSubmenu ? 'rotate-90' : ''}`} />
                             </button>
 
-                            {/* Nested Apps Menu */}
+                            {/* Nested Apps Menu — flush/overlap parent edge so no dead zone between trigger and panel */}
                             {showAppsSubmenu && (
-                              <div className="absolute left-full top-0 ml-2 w-56 glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-[100] animate-fade-in">
+                              <div className="absolute left-full top-0 ml-0 w-56 -translate-x-px glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-[100] animate-fade-in">
                                 <div className="p-2">
                                   {/* GitHub */}
                                   <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg">

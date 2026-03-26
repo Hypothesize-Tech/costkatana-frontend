@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ChartBarIcon, CurrencyDollarIcon, ClockIcon, HashtagIcon, TableCellsIcon } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 import { usageService } from '@/services/usage.service';
 import { useProject } from '@/contexts/ProjectContext';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
@@ -40,6 +41,7 @@ function renderPropertyValue(property: string, value: any) {
 }
 
 export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange }) => {
+    const [refreshing, setRefreshing] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState<string>('');
     const [availableProperties, setAvailableProperties] = useState<Array<{
         property: string;
@@ -49,7 +51,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
     const { selectedProject } = useProject();
 
     // Load available properties
-    const { data: properties } = useQuery({
+    const { data: properties, refetch: refetchProperties } = useQuery({
         queryKey: ['available-properties', selectedProject, dateRange],
         queryFn: () => usageService.getAvailableProperties({
             projectId: selectedProject !== 'all' ? selectedProject : undefined,
@@ -60,7 +62,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
     });
 
     // Load analytics for selected property
-    const { data: analytics, isLoading: analyticsLoading } = useQuery({
+    const { data: analytics, isLoading: analyticsLoading, refetch: refetchAnalytics } = useQuery({
         queryKey: ['property-analytics', selectedProperty, selectedProject, dateRange],
         queryFn: () => usageService.getPropertyAnalytics({
             groupBy: selectedProperty,
@@ -80,6 +82,15 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
             setSelectedProperty(properties[0].property);
         }
     }, [properties, selectedProperty]);
+
+    const handleRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await Promise.all([refetchProperties(), refetchAnalytics()]);
+        } finally {
+            setRefreshing(false);
+        }
+    }, [refetchProperties, refetchAnalytics]);
 
     if (!availableProperties.length) {
         return (
@@ -113,7 +124,18 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                void handleRefresh();
+                            }}
+                            disabled={refreshing}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                        >
+                            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                            Refresh
+                        </button>
                         <label className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Group by:</label>
                         <select
                             value={selectedProperty}
@@ -194,18 +216,31 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                     {/* Detailed Breakdown */}
                     <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
                         <div className="px-5 py-4 border-b border-primary-200/30">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-lg">
-                                    <TableCellsIcon className="w-4 h-4 text-white" />
+                            <div className="flex items-center justify-between gap-3 flex-wrap">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-lg">
+                                        <TableCellsIcon className="w-4 h-4 text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-display font-bold gradient-text-primary">
+                                            Breakdown by {selectedProperty}
+                                        </h3>
+                                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                                            Detailed analytics by property value
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="text-lg font-display font-bold gradient-text-primary">
-                                        Breakdown by {selectedProperty}
-                                    </h3>
-                                    <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
-                                        Detailed analytics by property value
-                                    </p>
-                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        void handleRefresh();
+                                    }}
+                                    disabled={refreshing}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                                >
+                                    <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                                    Refresh
+                                </button>
                             </div>
                         </div>
                         <div className="overflow-hidden">

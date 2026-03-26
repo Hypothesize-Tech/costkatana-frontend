@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
@@ -8,6 +8,7 @@ import {
     ChartBarIcon,
     ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 
 const COLORS = [
     '#0ea5e9', '#22c55e', '#f59e0b', '#ef4444',
@@ -26,14 +27,24 @@ const formatModelLabel = (name: string): string => {
 
 export const CostAnalytics: React.FC = () => {
     const [timeframe, setTimeframe] = useState<string>('24h');
+    const [refreshing, setRefreshing] = useState(false);
 
-    const { data: metrics, isLoading, error } = useQuery<BackendMetrics>({
+    const { data: metrics, isLoading, error, refetch } = useQuery<BackendMetrics>({
         queryKey: ['telemetry-cost', timeframe],
         queryFn: async () => TelemetryAPI.getMetricsDetail(timeframe),
         staleTime: 60000,
         refetchOnWindowFocus: false,
         retry: false,
     });
+
+    const handleRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await refetch();
+        } finally {
+            setRefreshing(false);
+        }
+    }, [refetch]);
 
     if (isLoading) return (
         <div className="p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl border shadow-lg backdrop-blur-xl animate-pulse glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
@@ -79,16 +90,29 @@ export const CostAnalytics: React.FC = () => {
                     </div>
                     <h2 className="text-lg sm:text-xl font-bold font-display gradient-text-primary">AI Cost Analytics</h2>
                 </div>
-                <div className="p-1 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 flex flex-wrap gap-1">
-                    {timeframes.map((frame) => (
-                        <button
-                            key={frame}
-                            onClick={() => setTimeframe(frame)}
-                            className={`btn px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-secondary-600 dark:text-secondary-300 hover:bg-gradient-primary/10'}`}
-                        >
-                            {frame}
-                        </button>
-                    ))}
+                <div className="flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            void handleRefresh();
+                        }}
+                        disabled={refreshing || isLoading}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </button>
+                    <div className="p-1 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 flex flex-wrap gap-1">
+                        {timeframes.map((frame) => (
+                            <button
+                                key={frame}
+                                onClick={() => setTimeframe(frame)}
+                                className={`btn px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-secondary-600 dark:text-secondary-300 hover:bg-gradient-primary/10'}`}
+                            >
+                                {frame}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 

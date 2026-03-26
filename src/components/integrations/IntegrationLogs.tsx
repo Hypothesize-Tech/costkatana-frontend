@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { integrationService } from '../../services/integration.service';
 import {
@@ -7,6 +7,7 @@ import {
   ClockIcon,
   ArrowPathIcon,
 } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 
 
 interface IntegrationLogsProps {
@@ -16,8 +17,9 @@ interface IntegrationLogsProps {
 export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose: _onClose }) => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [alertTypeFilter, setAlertTypeFilter] = useState<string>('all');
+  const [refreshing, setRefreshing] = useState(false);
 
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, refetch } = useQuery(
     ['integration-logs', statusFilter, alertTypeFilter],
     () =>
       integrationService.getAllDeliveryLogs({
@@ -30,6 +32,15 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose: _onCl
   );
 
   const logs = data?.data || [];
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
 
   const getStatusBadge = (status: string) => {
     const config = {
@@ -149,11 +160,22 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose: _onCl
   return (
     <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-200/40 bg-gradient-light-panel dark:bg-gradient-dark-panel">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-wrap justify-between items-center gap-3 mb-8">
         <h2 className="text-2xl font-bold font-display gradient-text-primary">
           Delivery Logs
         </h2>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 items-center">
+          <button
+            type="button"
+            onClick={() => {
+              void handleRefresh();
+            }}
+            disabled={refreshing || isLoading}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}

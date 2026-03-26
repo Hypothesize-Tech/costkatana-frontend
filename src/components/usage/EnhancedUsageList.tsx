@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BeakerIcon, ChevronRightIcon, EyeIcon, ClockIcon, LightBulbIcon } from '@heroicons/react/24/outline';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 import { Usage } from '@/types';
 import { Pagination } from '@/components/common/Pagination';
 import {
@@ -37,6 +37,8 @@ interface UsageListProps {
     hasPrev: boolean;
   };
   onRefresh: () => void;
+  /** When true, shows spinning refresh icon (e.g. parent `useQuery` isFetching). */
+  isRefreshing?: boolean;
   onPageChange: (page: number) => void;
   showNetworkDetails?: boolean;
   showOptimizationSuggestions?: boolean;
@@ -48,6 +50,7 @@ export function EnhancedUsageList({
   usage,
   pagination,
   onRefresh,
+  isRefreshing = false,
   onPageChange,
   showNetworkDetails = false,
   showOptimizationSuggestions = false,
@@ -82,6 +85,15 @@ export function EnhancedUsageList({
         <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
           Start tracking your AI API usage to see it here.
         </p>
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          className="mt-6 inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
       </div>
     );
   }
@@ -90,15 +102,18 @@ export function EnhancedUsageList({
     <>
       <div className="overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="px-6 py-3 border-b border-primary-200/30 dark:border-primary-700/30">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-3 flex-wrap">
             <h3 className="text-base font-semibold text-secondary-900 dark:text-white">
               API Usage
             </h3>
             <button
+              type="button"
               onClick={onRefresh}
-              className="p-1.5 rounded-lg border transition-all duration-300 border-primary-200/30 dark:border-primary-700/30 text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:scale-105 active:scale-95"
+              disabled={isRefreshing}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
             >
-              <ArrowPathIcon className="w-4 h-4" />
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
             </button>
           </div>
         </div>

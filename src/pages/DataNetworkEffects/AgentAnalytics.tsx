@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeftIcon,
@@ -10,21 +10,24 @@ import {
   ClockIcon,
   FireIcon
 } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 import DataNetworkEffectsService from '../../services/dataNetworkEffects.service';
 import MetricCard from '../../components/DataNetworkEffects/MetricCard';
 import MetricShimmer from '../../components/DataNetworkEffects/Shimmer/MetricShimmer';
 
 const AgentAnalytics: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [analytics, setAnalytics] = useState<any>(null);
   const [patterns, setPatterns] = useState<any[]>([]);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = useCallback(async (options?: { isRefresh?: boolean }) => {
+    const isRefresh = options?.isRefresh === true;
+    if (isRefresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     try {
       const [analyticsData, patternsData] = await Promise.all([
         DataNetworkEffectsService.getAgentAnalytics(),
@@ -36,8 +39,13 @@ const AgentAnalytics: React.FC = () => {
       console.error('Failed to load agent analytics:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    void loadData();
+  }, [loadData]);
 
   return (
     <div className="min-h-screen relative bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
@@ -139,11 +147,24 @@ const AgentAnalytics: React.FC = () => {
         {analytics?.byAgentType && (
           <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 overflow-hidden">
             <div className="p-6 border-b border-primary-200/30">
-              <div className="flex items-center gap-3">
-                <ChartBarIcon className="w-6 h-6 text-primary-500 dark:text-primary-400" />
-                <h2 className="text-xl font-display font-semibold gradient-text-primary">
-                  Performance by Agent Type
-                </h2>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <ChartBarIcon className="w-6 h-6 text-primary-500 dark:text-primary-400" />
+                  <h2 className="text-xl font-display font-semibold gradient-text-primary">
+                    Performance by Agent Type
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void loadData({ isRefresh: true });
+                  }}
+                  disabled={loading || refreshing}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                  Refresh
+                </button>
               </div>
             </div>
             <div className="overflow-x-auto">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BillingService } from '../../services/billing.service';
 import { PDFService } from '../../services/pdf.service';
@@ -14,14 +14,16 @@ import {
     ClockIcon,
     XCircleIcon,
 } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 
 export const BillingHistory: React.FC = () => {
     const { user } = useAuth();
     const { showNotification } = useNotifications();
     const [page, setPage] = useState(1);
+    const [refreshing, setRefreshing] = useState(false);
     const limit = 10;
 
-    const { data: invoicesData, isLoading, error: invoicesError } = useQuery(
+    const { data: invoicesData, isLoading, error: invoicesError, refetch } = useQuery(
         ['invoices', page],
         () => BillingService.getInvoices({ page, limit }),
         {
@@ -37,6 +39,15 @@ export const BillingHistory: React.FC = () => {
             },
         }
     );
+
+    const handleRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await refetch();
+        } finally {
+            setRefreshing(false);
+        }
+    }, [refetch]);
 
     const handleDownloadInvoice = async (invoice: Invoice) => {
         try {
@@ -129,10 +140,21 @@ export const BillingHistory: React.FC = () => {
 
     return (
         <div className="space-y-4 sm:space-y-5 md:space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-xl sm:text-2xl font-bold text-light-text dark:text-dark-text">
                     Billing History
                 </h2>
+                <button
+                    type="button"
+                    onClick={() => {
+                        void handleRefresh();
+                    }}
+                    disabled={refreshing || isLoading}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                >
+                    <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                    Refresh
+                </button>
             </div>
 
             {!invoicesData || invoicesData.invoices.length === 0 ? (

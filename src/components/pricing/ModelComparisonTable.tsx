@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
     pricingService,
@@ -15,6 +15,7 @@ import {
     CodeBracketIcon,
     EyeIcon
 } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 
 interface ModelComparisonTableProps {
     taskType?: 'chat' | 'code' | 'vision' | 'all';
@@ -34,7 +35,9 @@ export const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({
     const [sortField, setSortField] = useState<SortField>('inputPricePer1M');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-    const { data, isLoading, error } = useQuery<ComparisonTableResponse>({
+    const [refreshing, setRefreshing] = useState(false);
+
+    const { data, isLoading, error, refetch } = useQuery<ComparisonTableResponse>({
         queryKey: ['modelComparisonTable', selectedTaskType],
         queryFn: async () => {
             const result = await pricingService.getModelComparisonTable(selectedTaskType);
@@ -45,6 +48,15 @@ export const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({
         },
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
+
+    const handleRefresh = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await refetch();
+        } finally {
+            setRefreshing(false);
+        }
+    }, [refetch]);
 
     // Extract unique providers
     const providers = useMemo(() => {
@@ -194,9 +206,22 @@ export const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({
                     </div>
                 </div>
 
-                {/* Results count */}
-                <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
-                    Showing {filteredAndSortedModels.length} of {data?.totalModels || 0} models
+                {/* Results count + refresh */}
+                <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
+                        Showing {filteredAndSortedModels.length} of {data?.totalModels || 0} models
+                    </span>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            void handleRefresh();
+                        }}
+                        disabled={refreshing}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </button>
                 </div>
             </div>
 

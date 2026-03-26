@@ -1,10 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
     pricingService,
-    ModelComparisonRow,
     ComparisonTableResponse,
-    CostCalculationResult
 } from '@/services/pricing.service';
 import { CostCalculatorShimmer } from '../shimmer/CostCalculatorShimmer';
 import {
@@ -13,6 +11,7 @@ import {
     TrophyIcon,
     ChartBarIcon
 } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 
 interface CostCalculatorProps {
     taskType?: 'chat' | 'code' | 'vision' | 'all';
@@ -24,7 +23,9 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
     const [selectedTaskType, setSelectedTaskType] = useState<'chat' | 'code' | 'vision' | 'all'>(taskType);
     const [outputRatio, setOutputRatio] = useState<'auto' | 'custom'>('auto');
 
-    const { data, isLoading, error } = useQuery<ComparisonTableResponse>({
+    const [refreshing, setRefreshing] = useState(false);
+
+    const { data, isLoading, error, refetch } = useQuery<ComparisonTableResponse>({
         queryKey: ['modelComparisonTable', 'all'], // Get all models for calculator
         queryFn: async () => {
             const result = await pricingService.getModelComparisonTable('all');
@@ -35,6 +36,15 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
         },
         staleTime: 5 * 60 * 1000,
     });
+
+    const handleRefreshModels = useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await refetch();
+        } finally {
+            setRefreshing(false);
+        }
+    }, [refetch]);
 
     // Calculate costs for all models
     const costResults = useMemo(() => {
@@ -239,14 +249,27 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
                         <h3 className="text-base sm:text-lg font-bold font-display gradient-text-primary">
                             Cost Comparison Results
                         </h3>
-                        <button
-                            onClick={handleExport}
-                            className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
-                        >
-                            <ArrowDownTrayIcon className="w-4 h-4" />
-                            <span className="hidden sm:inline">Export CSV</span>
-                            <span className="sm:hidden">Export</span>
-                        </button>
+                        <div className="flex flex-wrap items-center gap-2 justify-end">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    void handleRefreshModels();
+                                }}
+                                disabled={refreshing}
+                                className="flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                            >
+                                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                                Refresh
+                            </button>
+                            <button
+                                onClick={handleExport}
+                                className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                            >
+                                <ArrowDownTrayIcon className="w-4 h-4" />
+                                <span className="hidden sm:inline">Export CSV</span>
+                                <span className="sm:hidden">Export</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div className="overflow-x-auto -mx-4 sm:mx-0">

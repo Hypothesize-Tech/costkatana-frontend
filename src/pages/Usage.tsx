@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PlusIcon, FunnelIcon, ChevronDownIcon, SparklesIcon, ClockIcon, CircleStackIcon, ArrowDownTrayIcon, CloudArrowUpIcon, ChartBarIcon, FolderIcon, CurrencyDollarIcon, HashtagIcon } from '@heroicons/react/24/outline';
+import { RefreshCw } from 'lucide-react';
 import { usageService } from '@/services/usage.service';
 import { EnhancedUsageList } from '@/components/usage/EnhancedUsageList';
 import { UsageShimmer } from '@/components/shimmer/UsageShimmer';
+import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { usePagination, useDebounce } from '@/hooks';
 import { UsageFilters as IUsageFilters } from '@/types';
 import { UsageFilter } from '@/components/usage/UsageFilter';
@@ -112,7 +114,7 @@ export default function Usage() {
     return params;
   }, [currentPage, limit, debouncedSearch, filters, selectedProject]);
 
-  const { data, isLoading, error, refetch } = useQuery<any>(
+  const { data, isLoading, isFetching, error, refetch } = useQuery<any>(
     ['usage', queryParams],
     async () => {
       // Use standard usage query for basic mode
@@ -305,7 +307,7 @@ export default function Usage() {
   };
 
   const handleRefresh = () => {
-    refetch();
+    void refetch();
   };
 
   // NEW: Handlers for comprehensive tracking features
@@ -445,7 +447,18 @@ export default function Usage() {
         {isLoading ? (
           <UsageShimmer />
         ) : (
-          <>
+          <div className="relative flex flex-col gap-4 sm:gap-5 md:gap-6">
+            {isFetching && (
+              <div
+                className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-xl bg-white/75 dark:bg-dark-card/75 backdrop-blur-[2px] min-h-[240px]"
+                role="status"
+                aria-live="polite"
+                aria-busy="true"
+              >
+                <LoadingSpinner size="large" showText text="Updating usage…" />
+              </div>
+            )}
+            <>
             {/* Usage Chart */}
             {transformedData?.usage && Array.isArray(transformedData.usage) && transformedData.usage.length > 0 && (
               <UsageChart
@@ -457,7 +470,7 @@ export default function Usage() {
 
             {/* Stats Cards */}
             {transformedData?.usage && transformedData.usage.length > 0 && (
-              <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid w-full min-w-0 grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-5 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-4">
                 {/* Total Cost */}
                 <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
@@ -610,18 +623,29 @@ export default function Usage() {
                     placeholder="Search prompts, models, services..."
                   />
                 </div>
-                <button
-                  onClick={() => setShowFilters(true)}
-                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] active:scale-95 flex-shrink-0"
-                >
-                  <FunnelIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Filters</span>
-                  {Object.keys(filters).length > 0 && (
-                    <span className="inline-flex justify-center items-center w-4 h-4 sm:w-5 sm:h-5 text-[10px] sm:text-xs font-medium text-white rounded-full shadow-lg bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454]">
-                      {Object.keys(filters).length}
-                    </span>
-                  )}
-                </button>
+                <div className="flex flex-wrap gap-2 sm:gap-3 w-full sm:w-auto sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={handleRefresh}
+                    disabled={isFetching}
+                    className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] flex-shrink-0"
+                  >
+                    <RefreshCw className={`w-4 h-4 sm:w-5 sm:h-5 ${isFetching ? 'animate-spin' : ''}`} />
+                    Refresh
+                  </button>
+                  <button
+                    onClick={() => setShowFilters(true)}
+                    className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] active:scale-95 flex-shrink-0"
+                  >
+                    <FunnelIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span>Filters</span>
+                    {Object.keys(filters).length > 0 && (
+                      <span className="inline-flex justify-center items-center w-4 h-4 sm:w-5 sm:h-5 text-[10px] sm:text-xs font-medium text-white rounded-full shadow-lg bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454]">
+                        {Object.keys(filters).length}
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -716,6 +740,7 @@ export default function Usage() {
                   pagination={transformedData?.pagination}
                   usage={transformedData?.usage || []}
                   onRefresh={handleRefresh}
+                  isRefreshing={isFetching}
                   onPageChange={handlePageChange}
                   showNetworkDetails={true}
                   showOptimizationSuggestions={true}
@@ -737,7 +762,8 @@ export default function Usage() {
                 )}
               </>
             )}
-          </>
+            </>
+          </div>
         )}
 
         {/* Track Usage Modal */}

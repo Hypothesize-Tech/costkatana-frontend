@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     UserPlusIcon,
@@ -17,10 +17,12 @@ import { WorkspaceSettings } from './WorkspaceSettings';
 import { MemberActionsDropdown } from './MemberActionsDropdown';
 import { useNotification } from '../../contexts/NotificationContext';
 import { TeamManagementShimmer, WorkspaceSettingsShimmer, TeamMembersTableShimmer } from '../shimmer/TeamManagementShimmer';
+import { RefreshCw } from 'lucide-react';
 
 export const TeamManagement: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+    const [refreshingMembers, setRefreshingMembers] = useState(false);
     const [activeSection, setActiveSection] = useState<'workspace' | 'members'>('members');
     const queryClient = useQueryClient();
     const { showNotification } = useNotification();
@@ -38,10 +40,19 @@ export const TeamManagement: React.FC = () => {
     });
 
     // Fetch team members
-    const { data: members = [], isLoading: isLoadingMembers } = useQuery({
+    const { data: members = [], isLoading: isLoadingMembers, refetch: refetchMembers } = useQuery({
         queryKey: ['team-members'],
         queryFn: () => teamService.getWorkspaceMembers(),
     });
+
+    const handleRefreshMembers = useCallback(async () => {
+        setRefreshingMembers(true);
+        try {
+            await refetchMembers();
+        } finally {
+            setRefreshingMembers(false);
+        }
+    }, [refetchMembers]);
 
     const isLoading = isLoadingWorkspace || isLoadingWorkspaces || isLoadingMembers;
 
@@ -194,17 +205,30 @@ export const TeamManagement: React.FC = () => {
                 <>
                     {/* Members Header */}
                     <div className="glass rounded-xl p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
                             <h3 className="text-lg font-display font-bold gradient-text">
                                 Team Members
                             </h3>
-                            <button
-                                onClick={() => setIsInviteModalOpen(true)}
-                                className="bg-gradient-primary text-white inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-                            >
-                                <UserPlusIcon className="w-5 h-5" />
-                                Invite Member
-                            </button>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        void handleRefreshMembers();
+                                    }}
+                                    disabled={refreshingMembers || isLoadingMembers}
+                                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                                >
+                                    <RefreshCw className={`w-4 h-4 ${refreshingMembers ? 'animate-spin' : ''}`} />
+                                    Refresh
+                                </button>
+                                <button
+                                    onClick={() => setIsInviteModalOpen(true)}
+                                    className="bg-gradient-primary text-white inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+                                >
+                                    <UserPlusIcon className="w-5 h-5" />
+                                    Invite Member
+                                </button>
+                            </div>
                         </div>
                     </div>
 

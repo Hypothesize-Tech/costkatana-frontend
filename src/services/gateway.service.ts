@@ -104,7 +104,9 @@ export class GatewayService {
     static async getHealth(): Promise<{ status: string; service: string; timestamp: string; version: string; cacheSize: number }> {
         try {
             const response = await apiClient.get('/gateway/health');
-            return response.data;
+            // API returns { success: true, data: { status: 'healthy', ... } }
+            const payload = response.data?.data ?? response.data;
+            return payload as { status: string; service: string; timestamp: string; version: string; cacheSize: number };
         } catch (error) {
             console.error('Error fetching gateway health:', error);
             // Return default health status instead of throwing to prevent logout
@@ -124,7 +126,11 @@ export class GatewayService {
     static async getStats(): Promise<{ success: boolean; data: GatewayStats }> {
         try {
             const response = await apiClient.get('/gateway/stats');
-            return response.data;
+            const raw = response.data?.data ?? response.data;
+            if (raw && typeof raw === 'object' && 'success' in raw && 'data' in raw) {
+                return raw as { success: boolean; data: GatewayStats };
+            }
+            return { success: true, data: raw as GatewayStats };
         } catch (error) {
             console.error('Error fetching gateway stats:', error);
             // Return default stats instead of throwing to prevent logout
@@ -219,7 +225,10 @@ export class GatewayService {
         
         // Calculate cache metrics (estimate based on cost patterns)
         const cacheHitRate = 0; // We'll need to calculate this from actual cache data
-        const averageLatency = 0; // We'll need to calculate this from actual latency data
+        const averageLatency =
+            summary.averageLatency ??
+            summary.averageResponseTime ??
+            0;
         const errorRate = 0; // We'll need to calculate this from actual error data
         
         // Provider breakdown from actual data
