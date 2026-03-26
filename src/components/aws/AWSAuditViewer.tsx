@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { awsService, AuditLogEntry } from '../../services/aws.service';
 
 interface AWSAuditViewerProps {
@@ -18,6 +18,7 @@ export const AWSAuditViewer: React.FC<AWSAuditViewerProps> = ({ connectionId }) 
   });
   const [anchorData, setAnchorData] = useState<any>(null);
   const [chainVerification, setChainVerification] = useState<any>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const limit = 20;
 
@@ -54,6 +55,16 @@ export const AWSAuditViewer: React.FC<AWSAuditViewerProps> = ({ connectionId }) 
       console.error('Failed to load anchor data:', err);
     }
   };
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await loadAuditLogs();
+      await loadAnchorData();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [page, filters, connectionId]);
 
   const verifyChain = async () => {
     try {
@@ -111,6 +122,20 @@ export const AWSAuditViewer: React.FC<AWSAuditViewerProps> = ({ connectionId }) 
       <div style={styles.header}>
         <h2 style={styles.title}>Audit Log</h2>
         <div style={styles.headerActions}>
+          <button
+            type="button"
+            onClick={() => {
+              void handleRefresh();
+            }}
+            disabled={refreshing || loading}
+            style={{
+              ...styles.verifyButton,
+              opacity: refreshing || loading ? 0.65 : 1,
+              cursor: refreshing || loading ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {refreshing ? 'Refreshing…' : 'Refresh'}
+          </button>
           <button onClick={verifyChain} style={styles.verifyButton}>
             Verify Chain Integrity
           </button>

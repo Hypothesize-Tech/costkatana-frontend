@@ -11,16 +11,19 @@ export interface GitHubRepository {
     url: string;
 }
 
+/** Backend may return `id` / `username`; listConnections normalizes to _id / githubUsername */
 export interface GitHubConnection {
     _id: string;
-    userId: string;
+    id?: string;
+    userId?: string;
     githubUserId?: number;
     githubUsername?: string;
+    username?: string;
     avatarUrl?: string;
     repositories: GitHubRepository[];
     isActive: boolean;
     lastSyncedAt?: Date;
-    createdAt: Date;
+    createdAt?: Date;
 }
 
 export interface StartIntegrationRequest {
@@ -75,7 +78,22 @@ class GitHubService {
         const config = skipCache ? { params: { _t: Date.now() } } : {};
         const response = await api.get('/github/connections', config);
         const data = response.data?.data ?? response.data?.connections;
-        return Array.isArray(data) ? data : [];
+        const raw = Array.isArray(data) ? data : [];
+        return raw.map((c: Record<string, unknown>) => {
+            const id = String((c as { _id?: string; id?: string })._id ?? (c as { id?: string }).id ?? '');
+            const username =
+                (c as { githubUsername?: string; username?: string }).githubUsername ??
+                (c as { username?: string }).username;
+            const repos = (c as { repositories?: GitHubRepository[] }).repositories;
+            const isActive = (c as { isActive?: boolean }).isActive;
+            return {
+                ...c,
+                _id: id,
+                githubUsername: username,
+                repositories: Array.isArray(repos) ? repos : [],
+                isActive: isActive !== false,
+            } as GitHubConnection;
+        });
     }
 
     /**
@@ -86,9 +104,12 @@ class GitHubService {
         lastSynced: Date;
     }> {
         const response = await api.get(`/github/connections/${connectionId}/repositories`, {
-            params: { refresh }
+            params: { refresh: refresh ? 'true' : 'false' }
         });
-        return response.data.data;
+        const payload = response.data?.data ?? response.data;
+        const repositories = Array.isArray(payload?.repositories) ? payload.repositories : [];
+        const lastSynced = payload?.lastSynced != null ? payload.lastSynced : new Date();
+        return { repositories, lastSynced };
     }
 
     /**

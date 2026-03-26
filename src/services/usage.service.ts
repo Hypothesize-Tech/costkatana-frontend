@@ -131,6 +131,64 @@ function normalizePropertyAnalyticsResponse(
     };
 }
 
+/** Point shape for Usage Over Time (backend + chart). */
+type UsageChartPoint = {
+    date: string;
+    cost: number;
+    calls: number;
+    tokens: number;
+};
+
+function normalizeUsageChartRow(row: Record<string, unknown>): UsageChartPoint {
+    return {
+        date: String(row.date ?? row._id ?? ''),
+        cost: Number(row.cost ?? 0) || 0,
+        calls: Number(row.calls ?? row.requests ?? 0) || 0,
+        tokens: Number(row.tokens ?? 0) || 0,
+    };
+}
+
+/**
+ * When the API omits time-series data, derive daily buckets from the current page of usage rows.
+ * Prefer server `summary.chartData` when present (full date range).
+ */
+function buildChartDataFromUsagePage(usage: Usage[]): UsageChartPoint[] {
+    const byDay = new Map<string, { cost: number; calls: number; tokens: number }>();
+    for (const item of usage) {
+        const raw = item.createdAt;
+        if (!raw) continue;
+        const d = new Date(raw as string);
+        if (Number.isNaN(d.getTime())) continue;
+        const dateKey = d.toISOString().slice(0, 10);
+        const cur = byDay.get(dateKey) || { cost: 0, calls: 0, tokens: 0 };
+        cur.cost += Number(item.cost ?? 0) || 0;
+        cur.calls += 1;
+        cur.tokens +=
+            Number(item.totalTokens ?? 0) ||
+            (Number(item.promptTokens ?? 0) + Number(item.completionTokens ?? 0));
+        byDay.set(dateKey, cur);
+    }
+    return Array.from(byDay.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, v]) => ({ date, ...v }));
+}
+
+function resolveUsageChartData(
+    backendSummary: { chartData?: unknown },
+    transformedUsage: Usage[]
+): UsageChartPoint[] {
+    const raw = backendSummary.chartData;
+    const normalized: UsageChartPoint[] = Array.isArray(raw)
+        ? raw.map((row) =>
+              normalizeUsageChartRow(row as Record<string, unknown>)
+          )
+        : [];
+    if (normalized.length > 0) {
+        return normalized;
+    }
+    return buildChartDataFromUsagePage(transformedUsage);
+}
+
 class UsageService {
     async getUsage(params?: {
         page?: number;
@@ -258,7 +316,7 @@ class UsageService {
                     totalCalls: backendSummary.totalCalls || transformedUsage.length,
                     avgResponseTime: backendSummary.avgResponseTime || (transformedUsage.length > 0 ? transformedUsage.reduce((sum: number, item: Usage) => sum + (item.responseTime || 0), 0) / transformedUsage.length : 0),
                     avgCostPerCall: backendSummary.avgCostPerCall || (transformedUsage.length > 0 ? transformedUsage.reduce((sum: number, item: Usage) => sum + item.cost, 0) / transformedUsage.length : 0),
-                    chartData: backendSummary.chartData || []
+                    chartData: resolveUsageChartData(backendSummary, transformedUsage)
                 }
             };
         } catch (error) {

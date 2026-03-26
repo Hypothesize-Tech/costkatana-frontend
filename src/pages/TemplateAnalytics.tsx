@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     FiArrowLeft,
@@ -14,26 +14,59 @@ import { templateAnalyticsService, TemplateUsageStats, TopTemplate, CostSavingsR
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts';
+import { RefreshCw } from 'lucide-react';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+
+const getDefaultDateRangeForPeriod = (period: '24h' | '7d' | '30d' | '90d') => {
+    const endDate = new Date();
+    const startDate = new Date();
+    switch (period) {
+        case '24h':
+            startDate.setDate(endDate.getDate() - 1);
+            break;
+        case '7d':
+            startDate.setDate(endDate.getDate() - 7);
+            break;
+        case '30d':
+            startDate.setDate(endDate.getDate() - 30);
+            break;
+        case '90d':
+            startDate.setDate(endDate.getDate() - 90);
+            break;
+        default:
+            startDate.setDate(endDate.getDate() - 30);
+            break;
+    }
+    return { startDate, endDate };
+};
 
 const TemplateAnalyticsPage: React.FC = () => {
     const navigate = useNavigate();
     const { showNotification } = useNotification();
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [stats, setStats] = useState<TemplateUsageStats | null>(null);
     const [topTemplates, setTopTemplates] = useState<TopTemplate[]>([]);
     const [savingsReport, setSavingsReport] = useState<CostSavingsReport | null>(null);
     const [period, setPeriod] = useState<'24h' | '7d' | '30d' | '90d'>('30d');
-    const [dateRange, setDateRange] = useState<{ startDate?: Date; endDate?: Date }>({});
+    const [dateRange, setDateRange] = useState<{ startDate?: Date; endDate?: Date }>(
+        getDefaultDateRangeForPeriod('30d')
+    );
 
+    // Update dateRange whenever period changes
     useEffect(() => {
-        loadAnalytics();
+        setDateRange(getDefaultDateRangeForPeriod(period));
     }, [period]);
 
-    const loadAnalytics = async () => {
-        try {
+    const loadAnalytics = useCallback(async (options?: { isRefresh?: boolean }) => {
+        const isRefresh = options?.isRefresh === true;
+        if (isRefresh) {
+            setRefreshing(true);
+        } else {
             setLoading(true);
+        }
+        try {
             const [statsData, topTemplatesData, savingsData] = await Promise.all([
                 templateAnalyticsService.getTemplateUsageOverview(dateRange),
                 templateAnalyticsService.getTopTemplates(period, 10),
@@ -47,8 +80,13 @@ const TemplateAnalyticsPage: React.FC = () => {
             showNotification('Failed to load template analytics', 'error');
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
-    };
+    }, [period, dateRange, showNotification]);
+
+    useEffect(() => {
+        void loadAnalytics();
+    }, [loadAnalytics]);
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -245,11 +283,24 @@ const TemplateAnalyticsPage: React.FC = () => {
 
                 {/* Top Templates Table */}
                 <div className="p-4 sm:p-6 mt-6 sm:mt-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex gap-3 items-center mb-4 sm:mb-6">
-                        <div className="p-2 rounded-lg bg-gradient-accent">
-                            <FiTrendingUp className="w-5 h-5 text-white" />
+                    <div className="flex flex-wrap gap-3 items-center justify-between mb-4 sm:mb-6">
+                        <div className="flex gap-3 items-center">
+                            <div className="p-2 rounded-lg bg-gradient-accent">
+                                <FiTrendingUp className="w-5 h-5 text-white" />
+                            </div>
+                            <h2 className="text-xl sm:text-2xl font-bold text-secondary-900 dark:text-white">Top Templates</h2>
                         </div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-secondary-900 dark:text-white">Top Templates</h2>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                void loadAnalytics({ isRefresh: true });
+                            }}
+                            disabled={loading || refreshing}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                        >
+                            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                            Refresh
+                        </button>
                     </div>
                     <div className="overflow-x-auto -mx-4 sm:mx-0">
                         <div className="inline-block min-w-full align-middle">

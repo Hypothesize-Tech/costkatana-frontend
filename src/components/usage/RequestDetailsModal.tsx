@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import {
@@ -22,6 +22,7 @@ import { useQuery } from '@tanstack/react-query';
 import { usageService } from '@/services/usage.service';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import type { Usage } from '@/types';
+import { RefreshCw } from 'lucide-react';
 
 type TabId = 'overview' | 'usage' | 'performance' | 'context' | 'traces' | 'network';
 
@@ -36,8 +37,9 @@ interface RequestDetailsModalProps {
 export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDetails, onSimulate }: RequestDetailsModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [networkDetailsLoading, setNetworkDetailsLoading] = useState(false);
+  const [refreshingContext, setRefreshingContext] = useState(false);
 
-  const { data: detailedContext, isLoading: detailedContextLoading } = useQuery({
+  const { data: detailedContext, isLoading: detailedContextLoading, refetch: refetchDetailedContext } = useQuery({
     queryKey: ['detailed-usage-context', usage?._id],
     queryFn: () =>
       usage
@@ -51,6 +53,15 @@ export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDeta
     enabled: isOpen && !!usage?._id,
     staleTime: 60000
   });
+
+  const handleRefreshContext = useCallback(async () => {
+    setRefreshingContext(true);
+    try {
+      await refetchDetailedContext();
+    } finally {
+      setRefreshingContext(false);
+    }
+  }, [refetchDetailedContext]);
 
   // Backend sends full requestTracking (headers, payload, performance, etc.) - use permissive type for display
   const requestTracking = usage.requestTracking as {
@@ -173,6 +184,17 @@ export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDeta
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void handleRefreshContext();
+                      }}
+                      disabled={refreshingContext || detailedContextLoading}
+                      className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${refreshingContext ? 'animate-spin' : ''}`} />
+                      Refresh
+                    </button>
                     {onSimulate && (usage.cost > 0.01 || usage.totalTokens > 500) && (
                       <button
                         type="button"

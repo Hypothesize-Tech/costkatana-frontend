@@ -36,6 +36,13 @@ export const UsageChart: React.FC<UsageChartProps> = ({
     displayDate: formatDate(item.date, "short"),
   }));
 
+  const hasPlottablePoints =
+    formattedData.length > 0 &&
+    formattedData.some(
+      (row) =>
+        (row.cost ?? 0) > 0 || (row.calls ?? 0) > 0 || (row.tokens ?? 0) > 0
+    );
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -78,6 +85,19 @@ export const UsageChart: React.FC<UsageChartProps> = ({
         </div>
       </div>
 
+      {!hasPlottablePoints ? (
+        <div
+          className="flex flex-col items-center justify-center rounded-xl border border-dashed border-primary-200/40 dark:border-primary-700/40 bg-primary-50/20 dark:bg-primary-900/10 py-16 px-4 text-center"
+          role="status"
+        >
+          <p className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
+            No usage trend data for this period
+          </p>
+          <p className="mt-1 text-xs text-secondary-500 dark:text-secondary-400 max-w-md">
+            Try a wider date range, fewer filters, or refresh after new usage is recorded.
+          </p>
+        </div>
+      ) : (
       <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
         <ChartComponent data={formattedData}>
           <defs>
@@ -156,6 +176,7 @@ export const UsageChart: React.FC<UsageChartProps> = ({
             ))}
         </ChartComponent>
       </ResponsiveContainer>
+      )}
     </div>
   );
 };

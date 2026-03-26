@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import {
@@ -17,6 +17,7 @@ import { optimizationService } from '@/services/optimization.service';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { formatCurrency } from '@/utils/formatters';
 import type { Optimization, OptimizationRequestTracking } from '@/types/optimization.types';
+import { RefreshCw } from 'lucide-react';
 
 type TabId = 'overview' | 'network';
 
@@ -30,6 +31,29 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [requestTracking, setRequestTracking] = useState<OptimizationRequestTracking | undefined>(optimization.requestTracking);
   const [networkDetailsLoading, setNetworkDetailsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchOptimizationFromApi = useCallback(async () => {
+    if (!optimization._id) return;
+    setNetworkDetailsLoading(true);
+    try {
+      const opt = await optimizationService.getOptimization(optimization._id);
+      if (opt.requestTracking) {
+        setRequestTracking(opt.requestTracking);
+      }
+    } finally {
+      setNetworkDetailsLoading(false);
+    }
+  }, [optimization._id]);
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await fetchOptimizationFromApi();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [fetchOptimizationFromApi]);
 
   // Sync when optimization prop changes (e.g. from Quick Optimize result)
   useEffect(() => {
@@ -42,16 +66,8 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
   // GET /network-details returns nodes/edges for viz; requestTracking comes from the full optimization.
   useEffect(() => {
     if (!isOpen || activeTab !== 'network' || !optimization._id || requestTracking) return;
-    setNetworkDetailsLoading(true);
-    optimizationService
-      .getOptimization(optimization._id)
-      .then((opt) => {
-        if (opt.requestTracking) {
-          setRequestTracking(opt.requestTracking);
-        }
-      })
-      .finally(() => setNetworkDetailsLoading(false));
-  }, [isOpen, activeTab, optimization._id, requestTracking]);
+    void fetchOptimizationFromApi();
+  }, [isOpen, activeTab, optimization._id, requestTracking, fetchOptimizationFromApi]);
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 B';
@@ -148,7 +164,7 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl glass backdrop-blur-xl border border-primary-200/30 dark:border-primary-700 bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 text-left align-middle shadow-xl transition-all">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
                   <div>
                     <Dialog.Title as="h3" className="text-2xl font-bold font-display gradient-text-primary">
                       Optimization Details
@@ -157,12 +173,25 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
                       {optimization.service} • {optimization.model}
                     </p>
                   </div>
-                  <button
-                    onClick={onClose}
-                    className="p-2 rounded-lg border border-primary-200/30 dark:border-primary-700 hover:bg-primary-500/10 transition-colors"
-                  >
-                    <XMarkIcon className="w-6 h-6 text-secondary-600 dark:text-secondary-300" />
-                  </button>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void handleRefresh();
+                      }}
+                      disabled={refreshing || networkDetailsLoading}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                      Refresh
+                    </button>
+                    <button
+                      onClick={onClose}
+                      className="p-2 rounded-lg border border-primary-200/30 dark:border-primary-700 hover:bg-primary-500/10 transition-colors"
+                    >
+                      <XMarkIcon className="w-6 h-6 text-secondary-600 dark:text-secondary-300" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-1 mb-6 border-b border-primary-200/30 dark:border-primary-700">

@@ -4,7 +4,7 @@
  * VS-style comparison view: side-by-side metrics grid with highlighted best values,
  * and expandable model responses for easy comparison.
  */
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   ChevronDown,
   ChevronUp,
@@ -12,6 +12,7 @@ import {
   MessageSquare,
   Trophy,
   Zap,
+  RefreshCw,
 } from "lucide-react";
 import { Modal } from "../common/Modal";
 import { FormattedModelResponse } from "../common/FormattedContent";
@@ -37,31 +38,53 @@ export const ExperimentDetailModal: React.FC<ExperimentDetailModalProps> = ({
   const [expandedResponses, setExpandedResponses] = useState<Set<number>>(
     new Set([0]),
   );
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadExperiment = useCallback(
+    async (options?: { force?: boolean }) => {
+      const force = options?.force === true;
+      if (!experimentId) {
+        setExperiment(initialExperiment ?? null);
+        setLoading(false);
+        return;
+      }
+      if (!force && initialExperiment?.id === experimentId) {
+        setExperiment(initialExperiment);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await ExperimentationService.getExperimentById(
+          experimentId,
+        );
+        setExperiment(data);
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load experiment";
+        setError(message);
+        setExperiment(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [experimentId, initialExperiment],
+  );
 
   useEffect(() => {
-    if (!experimentId) {
-      setExperiment(initialExperiment ?? null);
-      setLoading(false);
-      return;
-    }
-    if (initialExperiment?.id === experimentId) {
-      setExperiment(initialExperiment);
-      setLoading(false);
-      return;
-    }
+    void loadExperiment();
+  }, [loadExperiment]);
 
-    setLoading(true);
-    setError(null);
-    ExperimentationService.getExperimentById(experimentId)
-      .then((data) => {
-        setExperiment(data);
-      })
-      .catch((err) => {
-        setError(err?.message ?? "Failed to load experiment");
-        setExperiment(null);
-      })
-      .finally(() => setLoading(false));
-  }, [experimentId, initialExperiment]);
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await loadExperiment({ force: true });
+    } finally {
+      setRefreshing(false);
+    }
+  }, [loadExperiment]);
 
   const toggleResponse = (index: number) => {
     setExpandedResponses((prev) => {
@@ -213,7 +236,7 @@ export const ExperimentDetailModal: React.FC<ExperimentDetailModalProps> = ({
         {!loading && !error && experiment && (
           <>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between gap-4 pb-4 border-b border-primary-200/30">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-primary-200/30">
               <div>
                 <h2 className="text-xl font-display font-bold text-secondary-900 dark:text-white">
                   {experiment.name}
@@ -234,6 +257,19 @@ export const ExperimentDetailModal: React.FC<ExperimentDetailModalProps> = ({
                   <span>{formatDate(experiment.startTime)}</span>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => {
+                  void handleRefresh();
+                }}
+                disabled={refreshing || loading}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 shrink-0"
+              >
+                <RefreshCw
+                  className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+                />
+                Refresh
+              </button>
             </div>
 
             {res && (

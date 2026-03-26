@@ -28,14 +28,18 @@ const GitHubConnector: React.FC<GitHubConnectorProps> = ({
     const loadConnections = async () => {
         try {
             setLoading(true);
+            setError(null);
             const conns = await githubService.listConnections(true);
             const connList = Array.isArray(conns) ? conns : [];
             setConnections(connList);
 
             if (connList.length > 0 && connList[0]) {
-                setSelectedConnection(connList[0]);
-                setRepositories(connList[0]?.repositories ?? []);
+                const first = connList[0];
+                setSelectedConnection(first);
                 setStep('select-repo');
+                // List endpoint does not include repos; fetch from GitHub (refresh) so the picker is populated
+                const { repositories: repos } = await githubService.getRepositories(first._id, true);
+                setRepositories(repos);
             }
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Failed to load connections');
@@ -188,7 +192,7 @@ const GitHubConnector: React.FC<GitHubConnectorProps> = ({
                                                         {conn.githubUsername}
                                                     </p>
                                                     <p className="text-sm text-light-text-muted dark:text-dark-text-muted">
-                                                        {conn.repositories.length} repositories
+                                                        Account connected
                                                     </p>
                                                 </div>
                                                 <CheckCircle className="w-5 h-5 text-success-500" />
