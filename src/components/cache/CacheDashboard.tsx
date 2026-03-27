@@ -18,6 +18,17 @@ import {
 } from '@heroicons/react/24/outline';
 import { CacheShimmer } from '../shimmer/CacheShimmer';
 
+interface GatewayUsagePayload {
+    appLevelCacheHits: number;
+    totalProviderCacheSavingsUsd: number;
+    gatewayProxyRequests: number;
+    anthropicCacheReadInputTokens: number;
+    anthropicCacheCreationInputTokens: number;
+    openaiCachedPromptTokens: number;
+    geminiCachedContentTokenCount: number;
+    appLevelCacheHitRatePercent: number;
+}
+
 interface CacheMetrics {
     success: boolean;
     data: {
@@ -35,6 +46,7 @@ interface CacheMetrics {
             topModels: { model: string; hits: number }[];
             topUsers: { userId: string; hits: number }[];
         };
+        gateway?: GatewayUsagePayload;
         config: {
             defaultTTL: number;
             defaultTTLHours: number;
@@ -53,6 +65,7 @@ export const CacheDashboard: React.FC = () => {
             const body = response.data as Record<string, unknown>;
             const payload = (body?.data ?? body) as Record<string, unknown> | undefined;
             const redisRaw = (payload?.redis ?? payload) as Record<string, unknown> | undefined;
+            const gatewayRaw = payload?.gateway as Record<string, unknown> | undefined;
             const configRaw = payload?.config as Record<string, unknown> | undefined;
             const data: CacheMetrics['data'] = {
                 redis: {
@@ -69,6 +82,30 @@ export const CacheDashboard: React.FC = () => {
                     topModels: Array.isArray(redisRaw?.topModels) ? (redisRaw.topModels as { model: string; hits: number }[]) : [],
                     topUsers: Array.isArray(redisRaw?.topUsers) ? (redisRaw.topUsers as { userId: string; hits: number }[]) : [],
                 },
+                gateway: gatewayRaw
+                    ? {
+                          appLevelCacheHits: Number(gatewayRaw.appLevelCacheHits ?? 0),
+                          totalProviderCacheSavingsUsd: Number(
+                              gatewayRaw.totalProviderCacheSavingsUsd ?? 0,
+                          ),
+                          gatewayProxyRequests: Number(gatewayRaw.gatewayProxyRequests ?? 0),
+                          anthropicCacheReadInputTokens: Number(
+                              gatewayRaw.anthropicCacheReadInputTokens ?? 0,
+                          ),
+                          anthropicCacheCreationInputTokens: Number(
+                              gatewayRaw.anthropicCacheCreationInputTokens ?? 0,
+                          ),
+                          openaiCachedPromptTokens: Number(
+                              gatewayRaw.openaiCachedPromptTokens ?? 0,
+                          ),
+                          geminiCachedContentTokenCount: Number(
+                              gatewayRaw.geminiCachedContentTokenCount ?? 0,
+                          ),
+                          appLevelCacheHitRatePercent: Number(
+                              gatewayRaw.appLevelCacheHitRatePercent ?? 0,
+                          ),
+                      }
+                    : undefined,
                 config: {
                     defaultTTL: Number(configRaw?.defaultTTL ?? 3600),
                     defaultTTLHours: Number(configRaw?.defaultTTLHours ?? 1),
@@ -109,6 +146,7 @@ export const CacheDashboard: React.FC = () => {
     }
 
     const redis = metrics.data.redis;
+    const gateway = metrics.data.gateway;
     const config = metrics.data.config ?? { defaultTTL: 3600, defaultTTLHours: 1 };
 
     return (
@@ -171,6 +209,63 @@ export const CacheDashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Gateway proxy cache (Usage analytics: Redis response cache + provider prompt cache) */}
+            {gateway && (
+                <div className="p-4 md:p-6 lg:p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-secondary-200/30 dark:border-secondary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex items-center mb-4 md:mb-5 lg:mb-6">
+                        <div className="p-2.5 md:p-3 lg:p-3.5 rounded-xl shadow-lg bg-gradient-secondary mr-3 md:mr-4">
+                            <BoltIcon className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl md:text-2xl font-bold font-display gradient-text-secondary">Gateway cache</h2>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                From your gateway proxy traffic: app-level Redis hits and provider-native prompt cache (Anthropic / OpenAI / Gemini)
+                            </p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="p-3 md:p-4 rounded-xl border glass border-secondary-200/30">
+                            <p className="text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">Gateway requests tracked</p>
+                            <p className="text-2xl font-bold font-display gradient-text-secondary">
+                                {gateway.gatewayProxyRequests.toLocaleString()}
+                            </p>
+                        </div>
+                        <div className="p-3 md:p-4 rounded-xl border glass border-success-200/30">
+                            <p className="text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">App-level cache hits (Redis)</p>
+                            <p className="text-2xl font-bold font-display gradient-text-success">
+                                {gateway.appLevelCacheHits.toLocaleString()}
+                            </p>
+                            <p className="text-xs mt-1 text-light-text-secondary">
+                                {gateway.appLevelCacheHitRatePercent.toFixed(1)}% of gateway requests
+                            </p>
+                        </div>
+                        <div className="p-3 md:p-4 rounded-xl border glass border-accent-200/30">
+                            <p className="text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">Provider cache savings (est. USD)</p>
+                            <p className="text-2xl font-bold font-display gradient-text-accent">
+                                ${gateway.totalProviderCacheSavingsUsd.toFixed(4)}
+                            </p>
+                        </div>
+                        <div className="p-3 md:p-4 rounded-xl border glass border-primary-200/30">
+                            <p className="text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cached tokens (provider-reported)</p>
+                            <p className="text-sm font-mono text-light-text-primary dark:text-dark-text-primary">
+                                Anthropic read: {gateway.anthropicCacheReadInputTokens.toLocaleString()}
+                            </p>
+                            <p className="text-sm font-mono text-light-text-primary dark:text-dark-text-primary">
+                                OpenAI cached: {gateway.openaiCachedPromptTokens.toLocaleString()}
+                            </p>
+                            <p className="text-sm font-mono text-light-text-primary dark:text-dark-text-primary">
+                                Gemini: {gateway.geminiCachedContentTokenCount.toLocaleString()}
+                            </p>
+                        </div>
+                    </div>
+                    {gateway.gatewayProxyRequests === 0 && (
+                        <p className="mt-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            No gateway proxy usage with analytics in this account yet.
+                        </p>
+                    )}
+                </div>
+            )}
 
             {/* Main Metrics Grid */}
             <div className="grid grid-cols-1 gap-3 md:gap-4 lg:gap-5 sm:grid-cols-2 lg:grid-cols-4">

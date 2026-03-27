@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Globe,
   BarChart3,
@@ -12,20 +13,28 @@ import {
   TrendingDown,
   Minus,
   Lightbulb,
+  Shield,
 } from 'lucide-react';
 import { CostChart } from '../dashboard/CostChart';
 import { StatsCard } from '../dashboard/StatsCard';
-import { GatewayService, GatewayAnalytics, GatewayStats } from '../../services/gateway.service';
+import { GatewayService, GatewayAnalytics, GatewayStats, GatewaySecuritySummary } from '../../services/gateway.service';
 import { GatewayShimmer } from '../shimmer/GatewayShimmer';
 
 interface GatewayDashboardProps {
   projectId?: string;
 }
 
-type GatewayTab = 'overview' | 'providers' | 'projects' | 'budget';
+type GatewayTab = 'overview' | 'providers' | 'projects' | 'budget' | 'security';
+
+function topRecordKey(record: Record<string, number>): string | null {
+  const entries = Object.entries(record);
+  if (entries.length === 0) return null;
+  return entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+}
 
 export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId }) => {
   const [analytics, setAnalytics] = useState<GatewayAnalytics | null>(null);
+  const [securitySummary, setSecuritySummary] = useState<GatewaySecuritySummary | null>(null);
   const [stats, setStats] = useState<GatewayStats | null>(null);
   const [health, setHealth] = useState<{ status: string; service?: string; timestamp?: string; version?: string; cacheSize?: number } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,10 +46,11 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
       setLoading(true);
       setError(null);
 
-      const [analyticsData, statsData, healthData] = await Promise.allSettled([
+      const [analyticsData, statsData, healthData, securityData] = await Promise.allSettled([
         GatewayService.getAnalytics({ projectId }),
         GatewayService.getStats(),
-        GatewayService.getHealth()
+        GatewayService.getHealth(),
+        GatewayService.getSecuritySummary(),
       ]);
 
       if (analyticsData.status === 'fulfilled') {
@@ -53,6 +63,10 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       if (healthData.status === 'fulfilled') {
         setHealth(healthData.value);
+      }
+
+      if (securityData.status === 'fulfilled') {
+        setSecuritySummary(securityData.value);
       }
 
     } catch (err) {
@@ -122,6 +136,7 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
     { key: 'providers', label: 'Providers', icon: Globe },
     { key: 'projects', label: 'Projects', icon: Target },
     { key: 'budget', label: 'Budget', icon: DollarSign },
+    { key: 'security', label: 'Security & Moderation', icon: Shield },
   ];
 
   return (
@@ -425,6 +440,79 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
               <p className="text-sm font-body text-secondary-600 dark:text-secondary-400">No budget or features data available yet.</p>
             </div>
           )}
+        </div>
+      )}
+
+      {activeTab === 'security' && (
+        <div className="space-y-3 sm:space-y-4">
+          <div className="p-3 sm:p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <h3 className="text-base sm:text-lg font-bold font-display text-secondary-900 dark:text-white flex items-center gap-2">
+                <Shield className="w-5 h-5 text-primary-500 shrink-0" />
+                Input firewall
+              </h3>
+              <Link
+                to="/moderation"
+                className="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline font-display"
+              >
+                View full threat log →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="p-3 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <p className="text-xs font-semibold font-display text-secondary-600 dark:text-secondary-400 mb-1">Blocked requests</p>
+                <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                  {securitySummary?.totalBlockedByFirewall ?? 0}
+                </p>
+              </div>
+              <div className="p-3 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <p className="text-xs font-semibold font-display text-secondary-600 dark:text-secondary-400 mb-1">Top threat category</p>
+                <p className="text-sm font-bold font-display text-secondary-900 dark:text-white truncate" title={topRecordKey(securitySummary?.threatsByCategory ?? {}) ?? undefined}>
+                  {topRecordKey(securitySummary?.threatsByCategory ?? {}) ?? '—'}
+                </p>
+              </div>
+              <div className="p-3 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <p className="text-xs font-semibold font-display text-secondary-600 dark:text-secondary-400 mb-1">Firewall cost saved (est.)</p>
+                <p className="text-2xl font-bold font-display text-success-600 dark:text-success-400">
+                  ${(securitySummary?.firewallCostSaved ?? 0).toFixed(4)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-3 sm:p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <h3 className="text-base sm:text-lg font-bold font-display text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-accent-500 shrink-0" />
+              Output moderation
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <div className="p-3 rounded-lg border border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <p className="text-xs font-semibold font-display text-secondary-600 dark:text-secondary-400 mb-1">Moderation actions (tracked)</p>
+                <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                  {securitySummary?.totalModerationActions ?? 0}
+                </p>
+              </div>
+              <div className="p-3 rounded-lg border border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <p className="text-xs font-semibold font-display text-secondary-600 dark:text-secondary-400 mb-1">Top violation category</p>
+                <p className="text-sm font-bold font-display text-secondary-900 dark:text-white truncate" title={topRecordKey(securitySummary?.moderationCategories ?? {}) ?? undefined}>
+                  {topRecordKey(securitySummary?.moderationCategories ?? {}) ?? '—'}
+                </p>
+              </div>
+            </div>
+            {securitySummary?.moderationActionsByType && Object.keys(securitySummary.moderationActionsByType).length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold font-display text-secondary-600 dark:text-secondary-400">By action type</p>
+                <div className="divide-y divide-secondary-200/50 dark:divide-secondary-700/50">
+                  {Object.entries(securitySummary.moderationActionsByType).map(([action, count]) => (
+                    <div key={action} className="flex justify-between py-2 text-sm font-body">
+                      <span className="text-secondary-800 dark:text-secondary-200 capitalize">{action}</span>
+                      <span className="font-mono text-secondary-600 dark:text-secondary-400">{count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

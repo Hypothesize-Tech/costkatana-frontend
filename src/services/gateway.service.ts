@@ -21,6 +21,15 @@ export interface FirewallAnalytics {
     savingsByThreatType: Record<string, number>;
 }
 
+export interface GatewaySecuritySummary {
+    totalBlockedByFirewall: number;
+    threatsByCategory: Record<string, number>;
+    firewallCostSaved: number;
+    totalModerationActions: number;
+    moderationActionsByType: Record<string, number>;
+    moderationCategories: Record<string, number>;
+}
+
 export interface GatewayAnalytics {
     summary: {
         totalRequests: number;
@@ -153,8 +162,26 @@ export class GatewayService {
     }
 
     /**
-     * Get firewall analytics data
+     * Gateway security summary (input firewall ThreatLog + output moderation from usage metadata).
      */
+    static async getSecuritySummary(): Promise<GatewaySecuritySummary> {
+        try {
+            const response = await apiClient.get('/gateway/security/summary');
+            const data = response.data?.data ?? response.data;
+            return data as GatewaySecuritySummary;
+        } catch (error) {
+            console.error('Error fetching gateway security summary:', error);
+            return {
+                totalBlockedByFirewall: 0,
+                threatsByCategory: {},
+                firewallCostSaved: 0,
+                totalModerationActions: 0,
+                moderationActionsByType: {},
+                moderationCategories: {},
+            };
+        }
+    }
+
     static async getFirewallAnalytics(params?: {
         userId?: string;
         startDate?: string;
@@ -223,8 +250,18 @@ export class GatewayService {
         const totalRequests = summary.totalRequests || 0;
         const totalCost = summary.totalCost || 0;
         
-        // Calculate cache metrics (estimate based on cost patterns)
-        const cacheHitRate = 0; // We'll need to calculate this from actual cache data
+        const cacheHitRate =
+            typeof summary.cacheHitRate === 'number'
+                ? summary.cacheHitRate
+                : 0;
+        const costSavingsFromProvider =
+            summary.cost_savings ??
+            summary.totalProviderCacheSavingsUsd ??
+            0;
+        const gatewayAppCacheHits =
+            typeof summary.gatewayAppCacheHits === 'number'
+                ? summary.gatewayAppCacheHits
+                : 0;
         const averageLatency =
             summary.averageLatency ??
             summary.averageResponseTime ??
@@ -271,8 +308,8 @@ export class GatewayService {
             requests: item.calls ?? item.requests ?? 0,
             cost: item.cost ?? 0,
             tokens: item.tokens ?? 0,
-            cacheHits: 0, // Not available in current analytics API
-            cacheMisses: 0,
+            cacheHits: item.cacheHits ?? item.gatewayAppCacheHits ?? 0,
+            cacheMisses: item.cacheMisses ?? 0,
             errors: 0,
             averageLatency: 0
         }));
@@ -303,7 +340,7 @@ export class GatewayService {
                 cacheHitRate,
                 averageLatency,
                 errorRate,
-                cost_savings: 0, // We'll need to calculate this from actual cache data
+                cost_savings: costSavingsFromProvider,
                 averageCostPerRequest: summary.averageCostPerRequest ?? (totalRequests > 0 ? totalCost / totalRequests : 0)
             },
             timeline: timelineData,
@@ -315,11 +352,27 @@ export class GatewayService {
             cacheMetrics: {
                 hitRate: cacheHitRate,
                 missRate: 100 - cacheHitRate,
-                totalHits: 0,
-                totalMisses: 0,
-                savingsFromCache: 0
+                totalHits: gatewayAppCacheHits,
+                totalMisses: Math.max(0, totalRequests - gatewayAppCacheHits),
+                savingsFromCache: costSavingsFromProvider
             },
-            trends: data.trends ?? { costTrend: 'stable', tokenTrend: 'stable', insights: [] },
+            trends: (() => {
+                const base = data.trends ?? {
+                    costTrend: 'stable',
+                    tokenTrend: 'stable',
+                    insights: [] as string[]
+                };
+                const extra =
+                    costSavingsFromProvider > 0
+                        ? [
+                              `Provider prompt cache savings (est.): $${costSavingsFromProvider.toFixed(4)}`
+                          ]
+                        : [];
+                return {
+                    ...base,
+                    insights: [...(base.insights ?? []), ...extra]
+                };
+            })(),
             budgetUtilization: projectBreakdown.map((project: any) => ({
                 budgetId: project.projectId || 'unassigned',
                 budgetName: project.projectName || project.projectId || 'Unassigned',
