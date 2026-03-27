@@ -1,5 +1,17 @@
 import api from '../config/api';
 
+/** Gateway proxy: Redis response cache + provider-native prompt cache (from Usage analytics) */
+export interface GatewayUsageCacheSummary {
+  appLevelCacheHits: number;
+  totalProviderCacheSavingsUsd: number;
+  gatewayProxyRequests: number;
+  anthropicCacheReadInputTokens: number;
+  anthropicCacheCreationInputTokens: number;
+  openaiCachedPromptTokens: number;
+  geminiCachedContentTokenCount: number;
+  appLevelCacheHitRatePercent: number;
+}
+
 export interface CacheStats {
   redis: {
     hits: number;
@@ -23,6 +35,8 @@ export interface CacheStats {
     };
   };
 
+  gateway?: GatewayUsageCacheSummary;
+
   combined: {
     totalHits: number;
     totalMisses: number;
@@ -30,6 +44,10 @@ export interface CacheStats {
     overallHitRate: number;
     totalCostSaved: number;
     totalTokensSaved: number;
+    gatewayAppCacheHits?: number;
+    gatewayProxyRequests?: number;
+    providerCacheSavingsUsd?: number;
+    totalCostSavedIncludingProviderCache?: number;
   };
 }
 
