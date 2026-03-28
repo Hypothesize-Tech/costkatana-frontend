@@ -8,8 +8,10 @@ import React, {
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "./NotificationContext";
 import { authService } from "../services/auth.service";
+import { parseOAuthInitiateAuthUrl } from "../services/oauth.service";
 import { User, LoginCredentials, RegisterData } from "../types";
 import { setUserContext, addBreadcrumb } from "../config/sentry";
+import { mixpanelService } from "../services/mixpanel.service";
 
 interface AuthContextType {
   user: User | null;
@@ -29,6 +31,8 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateUser: (user: User) => void;
   refreshAuth: () => Promise<boolean>;
+  /** Apply OAuth redirect tokens to React state (avoids refreshAuth race with initAuth). */
+  commitOAuthSession: (user: User, accessToken: string) => void;
   resetPassword: (token: string, password: string) => Promise<void>;
 }
 
@@ -289,16 +293,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         setIsLoading(true);
         const response = await authService.register(data);
-        if (!response || !response.data) {
+        if (!response?.data?.user || !response.data.accessToken) {
           throw new Error("Invalid registration response");
         }
-        setUser(response.data);
+        const { user: registeredUser, accessToken, refreshToken } = response.data;
+        authService.setTokens(accessToken, refreshToken);
+        authService.setUser(registeredUser);
+        setUser(registeredUser);
+        setAccessToken(accessToken);
+        if (registeredUser.lastLoginMethod) {
+          localStorage.setItem("lastLoginMethod", registeredUser.lastLoginMethod);
+        }
+        mixpanelService.trackAuthEvent("register", {
+          userId: registeredUser.id,
+          method: "email",
+          source: "web_app",
+          success: true,
+          metadata: {
+            email_domain: registeredUser.email?.includes("@")
+              ? registeredUser.email.split("@")[1]
+              : undefined,
+          },
+        });
         showNotification("Registration successful! Please verify your email.", "success");
         navigate("/dashboard");
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error && 'response' in error
-          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Registration failed"
-          : "Registration failed";
+        const errorMessage =
+          error instanceof Error && "response" in error
+            ? (error as { response?: { data?: { message?: string } } }).response
+                ?.data?.message || "Registration failed"
+            : "Registration failed";
+        mixpanelService.trackAuthEvent("register", {
+          method: "email",
+          source: "web_app",
+          success: false,
+          errorMessage,
+        });
         showNotification(errorMessage, "error");
         throw error;
       } finally {
@@ -366,6 +396,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [isValidatingToken, isRefreshingToken, validateAndRefreshToken]);
 
+  /**
+   * OAuth callback already validated tokens server-side; localStorage is updated before this.
+   * Do not rely on refreshAuth() here — it can return false while initAuth holds isValidatingToken,
+   * leaving React user/accessToken null and sending users back to /login.
+   */
+  const commitOAuthSession = useCallback((nextUser: User, accessTokenValue: string) => {
+    setIsValidatingToken(false);
+    setIsLoading(false);
+    setUser(nextUser);
+    setAccessToken(accessTokenValue);
+  }, []);
+
   const resetPassword = useCallback(
     async (token: string, password: string) => {
       try {
@@ -397,10 +439,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         const data = await response.json();
-
-        if (data.success && data.data?.authUrl) {
-          // Redirect to OAuth provider
-          window.location.href = data.data.authUrl;
+        const authUrl = parseOAuthInitiateAuthUrl(data);
+        if (authUrl) {
+          window.location.href = authUrl;
         } else {
           throw new Error(`Invalid response from ${provider} OAuth`);
         }
@@ -428,6 +469,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
     refreshAuth,
+    commitOAuthSession,
     resetPassword,
   };
 

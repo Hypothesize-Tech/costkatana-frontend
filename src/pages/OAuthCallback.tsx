@@ -5,12 +5,13 @@ import { authService } from "../services/auth.service";
 import { useNotification } from "../contexts/NotificationContext";
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
+import { mixpanelService } from "../services/mixpanel.service";
 import logo from "../assets/logo.png";
 
 export default function OAuthCallback() {
     const navigate = useNavigate();
     const { showNotification } = useNotification();
-    const { refreshAuth } = useAuth();
+    const { commitOAuthSession } = useAuth();
     const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing');
     const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -83,8 +84,11 @@ export default function OAuthCallback() {
                     if (userResponse && userResponse.data) {
                         const user = userResponse.data;
 
-                        // Store user in localStorage (must be done before refreshAuth)
+                        // Store user in localStorage
                         authService.setUser(user);
+
+                        // Sync React auth state — refreshAuth() can fail if initAuth still holds isValidatingToken
+                        commitOAuthSession(user, accessToken);
 
                         // Store last login method (prefer URL param, fallback to user data)
                         const loginMethod = lastLoginMethod || user.lastLoginMethod;
@@ -92,8 +96,22 @@ export default function OAuthCallback() {
                             localStorage.setItem('lastLoginMethod', loginMethod);
                         }
 
-                        // Refresh AuthContext to update React state (critical for app to recognize user as logged in)
-                        await refreshAuth();
+                        if (isNewUser) {
+                            const oauthMethod =
+                                lastLoginMethod === "google" || lastLoginMethod === "github"
+                                    ? lastLoginMethod
+                                    : user.lastLoginMethod === "google" ||
+                                        user.lastLoginMethod === "github"
+                                      ? user.lastLoginMethod
+                                      : "oauth";
+                            mixpanelService.trackAuthEvent("register", {
+                                userId: user.id,
+                                method: oauthMethod,
+                                source: "web_app",
+                                success: true,
+                                metadata: { flow: "oauth" },
+                            });
+                        }
 
                         setStatus('success');
 
@@ -104,10 +122,8 @@ export default function OAuthCallback() {
                             showNotification("Successfully signed in!", "success");
                         }
 
-                        // Redirect to dashboard
-                        setTimeout(() => {
-                            navigate("/dashboard", { replace: true });
-                        }, 1000);
+                        // Redirect immediately so ProjectProvider loads projects only after isAuthenticated is true
+                        navigate("/dashboard", { replace: true });
                     } else {
                         throw new Error("Failed to fetch user data");
                     }
@@ -137,7 +153,7 @@ export default function OAuthCallback() {
         };
 
         handleOAuthCallback();
-    }, [navigate, showNotification, refreshAuth]);
+    }, [navigate, showNotification, commitOAuthSession]);
 
     return (
         <div className="flex overflow-hidden relative flex-1 justify-center items-center min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">

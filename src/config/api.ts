@@ -114,9 +114,7 @@ const addAuthInterceptors = (instance: AxiosInstance) => {
 
     // Response interceptor to handle auth errors
     instance.interceptors.response.use(
-        (response: AxiosResponse) => {
-            return response;
-        },
+        (response: AxiosResponse) => response,
         async (error: AxiosError) => {
             const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
             

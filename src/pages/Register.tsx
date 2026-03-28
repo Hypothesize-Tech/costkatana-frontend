@@ -6,11 +6,24 @@ import { TestimonialsCarousel } from "../components/auth/TestimonialsCarousel";
 import { AnimatedIllustrations } from "../components/auth/AnimatedIllustrations";
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
+import { mixpanelService } from "../services/mixpanel.service";
 import logo from "../assets/logo.jpg";
 
 export default function Register() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    mixpanelService.track(
+      "Registration Page Viewed",
+      {
+        page: "/register",
+        source: "web_app",
+        event_type: "lifecycle",
+      },
+      undefined,
+    );
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { loginSchema, LoginFormData } from "../../utils/validators";
 import { useAuth } from "../../hooks";
+import { parseOAuthInitiateAuthUrl } from "../../services/oauth.service";
 import { cn } from "../../utils/helpers";
 
 interface LoginFormProps {
@@ -56,10 +57,9 @@ export const LoginForm = ({ lastLoginMethod }: LoginFormProps) => {
       }
 
       const data = await response.json();
-
-      if (data.success && data.data?.authUrl) {
-        // Redirect to OAuth provider
-        window.location.href = data.data.authUrl;
+      const authUrl = parseOAuthInitiateAuthUrl(data);
+      if (authUrl) {
+        window.location.href = authUrl;
       } else {
         throw new Error(`Invalid response from ${provider} OAuth`);
       }

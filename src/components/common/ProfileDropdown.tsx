@@ -112,7 +112,9 @@ export const ProfileDropdown: React.FC = () => {
                 <div className="py-2">
                     <Link
                         to="/profile"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => {
+                            setIsOpen(false);
+                        }}
                         className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-primary hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all mx-2 rounded-xl group"
                     >
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
@@ -162,7 +164,9 @@ export const ProfileDropdown: React.FC = () => {
         <>
             <button
                 ref={setReferenceElement}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => {
+                    setIsOpen(!isOpen);
+                }}
                 className="flex items-center gap-x-3 p-2 rounded-xl glass hover:bg-primary-500/20 transition-all duration-300 hover:scale-105"
             >
                 <span className="sr-only">Open user menu</span>

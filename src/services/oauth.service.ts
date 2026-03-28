@@ -1,5 +1,18 @@
 import { apiClient } from "@/config/api";
 
+/**
+ * Backend may return `{ success: true, data: { authUrl } }` or legacy `{ authUrl }`.
+ */
+export function parseOAuthInitiateAuthUrl(body: unknown): string | null {
+  if (!body || typeof body !== "object") return null;
+  const b = body as Record<string, unknown>;
+  if (b.success === true && b.data && typeof b.data === "object") {
+    const url = (b.data as { authUrl?: unknown }).authUrl;
+    return typeof url === "string" ? url : null;
+  }
+  return typeof b.authUrl === "string" ? b.authUrl : null;
+}
+
 export interface OAuthProvider {
   provider: 'google' | 'github';
   email: string;
@@ -18,11 +31,8 @@ class OAuthServiceClass {
   async initiateOAuth(provider: 'google' | 'github'): Promise<string> {
     try {
       const response = await apiClient.get(`/auth/oauth/${provider}`);
-      
-      if (response.data.success && response.data.data?.authUrl) {
-        return response.data.data.authUrl;
-      }
-      
+      const authUrl = parseOAuthInitiateAuthUrl(response.data);
+      if (authUrl) return authUrl;
       throw new Error('Invalid OAuth response');
     } catch (error: any) {
       console.error(`Failed to initiate ${provider} OAuth:`, error);
@@ -36,11 +46,8 @@ class OAuthServiceClass {
   async linkOAuthProvider(provider: 'google' | 'github'): Promise<string> {
     try {
       const response = await apiClient.post(`/auth/oauth/${provider}/link`);
-      
-      if (response.data.success && response.data.data?.authUrl) {
-        return response.data.data.authUrl;
-      }
-      
+      const authUrl = parseOAuthInitiateAuthUrl(response.data);
+      if (authUrl) return authUrl;
       throw new Error('Invalid OAuth linking response');
     } catch (error: any) {
       console.error(`Failed to link ${provider} OAuth:`, error);

@@ -1,4 +1,5 @@
 import api from "@/config/api";
+import { parseOAuthInitiateAuthUrl } from "@/services/oauth.service";
 
 
 export interface GoogleConnection {
@@ -71,7 +72,15 @@ class GoogleService {
      */
     async initiateOAuth(): Promise<{ authUrl: string; scopes: string[] }> {
         const response = await api.post('/auth/oauth/google/link');
-        return response.data.data;
+        const body = response.data;
+        const payload =
+            body?.success === true && body?.data ? body.data : body;
+        const authUrl = parseOAuthInitiateAuthUrl(body);
+        if (!authUrl) {
+            throw new Error('Invalid Google OAuth response');
+        }
+        const scopes = Array.isArray(payload?.scopes) ? payload.scopes : [];
+        return { authUrl, scopes };
     }
 
     /**
