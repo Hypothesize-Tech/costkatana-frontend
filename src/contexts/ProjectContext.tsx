@@ -3,10 +3,12 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 import { Project } from "../types/project.types";
 import { ProjectService } from "../services/project.service";
+import { useAuth } from "../hooks";
 
 interface ProjectContextType {
   selectedProject: string;
@@ -26,11 +28,12 @@ interface ProjectProviderProps {
 export const ProjectProvider: React.FC<ProjectProviderProps> = ({
   children,
 }) => {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [selectedProject, setSelectedProject] = useState<string>("all");
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadProjects = async () => {
+  const loadProjects = useCallback(async () => {
     try {
       setIsLoading(true);
       const projectsData = await ProjectService.getProjects();
@@ -40,15 +43,20 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      loadProjects();
-    }, 500);
-
-    return () => clearTimeout(timer);
   }, []);
+
+  // Only fetch after auth is ready — avoids GET /projects before OAuth tokens exist (401 on callback page).
+  useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+    if (!isAuthenticated) {
+      setProjects([]);
+      setIsLoading(false);
+      return;
+    }
+    void loadProjects();
+  }, [isAuthenticated, authLoading, loadProjects]);
 
   const getSelectedProjectName = () => {
     if (selectedProject === "all") return "All Projects";
@@ -56,9 +64,12 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
     return project?.name || "Unknown Project";
   };
 
-  const refreshProjects = async () => {
+  const refreshProjects = useCallback(async () => {
+    if (!isAuthenticated) {
+      return;
+    }
     await loadProjects();
-  };
+  }, [isAuthenticated, loadProjects]);
 
   const value: ProjectContextType = {
     selectedProject,

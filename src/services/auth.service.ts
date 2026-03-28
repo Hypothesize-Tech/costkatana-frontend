@@ -46,11 +46,22 @@ class AuthService {
     return response.data;
   }
 
-  async register(userData: RegisterData): Promise<ApiResponse<null>> {
-    const response = await apiClient.post<ApiResponse<null>>(
-      "/auth/register",
-      userData,
-    );
+  async register(
+    userData: RegisterData,
+  ): Promise<
+    ApiResponse<{
+      user: User;
+      accessToken: string;
+      refreshToken: string;
+    }>
+  > {
+    const response = await apiClient.post<
+      ApiResponse<{
+        user: User;
+        accessToken: string;
+        refreshToken: string;
+      }>
+    >("/auth/register", userData);
     return response.data;
   }
 
