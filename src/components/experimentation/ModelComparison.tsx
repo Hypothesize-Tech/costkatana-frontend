@@ -15,7 +15,9 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { ExperimentationService } from "../../services/experimentation.service";
+import type { ExperimentResult } from "../../services/experimentation.service";
 import { Modal } from "../common/Modal";
+import { ResultSummaryPanel } from "./ResultSummaryPanel";
 import { useDebounce } from "../../hooks/useDebounce";
 import { AWS_BEDROCK_PRICING } from "../../utils/pricing";
 
@@ -32,6 +34,7 @@ interface AvailableModel {
   modelName?: string;
   modelId?: string;
   status?: "available" | "unavailable";
+  availabilityStatus?: "available" | "not_configured" | "requires_bedrock";
   pricing: {
     input: number;
     output: number;
@@ -149,6 +152,13 @@ const ModelComparison: React.FC = () => {
   const [modelsLoading, setModelsLoading] = useState(true);
   const [allModels, setAllModels] = useState<AvailableModel[]>([]);
   const [expandedResponseIndex, setExpandedResponseIndex] = useState<number | null>(null);
+  const [promptSetMode, setPromptSetMode] = useState(false);
+  const [promptsText, setPromptsText] = useState("");
+  const [comparisonHistory, setComparisonHistory] = useState<ExperimentResult[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [fineTuningOpen, setFineTuningOpen] = useState(false);
+  const [fineTuningLoading, setFineTuningLoading] = useState(false);
+  const [fineTuningData, setFineTuningData] = useState<unknown>(null);
 
   // Add debouncing for prompt to prevent API calls on every keystroke
   const debouncedPrompt = useDebounce(prompt, 800); // Wait 800ms after user stops typing
@@ -167,6 +177,24 @@ const ModelComparison: React.FC = () => {
 
   useEffect(() => {
     loadAvailableModels();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setHistoryLoading(true);
+    ExperimentationService.getModelComparisonHistory({ limit: 15 })
+      .then((data) => {
+        if (!cancelled) setComparisonHistory(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (!cancelled) setComparisonHistory([]);
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Only trigger cost estimation with debounced prompt to avoid API spam
@@ -206,6 +234,11 @@ const ModelComparison: React.FC = () => {
         category: (model.category as string) || "general",
         isLatest: model.isLatest !== false,
         notes: (model.notes as string) || "",
+        availabilityStatus:
+          (model.availabilityStatus as AvailableModel["availabilityStatus"]) ??
+          ((model.status as string) === "available"
+            ? "available"
+            : "not_configured"),
       });
 
       const normalizedAll = rawModels.map(normalize);
@@ -406,8 +439,22 @@ const ModelComparison: React.FC = () => {
   };
 
   const runComparison = async () => {
-    if (!prompt.trim() || selectedModels.length === 0) {
+    const multiPrompts = promptSetMode
+      ? promptsText
+          .split("\n")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    if (promptSetMode && multiPrompts.length === 0) {
+      setError("Prompt set mode: enter at least one non-empty line.");
+      return;
+    }
+    if (!promptSetMode && !prompt.trim()) {
       setError("Please provide a prompt and select at least one model");
+      return;
+    }
+    if (selectedModels.length === 0) {
+      setError("Select at least one model");
       return;
     }
 
@@ -444,8 +491,14 @@ const ModelComparison: React.FC = () => {
   };
 
   const runStaticComparison = async () => {
+    const multiPrompts = promptsText
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
     const request = {
-      prompt,
+      ...(promptSetMode
+        ? { prompts: multiPrompts }
+        : { prompt: prompt.trim() }),
       models: selectedModels,
       evaluationCriteria,
       iterations,
@@ -458,13 +511,14 @@ const ModelComparison: React.FC = () => {
 
     setCurrentExperiment(experiment);
 
-    // Extract results from the experiment
-    if (experiment.results && experiment.results.modelComparisons) {
-      setResults(experiment.results.modelComparisons);
-      console.log(
-        "Model comparison results:",
-        experiment.results.modelComparisons,
-      );
+    const raw = experiment.results as {
+      modelComparisons?: ComparisonResult[];
+      results?: ComparisonResult[];
+    } | null;
+    const list = raw?.modelComparisons ?? raw?.results;
+    if (list && list.length > 0) {
+      setResults(list);
+      console.log("Model comparison results:", list);
     } else {
       setError("No comparison results returned from the experiment");
     }
@@ -473,8 +527,14 @@ const ModelComparison: React.FC = () => {
   };
 
   const runRealTimeComparison = async () => {
+    const multiPrompts = promptsText
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
     const request = {
-      prompt,
+      ...(promptSetMode
+        ? { prompts: multiPrompts }
+        : { prompt: prompt.trim() }),
       models: selectedModels,
       evaluationCriteria,
       iterations,
@@ -508,9 +568,64 @@ const ModelComparison: React.FC = () => {
 
     let hasCompleted = false;
 
+    const applyProgressPayload = (data: Record<string, unknown>) => {
+      setProgressData(data);
+      if (data.experimentId && typeof data.experimentId === "string") {
+        setCurrentExperiment({ id: data.experimentId });
+      }
+      if (data.stage === "completed" && data.results) {
+        hasCompleted = true;
+        setResults(data.results as ComparisonResult[]);
+        setComparisonAnalysis(
+          (data.analysis as ComparisonAnalysis | null) ?? null,
+        );
+        setIsRunning(false);
+      } else if (data.stage === "failed") {
+        setError((data.error as string) || "Comparison failed");
+        setIsRunning(false);
+      }
+    };
+
+    const pollJobRecovery = async () => {
+      for (let i = 0; i < 30; i++) {
+        await new Promise((r) => setTimeout(r, 2000));
+        try {
+          const job = await ExperimentationService.getComparisonJobState(
+            sessionId,
+          );
+          if (!job) continue;
+          setProgressData(job);
+          if (job.experimentId) {
+            setCurrentExperiment({ id: job.experimentId });
+          }
+          if (job.stage === "completed" && job.partialResults) {
+            hasCompleted = true;
+            setResults(job.partialResults as ComparisonResult[]);
+            setIsRunning(false);
+            return;
+          }
+          if (job.stage === "failed") {
+            setError(job.error || "Comparison failed");
+            setIsRunning(false);
+            return;
+          }
+        } catch {
+          /* continue polling */
+        }
+      }
+      if (!hasCompleted) {
+        setError(
+          "Could not recover comparison status. Try refreshing or run again.",
+        );
+        setIsRunning(false);
+      }
+    };
+
     eventSource.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data);
+        const data = JSON.parse(event.data) as Record<string, unknown> & {
+          type?: string;
+        };
         console.log("SSE Progress:", data);
 
         switch (data.type) {
@@ -523,16 +638,7 @@ const ModelComparison: React.FC = () => {
             break;
 
           case "progress":
-            setProgressData(data);
-            if (data.stage === "completed" && data.results) {
-              hasCompleted = true;
-              setResults(data.results);
-              setComparisonAnalysis(data.analysis ?? null);
-              setIsRunning(false);
-            } else if (data.stage === "failed") {
-              setError(data.error || "Comparison failed");
-              setIsRunning(false);
-            }
+            applyProgressPayload(data);
             break;
 
           case "close":
@@ -541,22 +647,11 @@ const ModelComparison: React.FC = () => {
             break;
 
           case "heartbeat":
-            // Keep connection alive
             break;
 
           default:
-            // Backend sends progress events without type (sessionId, stage, progress, message)
             if (data.stage != null) {
-              setProgressData(data);
-              if (data.stage === "completed" && data.results) {
-                hasCompleted = true;
-                setResults(data.results);
-                setComparisonAnalysis(data.analysis ?? null);
-                setIsRunning(false);
-              } else if (data.stage === "failed") {
-                setError(data.error || "Comparison failed");
-                setIsRunning(false);
-              }
+              applyProgressPayload(data);
             }
             break;
         }
@@ -567,36 +662,44 @@ const ModelComparison: React.FC = () => {
 
     eventSource.onerror = () => {
       eventSource.close();
-      // EventSource fires error when server closes connection (e.g. after completion).
-      // Treat as success if we already received completed results.
       if (hasCompleted) return;
-      setError("Lost connection to comparison stream");
-      setIsRunning(false);
-    };
-
-    // Clean up on unmount
-    return () => {
-      eventSource.close();
+      void pollJobRecovery();
     };
   };
 
   const exportResults = async () => {
-    if (!currentExperiment || !results.length) return;
+    if (!results.length) return;
 
     try {
+      const expId =
+        currentExperiment?.id ??
+        (currentExperiment as { experimentId?: string })?.experimentId;
+      if (expId) {
+        const blob = await ExperimentationService.exportExperimentResults(
+          expId,
+          "json",
+        );
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `model-comparison-${expId}.json`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        return;
+      }
+
       const dataToExport = {
         experiment: currentExperiment,
         results: results,
         timestamp: new Date().toISOString(),
       };
-
       const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
         type: "application/json",
       });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `model-comparison-${currentExperiment.id}.json`;
+      a.download = `model-comparison-local.json`;
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {
@@ -1150,7 +1253,11 @@ const ModelComparison: React.FC = () => {
           <button
             onClick={runComparison}
             disabled={
-              isRunning || !prompt.trim() || selectedModels.length === 0
+              isRunning ||
+              selectedModels.length === 0 ||
+              (!promptSetMode && !prompt.trim()) ||
+              (promptSetMode &&
+                !promptsText.split("\n").some((s) => s.trim().length > 0))
             }
             className="btn btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
           >
@@ -1185,17 +1292,36 @@ const ModelComparison: React.FC = () => {
       {/* Configuration Section */}
       <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 mb-4 sm:mb-6 md:mb-8 lg:grid-cols-2">
         {/* Prompt Input */}
-        <div className="lg:col-span-2">
-          <label className="label mb-2 sm:mb-3 text-xs sm:text-sm">
-            Test Prompt
+        <div className="lg:col-span-2 space-y-3">
+          <label className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+            <input
+              type="checkbox"
+              checked={promptSetMode}
+              onChange={(e) => setPromptSetMode(e.target.checked)}
+              className="w-4 h-4 rounded border-primary-300 text-primary-600"
+            />
+            Prompt set mode (one prompt per line — results aggregated per model)
           </label>
-          <textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter the prompt you want to test across different models..."
-            className="input min-h-[100px] sm:min-h-[120px] resize-y text-sm"
-            rows={3}
-          />
+          <label className="label mb-2 sm:mb-3 text-xs sm:text-sm">
+            {promptSetMode ? "Prompts (one per line)" : "Test Prompt"}
+          </label>
+          {promptSetMode ? (
+            <textarea
+              value={promptsText}
+              onChange={(e) => setPromptsText(e.target.value)}
+              placeholder="One prompt per line..."
+              className="input min-h-[120px] sm:min-h-[160px] resize-y text-sm font-mono"
+              rows={6}
+            />
+          ) : (
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Enter the prompt you want to test across different models..."
+              className="input min-h-[100px] sm:min-h-[120px] resize-y text-sm"
+              rows={3}
+            />
+          )}
         </div>
 
         {/* Real-time Comparison Settings */}
@@ -1575,6 +1701,76 @@ const ModelComparison: React.FC = () => {
         </div>
       </div>
 
+      {/* Fine-tuning analysis (backend heuristic) */}
+      <div className="mb-6 rounded-xl border border-primary-200/30 bg-light-bg-secondary/30 dark:bg-dark-bg-secondary/30 p-4">
+        <button
+          type="button"
+          onClick={() => setFineTuningOpen(!fineTuningOpen)}
+          className="flex w-full items-center justify-between text-left font-display font-semibold text-light-text-primary dark:text-dark-text-primary"
+        >
+          Fine-tuning ROI analysis
+          <span className="text-xs text-light-text-muted">
+            {fineTuningOpen ? "Hide" : "Show"}
+          </span>
+        </button>
+        {fineTuningOpen && (
+          <div className="mt-4 space-y-3">
+            <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              Heuristic analysis from your usage patterns (not a training job).
+            </p>
+            <button
+              type="button"
+              className="btn btn-secondary text-sm"
+              disabled={fineTuningLoading}
+              onClick={async () => {
+                setFineTuningLoading(true);
+                setFineTuningData(null);
+                try {
+                  const data =
+                    await ExperimentationService.getFineTuningAnalysis();
+                  setFineTuningData(data);
+                } catch (e) {
+                  setError(
+                    e instanceof Error
+                      ? e.message
+                      : "Fine-tuning analysis failed",
+                  );
+                } finally {
+                  setFineTuningLoading(false);
+                }
+              }}
+            >
+              {fineTuningLoading ? "Loading…" : "Run analysis"}
+            </button>
+            {fineTuningData != null && (
+              <pre className="text-xs overflow-auto max-h-64 rounded-lg border border-primary-200/30 p-3 bg-light-bg-100 dark:bg-dark-bg-100">
+                {JSON.stringify(fineTuningData, null, 2)}
+              </pre>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Recent comparison runs */}
+      {comparisonHistory.length > 0 && (
+        <div className="mb-6 rounded-xl border border-secondary-200/30 p-4">
+          <h4 className="text-sm font-display font-semibold mb-2">
+            Recent model comparisons
+          </h4>
+          {historyLoading ? (
+            <p className="text-xs text-light-text-muted">Loading…</p>
+          ) : (
+            <ul className="space-y-1 text-xs max-h-32 overflow-y-auto">
+              {comparisonHistory.map((h) => (
+                <li key={h.id} className="truncate text-light-text-secondary">
+                  {h.name} · {new Date(h.startTime).toLocaleString()}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
       {/* Results Section */}
       {(isRunning || results.length > 0) && (
         <div className="pt-4 sm:pt-6 md:pt-8 border-t border-primary-200/30">
@@ -1600,6 +1796,11 @@ const ModelComparison: React.FC = () => {
 
           {results.length > 0 && (
             <div className="space-y-4 sm:space-y-6">
+              <ResultSummaryPanel
+                results={results}
+                comparisonAnalysis={comparisonAnalysis}
+                experimentId={currentExperiment?.id ?? null}
+              />
               {/* Winner banner - real-time comparison */}
               {comparisonAnalysis?.winner && (
                 <div className="glass p-4 sm:p-5 shadow-lg backdrop-blur-xl border-2 border-primary-400/50 rounded-xl bg-gradient-to-r from-primary-500/10 to-success-500/10 animate-fade-in">

@@ -12,6 +12,8 @@ import {
   ShieldAlert,
   RotateCw,
   Sparkles,
+  CheckCircle2,
+  CircleDot,
 } from "lucide-react";
 import {
   ExperimentationService,
@@ -39,6 +41,41 @@ interface ScenarioTemplate {
   category: "optimization" | "scaling" | "model_switch" | "feature";
 }
 
+function normalizeLifecycleStatus(status: string | undefined): string {
+  const s = (status ?? "draft").toLowerCase();
+  if (["created", "analyzed"].includes(s)) return "draft";
+  return s;
+}
+
+function getNextLifecycleStep(
+  status: string | undefined,
+): { label: string; nextStatus: string } | null {
+  const s = normalizeLifecycleStatus(status);
+  if (s === "draft") return { label: "Approve", nextStatus: "approved" };
+  if (s === "approved") return { label: "Mark implemented", nextStatus: "implemented" };
+  if (s === "implemented")
+    return { label: "Record measurement", nextStatus: "measured" };
+  return null;
+}
+
+function lifecycleBadgeClass(status: string | undefined): string {
+  const raw = (status ?? "draft").toLowerCase();
+  if (raw === "applied") {
+    return "bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300";
+  }
+  const s = normalizeLifecycleStatus(status);
+  switch (s) {
+    case "approved":
+      return "bg-accent-100 text-accent-800 dark:bg-accent-900/30 dark:text-accent-300";
+    case "implemented":
+      return "bg-highlight-100 text-highlight-800 dark:bg-highlight-900/30 dark:text-highlight-300";
+    case "measured":
+      return "bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300";
+    default:
+      return "bg-secondary-100 text-secondary-800 dark:bg-secondary-800/40 dark:text-secondary-200";
+  }
+}
+
 const WhatIfScenarios: React.FC = () => {
   const [scenarios, setScenarios] = useState<WhatIfScenario[]>([]);
   const [scenarioResults, setScenarioResults] = useState<{
@@ -54,6 +91,9 @@ const WhatIfScenarios: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState<{ [key: string]: boolean }>(
     {},
   );
+  const [lifecycleUpdating, setLifecycleUpdating] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [newScenario, setNewScenario] = useState<Partial<WhatIfScenario>>({
     name: "",
     description: "",
@@ -283,6 +323,40 @@ const WhatIfScenarios: React.FC = () => {
     }
   };
 
+  const advanceLifecycle = async (
+    scenario: WhatIfScenario,
+    nextStatus: string,
+  ) => {
+    setLifecycleUpdating((p) => ({ ...p, [scenario.name]: true }));
+    setError(null);
+    try {
+      const projected =
+        scenarioResults[scenario.name]?.projectedImpact?.costChange != null
+          ? Math.abs(scenarioResults[scenario.name].projectedImpact.costChange)
+          : undefined;
+      const updated = await ExperimentationService.updateWhatIfLifecycle(
+        scenario.name,
+        {
+          status: nextStatus,
+          ...(nextStatus === "implemented" && projected != null
+            ? { projectedMonthlySavings: projected }
+            : {}),
+        },
+      );
+      setScenarios((prev) =>
+        prev.map((s) =>
+          s.name === scenario.name ? { ...s, ...updated } : s,
+        ),
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to update lifecycle",
+      );
+    } finally {
+      setLifecycleUpdating((p) => ({ ...p, [scenario.name]: false }));
+    }
+  };
+
   const deleteScenario = async (scenarioName: string) => {
     try {
       await ExperimentationService.deleteWhatIfScenario(scenarioName);
@@ -467,7 +541,58 @@ const WhatIfScenarios: React.FC = () => {
                         {scenario.changes.length !== 1 ? "s" : ""}
                       </span>
                     </div>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-display font-semibold ${lifecycleBadgeClass(scenario.status)}`}
+                    >
+                      {(normalizeLifecycleStatus(scenario.status) === "measured" ||
+                        (scenario.status ?? "").toLowerCase() === "applied") ? (
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      ) : (
+                        <CircleDot className="w-3.5 h-3.5" />
+                      )}
+                      {(scenario.status ?? "").toLowerCase() === "applied"
+                        ? "applied"
+                        : normalizeLifecycleStatus(scenario.status)}
+                    </span>
                   </div>
+                  {(scenario.projectedMonthlySavings != null ||
+                    scenario.actualMonthlySavings != null) && (
+                    <div className="flex flex-wrap gap-3 mt-2 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                      {scenario.projectedMonthlySavings != null && (
+                        <span>
+                          Projected monthly:{" "}
+                          <strong className="text-primary-600 dark:text-primary-400">
+                            ${scenario.projectedMonthlySavings.toFixed(2)}
+                          </strong>
+                        </span>
+                      )}
+                      {scenario.actualMonthlySavings != null && (
+                        <span>
+                          Actual monthly:{" "}
+                          <strong className="text-success-600 dark:text-success-400">
+                            ${scenario.actualMonthlySavings.toFixed(2)}
+                          </strong>
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {getNextLifecycleStep(scenario.status) && (
+                    <div className="mt-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const step = getNextLifecycleStep(scenario.status);
+                          if (step) void advanceLifecycle(scenario, step.nextStatus);
+                        }}
+                        disabled={lifecycleUpdating[scenario.name]}
+                        className="text-xs sm:text-sm px-3 py-1.5 rounded-lg border border-primary-200/40 bg-primary-500/10 text-primary-700 dark:text-primary-300 font-display font-semibold hover:bg-primary-500/20 disabled:opacity-50"
+                      >
+                        {lifecycleUpdating[scenario.name]
+                          ? "Updating…"
+                          : getNextLifecycleStep(scenario.status)!.label}
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto">
                   <button

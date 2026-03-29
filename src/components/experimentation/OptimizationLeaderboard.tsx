@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
     Trophy,
     BarChart3,
@@ -9,34 +10,38 @@ import {
     RotateCw,
     AlertTriangle,
     Scissors,
-    Target
+    Target,
+    ExternalLink,
+    FlaskConical
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { SimulationTrackingService, LeaderboardEntry } from '../../services/simulationTracking.service';
 
+type LeaderboardRange = 'week' | 'month' | 'quarter' | 'all';
+
 interface OptimizationLeaderboardProps {
-    timeRange?: 'week' | 'month' | 'quarter' | 'all';
+    timeRange?: LeaderboardRange;
     limit?: number;
     showUserRank?: boolean;
     currentUserId?: string;
+    /** Opens Model Comparison tab (or parent navigation) */
+    onReplicate?: () => void;
 }
 
 export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = ({
     timeRange = 'week',
     limit = 10,
     showUserRank = true,
-    currentUserId
+    currentUserId,
+    onReplicate,
 }) => {
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [userRank, setUserRank] = useState<LeaderboardEntry | null>(null);
+    const [selectedRange, setSelectedRange] = useState<LeaderboardRange>(timeRange);
 
-    useEffect(() => {
-        loadLeaderboard();
-    }, [timeRange, limit]);
-
-    const loadLeaderboard = async () => {
+    const loadLeaderboard = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -45,7 +50,7 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
             const endDate = new Date();
             const startDate = new Date();
 
-            switch (timeRange) {
+            switch (selectedRange) {
                 case 'week':
                     startDate.setDate(endDate.getDate() - 7);
                     break;
@@ -62,8 +67,8 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
             }
 
             const entries = await SimulationTrackingService.getTopOptimizationWins(
-                timeRange !== 'all' ? startDate.toISOString() : undefined,
-                timeRange !== 'all' ? endDate.toISOString() : undefined,
+                selectedRange !== 'all' ? startDate.toISOString() : undefined,
+                selectedRange !== 'all' ? endDate.toISOString() : undefined,
                 limit
             );
 
@@ -90,7 +95,11 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedRange, limit, showUserRank, currentUserId]);
+
+    useEffect(() => {
+        void loadLeaderboard();
+    }, [loadLeaderboard]);
 
     const getRankIcon = (rank: number) => {
         switch (rank) {
@@ -123,7 +132,7 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
     };
 
     const getTimeRangeLabel = () => {
-        switch (timeRange) {
+        switch (selectedRange) {
             case 'week': return 'This Week';
             case 'month': return 'This Month';
             case 'quarter': return 'This Quarter';
@@ -131,6 +140,13 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
             default: return 'This Week';
         }
     };
+
+    const rangeButtons: Array<{ id: LeaderboardRange; label: string }> = [
+        { id: 'week', label: 'Week' },
+        { id: 'month', label: 'Month' },
+        { id: 'quarter', label: 'Quarter' },
+        { id: 'all', label: 'All' },
+    ];
 
     const getOptimizationTypeIcon = (type: string) => {
         const iconProps = { className: 'h-4 w-4' };
@@ -201,6 +217,21 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                         <div className="min-w-0 flex-1">
                             <h2 className="text-lg sm:text-xl font-display font-bold gradient-text">Top Optimization Wins</h2>
                             <p className="text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm font-body">{getTimeRangeLabel()}</p>
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                                {rangeButtons.map((b) => (
+                                    <button
+                                        key={b.id}
+                                        type="button"
+                                        onClick={() => setSelectedRange(b.id)}
+                                        className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold transition-colors border ${selectedRange === b.id
+                                            ? 'bg-primary-500/20 border-primary-400 text-primary-700 dark:text-primary-300'
+                                            : 'border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:bg-primary-500/10'
+                                            }`}
+                                    >
+                                        {b.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     <div className="text-left sm:text-right flex-shrink-0">
@@ -290,6 +321,15 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                                                     {entry.topOptimizationType.replace('_', ' ')}
                                                 </span>
                                             </div>
+                                            {entry.experimentId && (
+                                                <Link
+                                                    to={`/experimentation?openExperiment=${encodeURIComponent(entry.experimentId)}`}
+                                                    className="inline-flex items-center gap-1 text-xs font-display font-semibold text-primary-600 dark:text-primary-400 hover:underline"
+                                                >
+                                                    <ExternalLink className="w-3.5 h-3.5" />
+                                                    View experiment
+                                                </Link>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -309,7 +349,7 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
 
             {/* Footer */}
             <div className="glass p-4 sm:p-5 md:p-6 rounded-b-xl border-t border-primary-200/30 text-center">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-0 text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body flex-wrap">
                     <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1 text-primary-500 dark:text-primary-400" />
                         Updated in real-time
@@ -319,6 +359,19 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                         <Users className="h-4 w-4 ml-0 sm:ml-2 mr-1 text-primary-500 dark:text-primary-400" />
                         {leaderboard.length} participants
                     </div>
+                    {onReplicate && (
+                        <>
+                            <span className="hidden sm:inline"> • </span>
+                            <button
+                                type="button"
+                                onClick={onReplicate}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary-200/40 bg-primary-500/10 text-primary-700 dark:text-primary-300 font-display font-semibold hover:bg-primary-500/20"
+                            >
+                                <FlaskConical className="w-4 h-4" />
+                                Run a comparison
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

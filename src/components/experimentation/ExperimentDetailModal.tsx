@@ -13,6 +13,7 @@ import {
   Trophy,
   Zap,
   RefreshCw,
+  Download,
 } from "lucide-react";
 import { Modal } from "../common/Modal";
 import { FormattedModelResponse } from "../common/FormattedContent";
@@ -85,6 +86,24 @@ export const ExperimentDetailModal: React.FC<ExperimentDetailModalProps> = ({
       setRefreshing(false);
     }
   }, [loadExperiment]);
+
+  const handleExportJson = useCallback(async () => {
+    if (!experimentId) return;
+    try {
+      const blob = await ExperimentationService.exportExperimentResults(
+        experimentId,
+        "json",
+      );
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `experiment-${experimentId}.json`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      /* ignore */
+    }
+  }, [experimentId]);
 
   const toggleResponse = (index: number) => {
     setExpandedResponses((prev) => {
@@ -257,19 +276,32 @@ export const ExperimentDetailModal: React.FC<ExperimentDetailModalProps> = ({
                   <span>{formatDate(experiment.startTime)}</span>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  void handleRefresh();
-                }}
-                disabled={refreshing || loading}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 shrink-0"
-              >
-                <RefreshCw
-                  className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
-                />
-                Refresh
-              </button>
+              <div className="flex flex-wrap gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    void handleExportJson();
+                  }}
+                  disabled={!experimentId || loading}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  Export JSON
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void handleRefresh();
+                  }}
+                  disabled={refreshing || loading}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+                  />
+                  Refresh
+                </button>
+              </div>
             </div>
 
             {res && (

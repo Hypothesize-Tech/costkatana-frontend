@@ -1,6 +1,4 @@
 /**
- * ExperimentHistoryList
- *
  * Lists past experiments (model_comparison by default) with ability to view
  * full details including model responses.
  */
@@ -12,10 +10,13 @@ import {
   Beaker,
   AlertCircle,
   Loader2,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { ExperimentationService } from "../../services/experimentation.service";
 import type { ExperimentResult } from "../../services/experimentation.service";
 import { ExperimentDetailModal } from "./ExperimentDetailModal";
+import { Modal } from "../common/Modal";
 
 interface ExperimentHistoryListProps {
   /** Filter by experiment type. Default: model_comparison */
@@ -42,6 +43,10 @@ export const ExperimentHistoryList: React.FC<ExperimentHistoryListProps> = ({
   const [selectedExperiment, setSelectedExperiment] =
     useState<ExperimentResult | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<ExperimentResult | null>(
+    null,
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -72,6 +77,33 @@ export const ExperimentHistoryList: React.FC<ExperimentHistoryListProps> = ({
   const handleCloseModal = () => {
     setSelectedExperiment(null);
     setSelectedId(null);
+  };
+
+  const openDeleteConfirm = (e: React.MouseEvent, exp: ExperimentResult) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setPendingDelete(exp);
+  };
+
+  const cancelDeleteConfirm = () => {
+    if (deletingId) return;
+    setPendingDelete(null);
+  };
+
+  const executeDelete = async () => {
+    if (!pendingDelete) return;
+    const expId = pendingDelete.id;
+    setDeletingId(expId);
+    try {
+      await ExperimentationService.deleteExperiment(expId);
+      setExperiments((prev) => prev.filter((x) => x.id !== expId));
+      if (selectedId === expId) handleCloseModal();
+      setPendingDelete(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const formatDate = (dateStr?: string) => {
@@ -137,11 +169,11 @@ export const ExperimentHistoryList: React.FC<ExperimentHistoryListProps> = ({
           {experiments.map((exp) => {
             const modelCount = getModelCount(exp);
             return (
-              <li key={exp.id}>
+              <li key={exp.id} className="flex items-center gap-1 sm:gap-2">
                 <button
                   type="button"
                   onClick={() => handleView(exp)}
-                  className="w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-primary-50/50 dark:hover:bg-dark-bg-200/50 transition-colors text-left group"
+                  className="flex-1 min-w-0 flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-primary-50/50 dark:hover:bg-dark-bg-200/50 transition-colors text-left group"
                 >
                   <div
                     className={`flex-shrink-0 p-1.5 rounded-lg ${
@@ -176,11 +208,70 @@ export const ExperimentHistoryList: React.FC<ExperimentHistoryListProps> = ({
                   <Eye className="w-4 h-4 text-secondary-400 group-hover:text-primary-500 flex-shrink-0" />
                   <ChevronRight className="w-4 h-4 text-secondary-400 group-hover:text-primary-500 flex-shrink-0" />
                 </button>
+                <button
+                  type="button"
+                  title="Delete experiment"
+                  className="p-2 rounded-lg text-danger-500 hover:bg-danger-500/10 flex-shrink-0"
+                  disabled={deletingId === exp.id}
+                  onClick={(e) => openDeleteConfirm(e, exp)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </li>
             );
           })}
         </ul>
       )}
+
+      <Modal
+        isOpen={!!pendingDelete}
+        onClose={cancelDeleteConfirm}
+        title="Delete experiment?"
+        maxWidth="md"
+        closeOnBackdropClick={!deletingId}
+        footer={
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 w-full">
+            <button
+              type="button"
+              onClick={cancelDeleteConfirm}
+              disabled={!!deletingId}
+              className="px-4 py-2 rounded-lg border border-secondary-200 dark:border-secondary-600 text-secondary-800 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800/50 text-sm font-medium disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => void executeDelete()}
+              disabled={!!deletingId}
+              className="px-4 py-2 rounded-lg bg-danger-600 hover:bg-danger-700 text-white text-sm font-medium disabled:opacity-50 inline-flex items-center justify-center gap-2"
+            >
+              {deletingId === pendingDelete?.id ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Deleting…
+                </>
+              ) : (
+                "Delete"
+              )}
+            </button>
+          </div>
+        }
+      >
+        <div className="flex gap-3 items-start">
+          <div className="flex-shrink-0 self-start inline-flex items-center justify-center p-1.5 rounded-lg bg-danger-100 dark:bg-danger-900/30">
+            <AlertTriangle className="w-5 h-5 text-danger-600 dark:text-danger-400" aria-hidden />
+          </div>
+          <div className="min-w-0 space-y-2">
+            <p className="text-sm text-secondary-700 dark:text-secondary-300">
+              This will permanently remove{" "}
+              <span className="font-semibold text-secondary-900 dark:text-white">
+                {pendingDelete?.name ?? "this experiment"}
+              </span>{" "}
+              and its saved results. You cannot undo this action.
+            </p>
+          </div>
+        </div>
+      </Modal>
 
       {(selectedId || selectedExperiment) && (
         <ExperimentDetailModal

@@ -34,13 +34,59 @@ export class ExperimentService {
     }
 
     /**
+     * Fetch remote experiment rollouts (GET /api/feature-flags); cached in localStorage.
+     */
+    static async refreshRemoteExperimentConfig(): Promise<void> {
+        try {
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${API_URL}/api/feature-flags`);
+            if (!res.ok) return;
+            const json = await res.json();
+            const experiments = json?.data?.experiments;
+            if (experiments && typeof experiments === 'object') {
+                localStorage.setItem(
+                    'feature_flags_remote_experiments',
+                    JSON.stringify(experiments),
+                );
+            }
+            const features = json?.data?.features;
+            if (features && typeof features === 'object') {
+                localStorage.setItem(
+                    'feature_flags_remote_features',
+                    JSON.stringify(features),
+                );
+            }
+        } catch {
+            /* use cached */
+        }
+    }
+
+    private static getExperimentRollout(
+        experimentName: string,
+    ): { control: number; variant_a: number; variant_b?: number } | undefined {
+        try {
+            const raw = localStorage.getItem('feature_flags_remote_experiments');
+            if (raw) {
+                const remote = JSON.parse(raw) as Record<
+                    string,
+                    { control: number; variant_a: number; variant_b?: number }
+                >;
+                if (remote[experimentName]) return remote[experimentName];
+            }
+        } catch {
+            /* ignore */
+        }
+        return this.experiments.get(experimentName);
+    }
+
+    /**
      * Assign a variant based on experiment configuration
      */
     static assignVariant(
         experimentName: string,
         userId: string
     ): 'control' | 'variant_a' | 'variant_b' {
-        const experiment = this.experiments.get(experimentName);
+        const experiment = this.getExperimentRollout(experimentName);
         
         if (!experiment) {
             console.warn(`Experiment ${experimentName} not found, defaulting to control`);

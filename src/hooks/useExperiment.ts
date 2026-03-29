@@ -11,13 +11,21 @@ export const useExperiment = (experimentName: string) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (user?.id) {
+        let cancelled = false;
+        const run = async () => {
+            if (!user?.id) return;
             setIsLoading(true);
+            await experimentService.refreshRemoteExperimentConfig();
+            if (cancelled) return;
             const assignedVariant = experimentService.getVariant(experimentName, user.id);
             setVariant(assignedVariant);
             experimentService.trackExperimentViewed(experimentName, assignedVariant, { userId: user.id });
             setIsLoading(false);
-        }
+        };
+        void run();
+        return () => {
+            cancelled = true;
+        };
     }, [experimentName, user?.id]);
 
     const trackConversion = (value?: number, properties?: Record<string, any>) => {
