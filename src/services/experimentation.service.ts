@@ -1,7 +1,9 @@
 import { apiClient } from "../config/api";
 
 export interface ModelComparisonRequest {
-  prompt: string;
+  prompt?: string;
+  /** Multi-prompt mode: aggregated per model */
+  prompts?: string[];
   models: Array<{
     provider: string;
     model: string;
@@ -84,6 +86,10 @@ export interface WhatIfScenario {
   createdAt?: string;
   status?: string;
   isUserCreated?: boolean;
+  implementedAt?: string;
+  measuredAt?: string;
+  projectedMonthlySavings?: number;
+  actualMonthlySavings?: number;
   analysis?: {
     projectedImpact: {
       costChange: number;
@@ -242,6 +248,42 @@ export class ExperimentationService {
     await apiClient.delete(
       `/experimentation/what-if-scenarios/${scenarioName}`,
     );
+  }
+
+  static async updateWhatIfLifecycle(
+    scenarioName: string,
+    body: { status: string; projectedMonthlySavings?: number },
+  ): Promise<WhatIfScenario> {
+    const response = await apiClient.patch(
+      `/experimentation/what-if-scenarios/${encodeURIComponent(scenarioName)}/lifecycle`,
+      body,
+    );
+    return response.data.data || response.data;
+  }
+
+  static async getComparisonJobState(sessionId: string): Promise<{
+    sessionId: string;
+    status: string;
+    progress: number;
+    stage: string;
+    message: string;
+    partialResults?: unknown;
+    experimentId?: string;
+    error?: string;
+    lastUpdatedAt?: string;
+  } | null> {
+    const response = await apiClient.get(
+      `/experimentation/comparison-job/${encodeURIComponent(sessionId)}`,
+    );
+    return response.data.data ?? null;
+  }
+
+  static async getFineTuningAnalysis(projectId?: string): Promise<unknown> {
+    const response = await apiClient.get(
+      "/experimentation/fine-tuning-analysis",
+      { params: projectId ? { projectId } : {} },
+    );
+    return response.data.data || response.data;
   }
 
   /**

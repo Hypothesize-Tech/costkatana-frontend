@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Beaker,
   BarChart3,
@@ -16,7 +17,9 @@ import {
   OptimizationLeaderboard,
   ExperimentHistoryList,
 } from "../components/experimentation";
+import { ExperimentDetailModal } from "../components/experimentation/ExperimentDetailModal";
 import { ExperimentationService } from "../services/experimentation.service";
+import { useAuth } from "../hooks";
 import { ExperimentationShimmer } from "../components/shimmer/ExperimentationShimmer";
 
 type Tab = "cost-simulator" | "model-comparison" | "what-if-scenarios" | "leaderboard";
@@ -36,6 +39,11 @@ interface ExperimentationStats {
 }
 
 const Experimentation: React.FC = () => {
+  const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [detailExperimentId, setDetailExperimentId] = useState<string | null>(
+    null,
+  );
   const [activeTab, setActiveTab] = useState<Tab>("cost-simulator");
   const [stats, setStats] = useState<ExperimentationStats>({
     totalExperiments: 0,
@@ -109,6 +117,21 @@ const Experimentation: React.FC = () => {
     setTabLoading(prev => ({ ...prev, [activeTab]: true }));
     setTabLoading(prev => ({ ...prev, [activeTab]: false }));
   }, [activeTab]);
+
+  useEffect(() => {
+    const id = searchParams.get("openExperiment");
+    if (id) {
+      setDetailExperimentId(id);
+      setSearchParams(
+        (prev) => {
+          const p = new URLSearchParams(prev);
+          p.delete("openExperiment");
+          return p;
+        },
+        { replace: true },
+      );
+    }
+  }, [searchParams, setSearchParams]);
 
   const loadExperimentationData = async () => {
     setIsLoading(true);
@@ -246,7 +269,15 @@ const Experimentation: React.FC = () => {
       case "what-if-scenarios":
         return <WhatIfScenarios />;
       case "leaderboard":
-        return <OptimizationLeaderboard timeRange="week" limit={20} showUserRank={true} />;
+        return (
+          <OptimizationLeaderboard
+            timeRange="week"
+            limit={20}
+            showUserRank={true}
+            currentUserId={user?.id}
+            onReplicate={() => setActiveTab("model-comparison")}
+          />
+        );
       default:
         return null;
     }
@@ -299,6 +330,13 @@ const Experimentation: React.FC = () => {
   };
 
   return (
+    <>
+    {detailExperimentId && (
+      <ExperimentDetailModal
+        experimentId={detailExperimentId}
+        onClose={() => setDetailExperimentId(null)}
+      />
+    )}
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Header */}
       <div className="mx-3 sm:mx-4 md:mx-6 mt-3 sm:mt-4 md:mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
@@ -553,6 +591,7 @@ const Experimentation: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

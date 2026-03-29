@@ -72,6 +72,7 @@ export const SUBSCRIPTION_PLANS = {
       "5K logs/month",
       "1 project",
       "10 agent traces",
+      "Experimentation: model comparison & what-if scenarios",
     ],
   },
   plus: {
@@ -100,6 +101,7 @@ export const SUBSCRIPTION_PLANS = {
       "All AI models",
       "Priority support",
       "Overage: $5/1M tokens",
+      "Experimentation: full workspace, history & export",
     ],
     overage: {
       tokensPerMillion: 5,
@@ -132,6 +134,7 @@ export const SUBSCRIPTION_PLANS = {
       "Advanced metrics",
       "Priority support",
       "Overage: $5/1M tokens, $20/user/month",
+      "Experimentation: team leaderboard & advanced runs",
     ],
     overage: {
       tokensPerMillion: 5,
@@ -165,6 +168,7 @@ export const SUBSCRIPTION_PLANS = {
       "SLA guarantee",
       "On-premise deployment",
       "Discord/Slack support",
+      "Experimentation: unlimited + enterprise governance",
     ],
   },
 } as const;

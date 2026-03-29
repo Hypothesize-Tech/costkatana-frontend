@@ -49,6 +49,8 @@ export interface LeaderboardEntry {
     optimizationsApplied: number;
     averageSavings: number;
     topOptimizationType: string;
+    /** Originating experiment when tracked with experimentId */
+    experimentId?: string;
     rank?: number;
 }
 
