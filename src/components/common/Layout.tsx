@@ -3,6 +3,7 @@ import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { useState, useEffect } from "react";
 import { GlobalSubscriptionBanner } from "../subscription/GlobalSubscriptionBanner";
+import DecisionNudge from "../decisions/DecisionNudge";
 
 export const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -60,6 +61,9 @@ export const Layout = () => {
           </div>
         </main>
       </div>
+
+      {/* Global urgent-decision nudge. Self-gates on urgency=now + 24h cooldown. */}
+      <DecisionNudge />
     </div>
   );
 };
