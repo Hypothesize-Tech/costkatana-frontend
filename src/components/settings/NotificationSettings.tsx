@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Switch } from "@headlessui/react";
-import { Bell, Mail, Megaphone, AlertTriangle } from "lucide-react";
+import { Bell, Mail, Megaphone, AlertTriangle, Hash } from "lucide-react";
 
 interface NotificationSettings {
   email: {
@@ -13,6 +13,9 @@ interface NotificationSettings {
     costAlerts: boolean;
     optimizationSuggestions: boolean;
     anomalyDetection: boolean;
+  };
+  integrations?: {
+    slackWebhookUrl?: string;
   };
 }
 
@@ -51,6 +54,9 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
       weeklyCostLimit: 500,
       monthlyCostLimit: 2000,
       anomalyPercentage: 50,
+    },
+    integrations: {
+      slackWebhookUrl: "",
     },
   });
 
@@ -265,6 +271,46 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
               Alert when usage exceeds normal by this percentage
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Integrations — Slack */}
+      <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 sm:p-5 md:p-6">
+        <div className="flex gap-2 items-center mb-4 sm:gap-3 sm:mb-5 md:mb-6">
+          <div className="flex justify-center items-center w-7 h-7 rounded-lg bg-gradient-primary glow-primary sm:w-8 sm:h-8">
+            <Hash className="w-3.5 h-3.5 text-white sm:w-4 sm:h-4" />
+          </div>
+          <h3 className="text-base font-semibold font-display gradient-text sm:text-lg md:text-lg">
+            Slack
+          </h3>
+        </div>
+        <div className="space-y-3">
+          <label className="block text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary sm:text-base">
+            Incoming webhook URL
+          </label>
+          <input
+            type="url"
+            placeholder="https://hooks.slack.com/services/..."
+            value={settings.integrations?.slackWebhookUrl ?? ""}
+            onChange={(e) =>
+              setSettings((prev) => ({
+                ...prev,
+                integrations: {
+                  ...(prev.integrations ?? {}),
+                  slackWebhookUrl: e.target.value,
+                },
+              }))
+            }
+            className="input w-full"
+          />
+          <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
+            Daily decision digests and urgent-spike alerts will post to the
+            channel bound to this webhook. Create one in Slack at{" "}
+            <span className="font-mono text-primary-600 dark:text-primary-400">
+              api.slack.com/apps → Incoming Webhooks
+            </span>
+            .
+          </p>
         </div>
       </div>
 

@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Usage } from '../../types';
 import { formatCurrency } from '../../utils/formatters';
+import DecisionQueue from '../decisions/DecisionQueue';
 
 interface HighCostSuggestionsProps {
     usages: Usage[];
@@ -178,6 +179,8 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
     return (
         <>
             <div className={`space-y-4 sm:space-y-6 ${className}`}>
+                {/* Backend-driven decision layer (ranked by urgency, not just raw cost). */}
+                <DecisionQueue limit={3} skipTop={false} />
                 <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-fade-in">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                         <div className="flex items-center flex-1 min-w-0">

@@ -58,3 +58,7 @@ Desktop.ini
 
 # Package manager files
 .pnpm-debug.log*
+
+# Graphify output (large generated files)
+*graphify*/
+graphify-out/

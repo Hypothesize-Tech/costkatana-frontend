@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, TrendingUp, TrendingDown, ArrowRight, Brain, Target, Zap, CheckCircle, XCircle, AlertCircle, DollarSign, RefreshCw } from 'lucide-react'; // Added TrendingDown, ArrowRight, RefreshCw
 import NotebookService, { AIInsightsSummary } from '../../services/notebook.service';
+import TopDecisionBanner from '../decisions/TopDecisionBanner';
+import DecisionQueue from '../decisions/DecisionQueue';
+import SavingsProofStrip from '../decisions/SavingsProofStrip';
 
 interface AIInsightsDashboardProps {
   timeframe?: string;
@@ -163,6 +166,11 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Decision layer — lead with framed, actionable moments before raw metrics. */}
+      <TopDecisionBanner />
+      <SavingsProofStrip />
+      <DecisionQueue limit={3} skipTop />
 
       {/* Health Score & Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">

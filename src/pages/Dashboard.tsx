@@ -28,6 +28,9 @@ import { StatsCard } from "../components/dashboard/StatsCard";
 import { CostChart } from "../components/dashboard/CostChart";
 import { ServiceBreakdown } from "../components/dashboard/ServiceBreakdown";
 import { RecentActivity } from "../components/dashboard/RecentActivity";
+import TopDecisionBanner from "../components/decisions/TopDecisionBanner";
+import DecisionQueue from "../components/decisions/DecisionQueue";
+import SavingsProofStrip from "../components/decisions/SavingsProofStrip";
 import { DashboardService, DashboardData } from "../services/dashboard.service";
 import { AccountClosureBanner } from "../components/common/AccountClosureBanner";
 import { useNotification } from "../contexts/NotificationContext";
@@ -823,6 +826,11 @@ export const Dashboard: React.FC = () => {
                     {viewMode === "dashboard" ? (
                       // Full dashboard view
                       <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
+                        {/* Decision Layer — lead with the single action that matters right now. */}
+                        <TopDecisionBanner />
+                        <SavingsProofStrip />
+                        <DecisionQueue limit={3} skipTop />
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 md:gap-4 lg:grid-cols-4">
                           <StatsCard
                             title="Total Cost"
@@ -904,6 +912,10 @@ export const Dashboard: React.FC = () => {
                     ) : (
                       // Compact split view
                       <div className="space-y-3 sm:space-y-4 md:space-y-5">
+                        {/* Decision Layer also leads the split view. */}
+                        <TopDecisionBanner />
+                        <SavingsProofStrip />
+
                         <div className="glass backdrop-blur-xl rounded-xl p-2.5 sm:p-3 md:p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
                           <div className="flex gap-2 items-center pb-2 mb-3 border-b sm:mb-4 sm:pb-3 border-primary-200/30">
                             <div className="p-1.5 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg shrink-0">
