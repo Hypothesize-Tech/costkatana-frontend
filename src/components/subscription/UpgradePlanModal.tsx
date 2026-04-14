@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SubscriptionService } from '../../services/subscription.service';
 import { SUBSCRIPTION_PLANS } from '../../utils/constant';
 import { SubscriptionPlan, BillingInterval, PaymentGateway } from '../../types/subscription.types';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
-// import stripeLogo from '../../assets/stripe-logo.png';
-// import paypalLogo from '../../assets/paypal-logo.webp';
+import stripeLogo from '../../assets/stripe-logo.png';
+import paypalLogo from '../../assets/paypal-logo.webp';
 import razorpayLogo from '../../assets/razorpay-logo.png';
 // import { PayPalButton } from './PayPalButton';
 // import { StripePaymentForm } from './StripePaymentForm';
@@ -116,9 +117,10 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
         return () => clearTimeout(timeoutId);
     }, [discountCode, selectedPlan, basePrice]);
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm">
-            <div className="relative w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto card p-4 sm:p-6 md:p-8">
+    return createPortal(
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+            <div className="flex min-h-screen items-center justify-center p-2 sm:p-4">
+                <div className="relative w-full max-w-4xl card p-4 sm:p-6 md:p-8">
                 <button
                     onClick={onClose}
                     className="btn absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-colors z-10"
@@ -239,14 +241,15 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                             <label className="block mb-2 text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text">
                                 Payment Method
                             </label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                {(['razorpay'/*, 'paypal'*/] as PaymentGateway[]).map((gateway) => {
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                                {(['razorpay', 'stripe', 'paypal'] as PaymentGateway[]).map((gateway) => {
+                                    const comingSoon = gateway === 'stripe' || gateway === 'paypal';
                                     const getLogo = () => {
                                         switch (gateway) {
-                                            // case 'stripe':
-                                            //     return stripeLogo;
-                                            // case 'paypal':
-                                            //     return paypalLogo;
+                                            case 'stripe':
+                                                return stripeLogo;
+                                            case 'paypal':
+                                                return paypalLogo;
                                             case 'razorpay':
                                                 return razorpayLogo;
                                             default:
@@ -259,17 +262,28 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                     return (
                                         <button
                                             key={gateway}
-                                            onClick={() => setSelectedGateway(gateway)}
-                                            className={`btn p-3 sm:p-4 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-1.5 sm:gap-2 min-h-[80px] sm:min-h-[100px] ${selectedGateway === gateway
-                                                ? 'border-primary-500 bg-primary-500/10'
-                                                : 'border-primary-200/30 dark:border-primary-800/30 hover:border-primary-400/50'
+                                            type="button"
+                                            onClick={() => !comingSoon && setSelectedGateway(gateway)}
+                                            disabled={comingSoon}
+                                            aria-disabled={comingSoon}
+                                            title={comingSoon ? `${gateway} support is coming soon` : undefined}
+                                            className={`btn relative p-3 sm:p-4 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-1.5 sm:gap-2 min-h-[80px] sm:min-h-[100px] ${comingSoon
+                                                ? 'border-primary-200/20 dark:border-primary-800/20 opacity-60 cursor-not-allowed'
+                                                : selectedGateway === gateway
+                                                    ? 'border-primary-500 bg-primary-500/10'
+                                                    : 'border-primary-200/30 dark:border-primary-800/30 hover:border-primary-400/50'
                                                 }`}
                                         >
+                                            {comingSoon && (
+                                                <span className="absolute top-1 right-1 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded bg-primary-500/20 text-primary-500">
+                                                    Coming soon
+                                                </span>
+                                            )}
                                             {logo && (
                                                 <img
                                                     src={logo}
                                                     alt={gateway}
-                                                    className="h-6 sm:h-8 w-auto object-contain rounded-lg"
+                                                    className={`h-6 sm:h-8 w-auto object-contain rounded-lg ${comingSoon ? 'grayscale' : ''}`}
                                                 />
                                             )}
                                             <div className="text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text capitalize">
@@ -454,7 +468,9 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                             )}
                     </div>
                 )}
+                </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
