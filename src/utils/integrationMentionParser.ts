@@ -44,7 +44,12 @@ export const VALID_INTEGRATIONS = [
   'forms',
   'webhook',
   'aws',
-  'mongodb'
+  'mongodb',
+  // `file` mentions reference items from the user's File Library / uploaded
+  // documents. Picking one in the autocomplete pushes its documentId onto
+  // the chat composer's selectedDocuments so the next send carries it via
+  // `documentIds[]`.
+  'file',
 ] as const;
 
 export type IntegrationMentionType = typeof VALID_INTEGRATIONS[number];

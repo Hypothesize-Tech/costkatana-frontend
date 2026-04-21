@@ -25,6 +25,8 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 // Import preview components
 import PreviewRenderer from '../preview/PreviewRenderer';
 
+import type { Citation } from '@/services/chat.service';
+
 interface ChatMessage {
     id: string;
     role: 'user' | 'assistant' | 'system';
@@ -35,6 +37,7 @@ interface ChatMessage {
         url: string;
         snippet: string;
     }>;
+    citations?: Citation[];
     thinking?: string;
     codeBlocks?: Array<{
         language: string;
@@ -316,8 +319,66 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
                     </ReactMarkdown>
                 </div>
 
-                {/* Sources */}
-                {message.sources && message.sources.length > 0 && (
+                {/* Citations (Claude native) — grouped by document with
+                    clickable number chips that scroll to the inline marker. */}
+                {message.citations && message.citations.length > 0 && (
+                    <div className="mt-6 glass rounded-xl border border-primary-200/30 backdrop-blur-xl p-4 shadow-lg">
+                        <div className="flex items-center space-x-2 mb-4">
+                            <div className="p-1.5 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg">
+                                <Layers className="w-4 h-4 text-primary-500" />
+                            </div>
+                            <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">Citations</span>
+                            <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                {message.citations.length} {message.citations.length === 1 ? 'reference' : 'references'}
+                            </span>
+                        </div>
+                        <div className="space-y-3">
+                            {groupCitationsByDocument(message.citations).map((group) => (
+                                <div
+                                    key={group.key}
+                                    className="glass rounded-lg border border-primary-200/20 p-3 hover:border-primary-300/40 transition-all"
+                                >
+                                    <div className="flex items-start justify-between gap-3 mb-2">
+                                        <div className="min-w-0 flex-1">
+                                            <div className="font-display font-semibold text-sm text-primary-500 truncate">
+                                                {group.title}
+                                            </div>
+                                            <div className="text-[11px] font-body text-light-text-secondary dark:text-dark-text-secondary capitalize">
+                                                {group.sourceType === 'rag' ? 'Knowledge base' : group.sourceType}
+                                            </div>
+                                        </div>
+                                        {group.url && (
+                                            <a
+                                                href={group.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-[11px] font-semibold text-primary-500 hover:text-primary-600 shrink-0"
+                                            >
+                                                Open
+                                            </a>
+                                        )}
+                                    </div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {group.numbers.map((n) => (
+                                            <span
+                                                key={n}
+                                                className="inline-flex items-center justify-center min-w-[1.6em] h-[1.6em] px-2 text-[11px] font-bold rounded-md bg-primary-500/15 text-primary-500 border border-primary-500/30"
+                                                title="Referenced in the answer"
+                                            >
+                                                {n}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Legacy sources panel — kept for messages that carry
+                    tool-call sources but no native citations. */}
+                {(!message.citations || message.citations.length === 0) &&
+                    message.sources && message.sources.length > 0 && (
                     <div className="mt-6 glass rounded-xl border border-primary-200/30 backdrop-blur-xl p-4 shadow-lg">
                         <div className="flex items-center space-x-2 mb-4">
                             <div className="p-1.5 bg-gradient-to-br from-accent-500/20 to-accent-600/20 rounded-lg">
@@ -350,5 +411,44 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
         </div>
     );
 };
+
+/**
+ * Group citations by source document so the panel renders one row per source
+ * with a horizontal list of 1-based citation numbers as chips. Documents are
+ * keyed by `documentId` when available, falling back to `{index}::{title}`
+ * so distinct RAG sources with the same title don't merge.
+ */
+function groupCitationsByDocument(citations: Citation[]): Array<{
+    key: string;
+    title: string;
+    url?: string;
+    sourceType: Citation['document']['sourceType'];
+    numbers: number[];
+}> {
+    const groups = new Map<string, {
+        key: string;
+        title: string;
+        url?: string;
+        sourceType: Citation['document']['sourceType'];
+        numbers: number[];
+    }>();
+    citations.forEach((c, i) => {
+        const key = c.document.documentId || `${c.document.index}::${c.document.title}`;
+        const existing = groups.get(key);
+        const number = i + 1;
+        if (existing) {
+            existing.numbers.push(number);
+        } else {
+            groups.set(key, {
+                key,
+                title: c.document.title,
+                url: c.document.url,
+                sourceType: c.document.sourceType,
+                numbers: [number],
+            });
+        }
+    });
+    return Array.from(groups.values());
+}
 
 export default EnhancedChatMessage;

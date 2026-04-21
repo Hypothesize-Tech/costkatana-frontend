@@ -52,6 +52,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
 import { FeedbackButton } from "../feedback/FeedbackButton";
 import { ConfirmationDialog } from "./ConfirmationDialog";
+import { ToolCallsList } from "./ToolCallsList";
+import { injectCitationTokens, interpolateCitationMarkers } from "./citationRenderHelpers";
 import { feedbackService } from "../../services/feedback.service";
 import { marked } from "marked";
 import { apiClient, chatApiClient } from "@/config/api";
@@ -83,6 +85,7 @@ import {
   Zap,
 } from "lucide-react";
 import { DocumentPreviewModal } from "./DocumentPreviewModal";
+import { ConversationFilesDock } from "./ConversationFilesDock";
 import { IntegrationMentionHint } from "./IntegrationMentionHint";
 import { MentionAutocomplete } from "./MentionAutocomplete";
 import TemplatePicker from "./TemplatePicker";
@@ -174,15 +177,25 @@ interface ChatMessage {
     type: 'document' | 'spreadsheet' | 'presentation' | 'file' | 'email' | 'calendar' | 'form';
   }>;
   thinking?: {
-    title: string;
-    steps: Array<{
-      step: number;
-      description: string;
-      reasoning: string;
-      outcome?: string;
-    }>;
-    summary?: string;
+    content: string;
+    mode?: 'adaptive' | 'enabled';
+    effort?: 'low' | 'medium' | 'high' | 'max';
+    budgetTokens?: number;
+    streaming?: boolean;
+    startedAt?: number;
+    durationMs?: number;
   };
+  toolCalls?: Array<{
+    id: string;
+    name: string;
+    input?: unknown;
+    output?: {
+      content: string;
+      sources?: Array<{ title: string; url: string; description?: string }>;
+    };
+    status?: 'running' | 'success' | 'error';
+    durationMs?: number;
+  }>;
   optimizationsApplied?: string[];
   cacheHit?: boolean;
   agentPath?: string[];
@@ -190,9 +203,10 @@ interface ChatMessage {
   sources?: Array<{
     title: string;
     url: string;
-    type: 'web' | 'document' | 'api' | 'database';
+    type?: 'web' | 'document' | 'api' | 'database';
     description?: string;
   }>;
+  citations?: import('@/services/chat.service').Citation[];
   // Integration agent selection (for interactive parameter collection)
   requiresSelection?: boolean;
   selection?: {
@@ -250,6 +264,7 @@ interface AvailableModel {
     output: number;
     unit: string;
   };
+  thinkingCapability?: 'adaptive' | 'enabled' | 'none';
 }
 
 interface SuggestedQuestion {
@@ -340,11 +355,45 @@ export const ConversationalAgent: React.FC = () => {
   const [webSearchEnabled, setWebSearchEnabled] = useState<boolean>(false);
   const [showAppsSubmenu, setShowAppsSubmenu] = useState<boolean>(false);
 
+  // Extended thinking: user toggles on/off from the Plus menu; backend picks
+  // the budget/effort dynamically per model and task.
+  const [thinkingEnabled, setThinkingEnabled] = useState<boolean>(false);
+  const currentThinkingCapability: 'adaptive' | 'enabled' | 'none' =
+    (selectedModel?.thinkingCapability as
+      | 'adaptive'
+      | 'enabled'
+      | 'none'
+      | undefined) ?? 'none';
+
   // Plan Mode (Governed Agent) state
   const [planModeEnabled, setPlanModeEnabled] = useState<boolean>(false);
 
   // Document upload for RAG
   const [selectedDocuments, setSelectedDocuments] = useState<DocumentMetadata[]>([]);
+
+  // Shared handler for attaching a library file to the current chat —
+  // used by both the FileLibraryPanel "Attach" button and the @file mention
+  // autocomplete callback. Deduped so `documentIds[]` stays unique on send.
+  const attachLibraryFileToChat = useCallback(
+    (file: { documentId?: string; name?: string; chunksCount?: number; fileType?: string }) => {
+      if (!file.documentId) return;
+      setSelectedDocuments((prev) =>
+        prev.some((d) => d.documentId === file.documentId)
+          ? prev
+          : [
+              ...prev,
+              {
+                documentId: file.documentId!,
+                fileName: file.name || 'Untitled',
+                fileType: file.fileType ?? '',
+                uploadDate: new Date().toISOString(),
+                chunksCount: file.chunksCount ?? 0,
+              },
+            ],
+      );
+    },
+    [],
+  );
   const [showGitHubConnector, setShowGitHubConnector] = useState(false);
   const [gitHubConnectorMode, setGitHubConnectorMode] = useState<'integration' | 'chat'>('chat');
   const [showFeatureSelector, setShowFeatureSelector] = useState(false);
@@ -1086,6 +1135,32 @@ export const ConversationalAgent: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatMode, availableModels.length, selectModelByChatMode]);
+
+  // When Extended Thinking is enabled and the current model doesn't support it,
+  // auto-switch to the best thinking-capable model so the request doesn't fail.
+  // Preference: adaptive models (Opus 4.6 / Sonnet 4.6) → enabled-mode models → any.
+  useEffect(() => {
+    if (!thinkingEnabled) return;
+    if (availableModels.length === 0) return;
+    const cap = selectedModel?.thinkingCapability ?? 'none';
+    if (cap !== 'none') return;
+
+    const preferredIds = [
+      'anthropic.claude-opus-4-6-v1',
+      'anthropic.claude-sonnet-4-6',
+      'anthropic.claude-opus-4-1-20250805-v1:0',
+      'anthropic.claude-sonnet-4-5-20250929-v1:0',
+      'anthropic.claude-sonnet-4-20250514-v1:0',
+    ];
+    const byPref = preferredIds
+      .map((id) => availableModels.find((m) => m.id === id))
+      .find((m) => m && m.thinkingCapability && m.thinkingCapability !== 'none');
+    const fallback =
+      byPref ||
+      availableModels.find((m) => m.thinkingCapability === 'adaptive') ||
+      availableModels.find((m) => m.thinkingCapability === 'enabled');
+    if (fallback) setSelectedModel(fallback);
+  }, [thinkingEnabled, availableModels, selectedModel]);
 
   const loadAvailableModels = async () => {
     try {
@@ -1981,51 +2056,15 @@ export const ConversationalAgent: React.FC = () => {
             },
             sources: demoSources,
             thinking: {
-              title: "Analyzing cost optimization strategies",
-              summary:
-                "I need to evaluate your current AI usage patterns, identify inefficiencies, and recommend specific optimization techniques that will provide the best ROI.",
-              steps: [
-                {
-                  step: 1,
-                  description: "Current Usage Analysis",
-                  reasoning:
-                    "First, I need to understand your current AI usage patterns - which models you're using, frequency of calls, token consumption, and cost patterns.",
-                  outcome:
-                    "Identified high token usage in content generation tasks with GPT-4 - potential for optimization",
-                },
-                {
-                  step: 2,
-                  description: "Model Selection Review",
-                  reasoning:
-                    "Many users stick with familiar models without considering cost-effective alternatives. I should analyze if cheaper models like Claude Haiku could handle your simpler tasks.",
-                  outcome:
-                    "Found 60% of your tasks could use lower-cost models without quality loss",
-                },
-                {
-                  step: 3,
-                  description: "Prompt Optimization",
-                  reasoning:
-                    "Verbose prompts waste tokens. I need to analyze your prompts for redundancy and suggest more efficient versions that maintain quality.",
-                  outcome:
-                    "Identified 30-40% token reduction opportunity through prompt compression",
-                },
-                {
-                  step: 4,
-                  description: "Caching Strategy",
-                  reasoning:
-                    "Repeated similar requests are costly. I should recommend caching strategies for common queries and responses.",
-                  outcome:
-                    "Estimated 25% cost reduction through intelligent caching implementation",
-                },
-                {
-                  step: 5,
-                  description: "Batch Processing",
-                  reasoning:
-                    "Individual API calls have overhead. Batching multiple requests can reduce costs and improve efficiency.",
-                  outcome:
-                    "Projected 15% cost savings through batch processing optimization",
-                },
-              ],
+              content:
+                'Evaluating current usage patterns, identifying inefficiencies, and recommending optimization techniques for the best ROI.\n\n' +
+                '1. Current usage analysis — high token usage in content generation tasks with GPT-4 is the first lever.\n' +
+                '2. Model selection review — 60% of tasks could use lower-cost models without quality loss.\n' +
+                '3. Prompt optimization — 30–40% token reduction opportunity through prompt compression.\n' +
+                '4. Caching strategy — estimated 25% reduction through intelligent caching.\n' +
+                '5. Batch processing — projected 15% savings via batched API calls.',
+              mode: 'enabled',
+              durationMs: 3200,
             },
           };
 
@@ -2034,6 +2073,182 @@ export const ConversationalAgent: React.FC = () => {
           setLoadingMessageId(null);
           setLoadingMessageId(null);
         }, 1500);
+        return;
+      }
+
+      const useThinkingStream =
+        thinkingEnabled && currentThinkingCapability !== 'none';
+
+      if (useThinkingStream) {
+        // Create a placeholder assistant message we can update live as
+        // reasoning/content chunks arrive over SSE.
+        const streamingMessageId = `stream-${Date.now()}`;
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: streamingMessageId,
+            role: 'assistant',
+            content: '',
+            timestamp: new Date(),
+            thinking: {
+              content: '',
+              mode:
+                currentThinkingCapability === 'adaptive'
+                  ? 'adaptive'
+                  : 'enabled',
+              streaming: true,
+              startedAt: Date.now(),
+            },
+          },
+        ]);
+
+        const streamResult = await ChatService.sendMessageStream(
+          {
+            message: finalMessageContent,
+            modelId: selectedModel.id,
+            conversationId: currentConversationId || undefined,
+            chatMode: chatMode,
+            useMultiAgent: useMultiAgent,
+            useWebSearch: webSearchEnabled,
+            documentIds: selectedDocuments.length > 0
+              ? selectedDocuments.map((doc) => doc.documentId)
+              : undefined,
+            attachments: attachments.length > 0 ? attachments : undefined,
+            // Only the enable flag — backend picks effort (adaptive) or
+            // dynamic budget (enabled) per model and prompt complexity.
+            thinking: { enabled: true },
+            ...(selectedRepo
+              ? {
+                  githubContext: {
+                    connectionId: selectedRepo.connectionId,
+                    repositoryId: selectedRepo.repo.id,
+                    repositoryName: selectedRepo.repo.name,
+                    repositoryFullName: selectedRepo.repo.fullName,
+                  },
+                }
+              : {}),
+            ...(pendingSelectionRef.current
+              ? { selectionResponse: pendingSelectionRef.current }
+              : {}),
+          },
+          {
+            onReasoning: (text) => {
+              setMessages((prev) =>
+                prev.map((m) => {
+                  if (m.id !== streamingMessageId) return m;
+                  const current = (m.thinking && 'content' in m.thinking
+                    ? m.thinking
+                    : {
+                        content: '',
+                        mode:
+                          currentThinkingCapability === 'adaptive'
+                            ? 'adaptive'
+                            : 'enabled',
+                        streaming: true,
+                        startedAt: Date.now(),
+                      }) as typeof m.thinking & {
+                    content: string;
+                    startedAt?: number;
+                  };
+                  return {
+                    ...m,
+                    thinking: {
+                      ...current,
+                      content: (current.content || '') + text,
+                      streaming: true,
+                      startedAt: current.startedAt ?? Date.now(),
+                    },
+                  };
+                }),
+              );
+            },
+            onReasoningDone: () => {
+              setMessages((prev) =>
+                prev.map((m) => {
+                  if (m.id !== streamingMessageId) return m;
+                  if (!m.thinking || !('content' in m.thinking)) return m;
+                  const t = m.thinking as typeof m.thinking & {
+                    startedAt?: number;
+                  };
+                  const durationMs = t.startedAt
+                    ? Date.now() - t.startedAt
+                    : undefined;
+                  return {
+                    ...m,
+                    thinking: {
+                      ...t,
+                      streaming: false,
+                      durationMs,
+                    },
+                  };
+                }),
+              );
+            },
+            onToolCall: (call) => {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === streamingMessageId
+                    ? {
+                        ...m,
+                        toolCalls: [
+                          ...(m.toolCalls ?? []),
+                          {
+                            id: call.id,
+                            name: call.name,
+                            input: call.input,
+                            status: 'running',
+                          },
+                        ],
+                      }
+                    : m,
+                ),
+              );
+            },
+            onToolResult: (r) => {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === streamingMessageId
+                    ? {
+                        ...m,
+                        toolCalls: (m.toolCalls ?? []).map((tc) =>
+                          tc.id === r.id
+                            ? {
+                                ...tc,
+                                output: {
+                                  content: r.output.content,
+                                  sources: r.sources,
+                                },
+                                status: r.status,
+                                durationMs: r.durationMs,
+                              }
+                            : tc,
+                        ),
+                      }
+                    : m,
+                ),
+              );
+            },
+            onChunk: (text) => {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === streamingMessageId
+                    ? { ...m, content: (m.content || '') + text }
+                    : m,
+                ),
+              );
+            },
+            onError: (err) => {
+              console.error('Thinking stream error', err);
+            },
+          },
+        );
+
+        pendingSelectionRef.current = null;
+        setIsLoading(false);
+        setLoadingMessageId(null);
+        // Keep the streamed message; nothing else to do in this branch.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _ = streamResult;
         return;
       }
 
@@ -2127,43 +2342,15 @@ export const ConversationalAgent: React.FC = () => {
           data: response.formattedResult.data,
           integration: response.agentPath[1] // Use the integration name from agentPath
         } : undefined,
+        // Only real Claude thinking. Legacy client-side synthesis is retired.
         thinking:
-          response.thinking ||
-          (messageContent.toLowerCase().includes("money") ||
-            messageContent.toLowerCase().includes("cost") ||
-            messageContent.toLowerCase().includes("model") ||
-            messageContent.toLowerCase().includes("spend")
-            ? {
-              title: "Analyzing your AI spending data",
-              summary:
-                "I'm querying your actual usage database to provide real insights about your AI model costs and spending patterns.",
-              steps: [
-                {
-                  step: 1,
-                  description: "Database Query",
-                  reasoning:
-                    "Accessing your real usage data from MongoDB to get accurate spending information.",
-                  outcome:
-                    "Retrieved your actual AI model usage and cost data",
-                },
-                {
-                  step: 2,
-                  description: "Cost Analysis",
-                  reasoning:
-                    "Analyzing which models are consuming the most of your budget and identifying spending patterns.",
-                  outcome: "Identified your highest-cost models and trends",
-                },
-                {
-                  step: 3,
-                  description: "Data Aggregation",
-                  reasoning:
-                    "Calculating totals and providing breakdown by model, provider, and time period.",
-                  outcome:
-                    "Generated comprehensive cost breakdown from your data",
-                },
-              ],
-            }
-            : undefined),
+          typeof response.thinking === 'string'
+            ? { content: response.thinking }
+            : response.thinking && 'content' in (response.thinking as any)
+              ? (response.thinking as any)
+              : undefined,
+        // Persist tool calls + aggregated sources when present.
+        toolCalls: (response as any).toolCalls,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -2926,69 +3113,82 @@ export const ConversationalAgent: React.FC = () => {
   // Render the message content
   const renderMessageContent = useCallback((content: string, message?: ChatMessage) => {
     // Convert plain URLs to markdown for proper rendering
-    const processedContent = convertUrlsToMarkdown(content);
+    const urlProcessedContent = convertUrlsToMarkdown(content);
     const isUserMessage = message?.role === 'user';
+    // Inject citation sentinels for inline marker rendering. For user
+    // messages or assistant messages without citations, this is a no-op.
+    const { text: processedContent, numbered: numberedCitations } =
+      message?.role === 'assistant' && message.citations && message.citations.length > 0
+        ? injectCitationTokens(urlProcessedContent, message.citations)
+        : { text: urlProcessedContent, numbered: [] as Array<import('@/services/chat.service').Citation & { number: number }> };
 
     return (
       <>
-        {/* Thinking Section */}
-        {message?.thinking && (
-          <div className="mb-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl overflow-hidden shadow-lg">
-            <button
-              onClick={() =>
-                setExpandedThinking(
-                  expandedThinking === message.id ? null : message.id,
-                )
-              }
-              className="w-full flex items-center gap-3 p-4 hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-transparent transition-all duration-300"
-            >
-              <div className="p-2 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg">
-                <span className="text-lg">🤔</span>
-              </div>
-              <div className="flex-1 text-left font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-                {message.thinking.title || "Thinking Process"}
-              </div>
-              <ChevronDownIcon
-                className={`w-5 h-5 text-primary-500 transition-transform duration-300 ${expandedThinking === message.id ? "rotate-180" : ""
-                  }`}
-              />
-            </button>
+        {/* Thinking pill — compact "Thought for Xs" header, quiet muted
+            palette, expands into a subtle monospace panel. Matches the
+            Claude.ai / ChatGPT o1 / Perplexity pattern. */}
+        {message?.thinking && typeof (message.thinking as any)?.content === 'string' && (() => {
+          const t = message.thinking as {
+            content: string;
+            streaming?: boolean;
+            durationMs?: number;
+          };
+          const isStreaming = Boolean(t.streaming);
+          const durationSeconds = t.durationMs
+            ? Math.max(1, Math.round(t.durationMs / 1000))
+            : undefined;
+          const label = isStreaming
+            ? 'Thinking…'
+            : durationSeconds
+              ? `Thought for ${durationSeconds}s`
+              : 'Thinking';
+          const isExpanded = expandedThinking === message.id;
+          return (
+            <div className="mb-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setExpandedThinking(isExpanded ? null : message.id)
+                }
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 transition-colors"
+              >
+                <SparklesIcon
+                  className={`w-3.5 h-3.5 ${isStreaming ? 'animate-pulse' : ''}`}
+                />
+                <span
+                  className={
+                    isStreaming
+                      ? 'bg-gradient-to-r from-secondary-400 via-secondary-600 to-secondary-400 dark:from-secondary-500 dark:via-secondary-300 dark:to-secondary-500 bg-[length:200%_100%] bg-clip-text text-transparent animate-pulse'
+                      : ''
+                  }
+                >
+                  {label}
+                </span>
+                <ChevronDownIcon
+                  className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {isExpanded && (
+                <pre className="mt-2 font-mono text-[12.5px] leading-relaxed whitespace-pre-wrap text-secondary-600 dark:text-secondary-400 border-l-2 border-secondary-300/40 dark:border-secondary-700/60 pl-3 mb-2">
+                  {t.content || (isStreaming ? 'Thinking…' : '')}
+                </pre>
+              )}
+            </div>
+          );
+        })()}
 
-            {expandedThinking === message.id && (
-              <div className="p-5 border-t border-primary-200/30 animate-fade-in bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
-                {message.thinking.summary && (
-                  <div className="mb-4 p-4 glass rounded-lg border-l-4 border-l-primary-500 shadow-md">
-                    <strong className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">Summary:</strong>{" "}
-                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">{message.thinking.summary}</span>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  {message.thinking.steps.map((step, index) => (
-                    <div key={index} className="p-4 glass rounded-lg border border-primary-200/30 shadow-md hover:border-primary-300/50 transition-all">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="bg-gradient-to-br from-primary-500 to-primary-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-display font-bold shadow-lg">
-                          {step.step}
-                        </span>
-                        <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-                          {step.description}
-                        </span>
-                      </div>
-                      <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3 ml-11 leading-relaxed">
-                        {step.reasoning}
-                      </div>
-                      {step.outcome && (
-                        <div className="ml-11 p-3 glass rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20">
-                          <strong className="font-display font-bold text-success-600 dark:text-success-400">Outcome:</strong>{" "}
-                          <span className="font-body text-success-700 dark:text-success-300">{step.outcome}</span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+        {/* Tool calls — inline compact cards (e.g., web_search results). */}
+        {message?.toolCalls && message.toolCalls.length > 0 && (
+          <ToolCallsList
+            calls={message.toolCalls.map((tc) => ({
+              id: tc.id,
+              name: tc.name,
+              input: tc.input,
+              output: tc.output,
+              status: tc.status,
+              durationMs: tc.durationMs,
+            }))}
+          />
         )}
 
         {/* Web Search Sources */}
@@ -3325,7 +3525,10 @@ export const ConversationalAgent: React.FC = () => {
                 ),
                 p: ({ children }) => (
                   <p className="mb-4 last:mb-0 leading-relaxed text-light-text-primary dark:text-dark-text-primary">
-                    {typeof children === 'string' ? linkifyText(children) : children}
+                    {interpolateCitationMarkers(
+                      typeof children === 'string' ? linkifyText(children) : children,
+                      numberedCitations,
+                    )}
                   </p>
                 ),
                 ul: ({ children }) => (
@@ -3340,7 +3543,10 @@ export const ConversationalAgent: React.FC = () => {
                 ),
                 li: ({ children }) => (
                   <li className="text-light-text-primary dark:text-dark-text-primary">
-                    {typeof children === 'string' ? linkifyText(children) : children}
+                    {interpolateCitationMarkers(
+                      typeof children === 'string' ? linkifyText(children) : children,
+                      numberedCitations,
+                    )}
                   </li>
                 ),
                 blockquote: ({ children }) => (
@@ -3458,6 +3664,7 @@ export const ConversationalAgent: React.FC = () => {
                 currentConversationId={currentConversationId || undefined}
                 filterMode={fileLibraryFilterMode}
                 onFilterModeChange={setFileLibraryFilterMode}
+                onAttachToChat={attachLibraryFileToChat}
               />
             </div>
           </div>
@@ -3535,6 +3742,7 @@ export const ConversationalAgent: React.FC = () => {
                 currentConversationId={currentConversationId || undefined}
                 filterMode={fileLibraryFilterMode}
                 onFilterModeChange={setFileLibraryFilterMode}
+                onAttachToChat={attachLibraryFileToChat}
               />
             </div>
           )
@@ -4594,6 +4802,29 @@ export const ConversationalAgent: React.FC = () => {
                             </button>
                           </div>
 
+                          {/* Extended Thinking — only shown when the selected model supports it */}
+                          {currentThinkingCapability !== 'none' && (
+                            <div className="mb-2">
+                              <button
+                                onClick={() => {
+                                  setShowAttachmentsPopover(false);
+                                  setThinkingEnabled((v) => !v);
+                                }}
+                                className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors ${thinkingEnabled ? 'bg-primary-500/10 dark:bg-primary-500/20' : ''}`}
+                                title={`Extended Thinking (${currentThinkingCapability}) — the backend picks the right reasoning budget per task.`}
+                              >
+                                <SparklesIcon className={`w-4 h-4 ${thinkingEnabled ? 'text-primary-600 dark:text-primary-400' : 'text-secondary-600 dark:text-secondary-400'}`} />
+                                <span className="text-sm font-medium text-secondary-900 dark:text-white">Thinking</span>
+                                <span className="text-[10px] text-secondary-500 dark:text-secondary-400 ml-1">
+                                  {currentThinkingCapability === 'adaptive' ? 'adaptive · web' : 'dynamic · web'}
+                                </span>
+                                {thinkingEnabled && (
+                                  <Check className="w-4 h-4 ml-auto text-primary-600 dark:text-primary-400" />
+                                )}
+                              </button>
+                            </div>
+                          )}
+
                           {/* Plan Mode (Governed Agent) */}
                           <div className="mb-2">
                             <button
@@ -5135,6 +5366,14 @@ export const ConversationalAgent: React.FC = () => {
                       // Mention is already inserted in the textarea
                       // The onChange handler will check for picker commands
                     }}
+                    onFileMentioned={(file) =>
+                      attachLibraryFileToChat({
+                        documentId: file.documentId,
+                        name: file.fileName,
+                        fileType: file.fileType,
+                        chunksCount: file.chunksCount,
+                      })
+                    }
                     textareaRef={textareaRef}
                   />
                 </div>
@@ -5157,6 +5396,23 @@ export const ConversationalAgent: React.FC = () => {
 
                     <span className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors whitespace-nowrap">
                       Search
+                    </span>
+                  </button>
+                )}
+
+                {/* Extended Thinking Enabled Indicator — toggle lives in Plus menu */}
+                {thinkingEnabled && currentThinkingCapability !== 'none' && (
+                  <button
+                    onClick={() => setThinkingEnabled(false)}
+                    className="h-8 sm:h-9 md:h-9 flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 md:px-4 rounded-full glass backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-50/80 to-primary-100/60 dark:from-primary-900/30 dark:to-primary-800/20 hover:from-primary-100/90 hover:to-primary-200/70 dark:hover:from-primary-800/40 dark:hover:to-primary-700/30 transition-all duration-200 shrink-0 animate-fade-in group relative shadow-sm hover:shadow-md"
+                    title="Extended Thinking enabled - Click to disable"
+                  >
+                    <div className="relative w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0">
+                      <SparklesIcon className="absolute inset-0 w-full h-full text-primary-600 dark:text-primary-400 group-hover:opacity-0 transition-opacity duration-200" />
+                      <XMarkIcon className="absolute inset-0 w-full h-full text-primary-600 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors whitespace-nowrap">
+                      Thinking
                     </span>
                   </button>
                 )}
@@ -5240,36 +5496,48 @@ export const ConversationalAgent: React.FC = () => {
                             <div className="px-2 py-1 mb-2 rounded-lg bg-primary-50/50 dark:bg-primary-900/20">
                               <span className="text-[10px] font-display font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">⭐ Top Models</span>
                             </div>
-                            {getTopModels().map((model) => (
-                              <button
-                                key={model.id}
-                                onClick={() => {
-                                  setSelectedModel(model);
-                                  setShowModelDropdown(false);
-                                  setShowAllModelsDropdown(false);
-                                }}
-                                className={`w-full p-2.5 text-left active:bg-primary-500/20 transition-all duration-200 rounded-lg border touch-manipulation mb-1.5 ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
-                                  }`}
-                              >
-                                <div className="flex items-center justify-between gap-2">
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-0.5">
-                                      <div className="font-display font-semibold text-xs text-secondary-900 dark:text-white truncate">
-                                        {formatModelDisplay(model)}
+                            {getTopModels().map((model) => {
+                              const supportsThinking = (model.thinkingCapability ?? 'none') !== 'none';
+                              const disabledByThinking = thinkingEnabled && !supportsThinking;
+                              return (
+                                <button
+                                  key={model.id}
+                                  disabled={disabledByThinking}
+                                  onClick={() => {
+                                    if (disabledByThinking) return;
+                                    setSelectedModel(model);
+                                    setShowModelDropdown(false);
+                                    setShowAllModelsDropdown(false);
+                                  }}
+                                  title={disabledByThinking ? 'This model does not support Extended Thinking — turn Thinking off to select it.' : undefined}
+                                  className={`w-full p-2.5 text-left transition-all duration-200 rounded-lg border touch-manipulation mb-1.5 ${disabledByThinking ? 'opacity-40 cursor-not-allowed bg-secondary-100/30 dark:bg-secondary-800/30 border-secondary-200/30 dark:border-secondary-700/30' : 'active:bg-primary-500/20'} ${!disabledByThinking && selectedModel?.id === model.id ? 'bg-gradient-primary/10 border-primary-300 dark:border-primary-600' : !disabledByThinking ? 'border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50' : ''}`}
+                                >
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2 mb-0.5">
+                                        <div className="font-display font-semibold text-xs text-secondary-900 dark:text-white truncate">
+                                          {formatModelDisplay(model)}
+                                        </div>
+                                        {supportsThinking && (
+                                          <span className="inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded-full bg-primary-500/15 text-primary-700 dark:text-primary-300 border border-primary-300/30 font-semibold whitespace-nowrap">
+                                            <SparklesIcon className="w-2 h-2" />
+                                            {model.thinkingCapability === 'adaptive' ? 'adaptive' : 'thinking'}
+                                          </span>
+                                        )}
+                                        {selectedModel?.id === model.id && (
+                                          <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
+                                        )}
                                       </div>
-                                      {selectedModel?.id === model.id && (
-                                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
+                                      {model.pricing && (
+                                        <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold">
+                                          ${model.pricing.input.toFixed(2)}/1M in
+                                        </div>
                                       )}
                                     </div>
-                                    {model.pricing && (
-                                      <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold">
-                                        ${model.pricing.input.toFixed(2)}/1M in
-                                      </div>
-                                    )}
                                   </div>
-                                </div>
-                              </button>
-                            ))}
+                                </button>
+                              );
+                            })}
                           </div>
 
                           {/* More Models - Mobile */}
@@ -5290,36 +5558,47 @@ export const ConversationalAgent: React.FC = () => {
 
                               {showAllModelsDropdown && (
                                 <div className="mt-1.5 space-y-1 max-h-[40vh] overflow-y-auto">
-                                  {getOtherModels().map((model) => (
-                                    <button
-                                      key={model.id}
-                                      onClick={() => {
-                                        setSelectedModel(model);
-                                        setShowModelDropdown(false);
-                                        setShowAllModelsDropdown(false);
-                                      }}
-                                      className={`w-full p-2 text-left active:bg-primary-500/20 transition-all duration-200 rounded-lg border touch-manipulation ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
-                                        }`}
-                                    >
-                                      <div className="flex items-center justify-between gap-2">
-                                        <div className="flex-1 min-w-0">
-                                          <div className="flex items-center gap-1.5">
-                                            <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
-                                              {formatModelDisplay(model)}
+                                  {getOtherModels()
+                                    .filter((model) => !thinkingEnabled || (model.thinkingCapability ?? 'none') !== 'none')
+                                    .map((model) => {
+                                      const supportsThinking = (model.thinkingCapability ?? 'none') !== 'none';
+                                      return (
+                                        <button
+                                          key={model.id}
+                                          onClick={() => {
+                                            setSelectedModel(model);
+                                            setShowModelDropdown(false);
+                                            setShowAllModelsDropdown(false);
+                                          }}
+                                          className={`w-full p-2 text-left active:bg-primary-500/20 transition-all duration-200 rounded-lg border touch-manipulation ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
+                                            }`}
+                                        >
+                                          <div className="flex items-center justify-between gap-2">
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex items-center gap-1.5">
+                                                <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
+                                                  {formatModelDisplay(model)}
+                                                </div>
+                                                {supportsThinking && (
+                                                  <span className="inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded-full bg-primary-500/15 text-primary-700 dark:text-primary-300 border border-primary-300/30 font-semibold whitespace-nowrap">
+                                                    <SparklesIcon className="w-2 h-2" />
+                                                    {model.thinkingCapability === 'adaptive' ? 'adaptive' : 'thinking'}
+                                                  </span>
+                                                )}
+                                                {selectedModel?.id === model.id && (
+                                                  <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
+                                                )}
+                                              </div>
+                                              {model.pricing && (
+                                                <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold mt-0.5">
+                                                  ${model.pricing.input.toFixed(2)}/1M in
+                                                </div>
+                                              )}
                                             </div>
-                                            {selectedModel?.id === model.id && (
-                                              <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
-                                            )}
                                           </div>
-                                          {model.pricing && (
-                                            <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold mt-0.5">
-                                              ${model.pricing.input.toFixed(2)}/1M in
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </button>
-                                  ))}
+                                        </button>
+                                      );
+                                    })}
                                 </div>
                               )}
                             </div>
@@ -5334,41 +5613,53 @@ export const ConversationalAgent: React.FC = () => {
                           <div className="px-2 py-1.5 mb-1 rounded-lg bg-primary-50/50 dark:bg-primary-900/20">
                             <span className="text-xs font-display font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">⭐ Top Models</span>
                           </div>
-                          {getTopModels().map((model) => (
-                            <button
-                              key={model.id}
-                              onClick={() => {
-                                setSelectedModel(model);
-                                setShowModelDropdown(false);
-                                setShowAllModelsDropdown(false);
-                              }}
-                              className={`w-full p-2.5 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
-                                } mb-2 last:mb-0`}
-                            >
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 mb-0.5">
-                                    <div className="font-display font-semibold text-sm text-secondary-900 dark:text-white truncate">
-                                      {formatModelDisplay(model)}
-                                    </div>
-                                    {selectedModel?.id === model.id && (
-                                      <div className="w-2 h-2 rounded-full bg-gradient-primary flex-shrink-0" />
-                                    )}
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <div className="text-xs text-secondary-500 dark:text-secondary-400 font-medium truncate">
-                                      {getModelSubtitle(model)}
-                                    </div>
-                                    {model.pricing && (
-                                      <div className="text-xs text-success-600 dark:text-success-400 font-semibold whitespace-nowrap">
-                                        ${model.pricing.input.toFixed(2)}/1M
+                          {getTopModels().map((model) => {
+                            const supportsThinking = (model.thinkingCapability ?? 'none') !== 'none';
+                            const disabledByThinking = thinkingEnabled && !supportsThinking;
+                            return (
+                              <button
+                                key={model.id}
+                                disabled={disabledByThinking}
+                                onClick={() => {
+                                  if (disabledByThinking) return;
+                                  setSelectedModel(model);
+                                  setShowModelDropdown(false);
+                                  setShowAllModelsDropdown(false);
+                                }}
+                                title={disabledByThinking ? 'This model does not support Extended Thinking — turn Thinking off to select it.' : undefined}
+                                className={`w-full p-2.5 text-left transition-all duration-300 rounded-lg border mb-2 last:mb-0 ${disabledByThinking ? 'opacity-40 cursor-not-allowed bg-secondary-100/30 dark:bg-secondary-800/30 border-secondary-200/30 dark:border-secondary-700/30' : 'hover:bg-primary-500/10 dark:hover:bg-primary-500/20'} ${!disabledByThinking && selectedModel?.id === model.id ? 'bg-gradient-primary/10 border-primary-300 dark:border-primary-600' : !disabledByThinking ? 'border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50' : ''}`}
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                      <div className="font-display font-semibold text-sm text-secondary-900 dark:text-white truncate">
+                                        {formatModelDisplay(model)}
                                       </div>
-                                    )}
+                                      {supportsThinking && (
+                                        <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-primary-500/15 text-primary-700 dark:text-primary-300 border border-primary-300/30 font-semibold whitespace-nowrap">
+                                          <SparklesIcon className="w-2.5 h-2.5" />
+                                          {model.thinkingCapability === 'adaptive' ? 'adaptive' : 'thinking'}
+                                        </span>
+                                      )}
+                                      {selectedModel?.id === model.id && (
+                                        <div className="w-2 h-2 rounded-full bg-gradient-primary flex-shrink-0" />
+                                      )}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <div className="text-xs text-secondary-500 dark:text-secondary-400 font-medium truncate">
+                                        {getModelSubtitle(model)}
+                                      </div>
+                                      {model.pricing && (
+                                        <div className="text-xs text-success-600 dark:text-success-400 font-semibold whitespace-nowrap">
+                                          ${model.pricing.input.toFixed(2)}/1M
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </button>
-                          ))}
+                              </button>
+                            );
+                          })}
 
                           {/* More Models Section */}
                           {getOtherModels().length > 0 && (
@@ -5390,36 +5681,47 @@ export const ConversationalAgent: React.FC = () => {
                                 {/* Nested Dropdown for Other Models - Desktop */}
                                 {showAllModelsDropdown && (
                                   <div className="mt-1 space-y-1 max-h-[400px] overflow-y-auto">
-                                    {getOtherModels().map((model) => (
-                                      <button
-                                        key={model.id}
-                                        onClick={() => {
-                                          setSelectedModel(model);
-                                          setShowModelDropdown(false);
-                                          setShowAllModelsDropdown(false);
-                                        }}
-                                        className={`w-full p-2 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
-                                          }`}
-                                      >
-                                        <div className="flex items-center justify-between gap-2">
-                                          <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-1.5">
-                                              <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
-                                                {formatModelDisplay(model)}
+                                    {getOtherModels()
+                                      .filter((model) => !thinkingEnabled || (model.thinkingCapability ?? 'none') !== 'none')
+                                      .map((model) => {
+                                        const supportsThinking = (model.thinkingCapability ?? 'none') !== 'none';
+                                        return (
+                                          <button
+                                            key={model.id}
+                                            onClick={() => {
+                                              setSelectedModel(model);
+                                              setShowModelDropdown(false);
+                                              setShowAllModelsDropdown(false);
+                                            }}
+                                            className={`w-full p-2 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
+                                              }`}
+                                          >
+                                            <div className="flex items-center justify-between gap-2">
+                                              <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-1.5">
+                                                  <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
+                                                    {formatModelDisplay(model)}
+                                                  </div>
+                                                  {supportsThinking && (
+                                                    <span className="inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded-full bg-primary-500/15 text-primary-700 dark:text-primary-300 border border-primary-300/30 font-semibold whitespace-nowrap">
+                                                      <SparklesIcon className="w-2 h-2" />
+                                                      {model.thinkingCapability === 'adaptive' ? 'adaptive' : 'thinking'}
+                                                    </span>
+                                                  )}
+                                                  {selectedModel?.id === model.id && (
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
+                                                  )}
+                                                </div>
+                                                {model.pricing && (
+                                                  <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold mt-0.5">
+                                                    ${model.pricing.input.toFixed(2)}/1M
+                                                  </div>
+                                                )}
                                               </div>
-                                              {selectedModel?.id === model.id && (
-                                                <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
-                                              )}
                                             </div>
-                                            {model.pricing && (
-                                              <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold mt-0.5">
-                                                ${model.pricing.input.toFixed(2)}/1M
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-                                      </button>
-                                    ))}
+                                          </button>
+                                        );
+                                      })}
                                   </div>
                                 )}
                               </div>
@@ -5589,6 +5891,16 @@ export const ConversationalAgent: React.FC = () => {
           onClose={() => setPreviewDocument(null)}
         />
       )}
+
+      {/* Conversation Files Dock — floating bottom-right summary of every
+          document attached to this conversation. Re-derives from messages,
+          so it survives chat switches and reloads. */}
+      <ConversationFilesDock
+        messages={messages}
+        onPreview={(documentId, fileName) =>
+          setPreviewDocument({ documentId, fileName })
+        }
+      />
 
       {/* Template Components */}
       <TemplatePicker

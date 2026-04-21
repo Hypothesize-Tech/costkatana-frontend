@@ -51,9 +51,9 @@ interface AvailableModel {
 type AIReasoning =
   | string
   | Record<
-      string,
-      string | { strengths?: string[]; weaknesses?: string[] } | undefined
-    >;
+    string,
+    string | { strengths?: string[]; weaknesses?: string[] } | undefined
+  >;
 
 interface ComparisonResult {
   id?: string;
@@ -267,7 +267,7 @@ const ModelComparison: React.FC = () => {
       console.error("Error loading available models:", error);
       setError(
         "Failed to load available models: " +
-          (error instanceof Error ? error.message : "Unknown error"),
+        (error instanceof Error ? error.message : "Unknown error"),
       );
       setAvailableModels([]);
       setAllModels([]);
@@ -441,9 +441,9 @@ const ModelComparison: React.FC = () => {
   const runComparison = async () => {
     const multiPrompts = promptSetMode
       ? promptsText
-          .split("\n")
-          .map((s) => s.trim())
-          .filter(Boolean)
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean)
       : [];
     if (promptSetMode && multiPrompts.length === 0) {
       setError("Prompt set mode: enter at least one non-empty line.");
@@ -853,7 +853,7 @@ const ModelComparison: React.FC = () => {
         output: 15.0,
         unit: "Per 1M tokens",
       },
-      "meta.llama3-2-1b-instruct-v1:0": {
+      "meta.llama4-scout-17b-instruct-v1:0": {
         input: 0.1,
         output: 0.1,
         unit: "Per 1M tokens",
@@ -1848,347 +1848,346 @@ const ModelComparison: React.FC = () => {
                   "";
 
                 return (
-                <div
-                  key={result.id ?? index}
-                  className="glass p-4 sm:p-5 md:p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 sm:hover:scale-105 transition-all duration-300 animate-fade-in"
-                >
-                  <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-3 sm:gap-0">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <h4 className="text-lg sm:text-xl font-display font-bold gradient-text break-words">
-                          {result.provider} - {result.model}
-                        </h4>
-                        {isRealTime && overallScore != null && (
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                              overallScore >= 90
-                                ? "bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300"
-                                : overallScore >= 75
-                                  ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
-                                  : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                            }`}
-                          >
-                            Score: {overallScore}/100
-                          </span>
+                  <div
+                    key={result.id ?? index}
+                    className="glass p-4 sm:p-5 md:p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 sm:hover:scale-105 transition-all duration-300 animate-fade-in"
+                  >
+                    <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-3 sm:gap-0">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <h4 className="text-lg sm:text-xl font-display font-bold gradient-text break-words">
+                            {result.provider} - {result.model}
+                          </h4>
+                          {isRealTime && overallScore != null && (
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${overallScore >= 90
+                                  ? "bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300"
+                                  : overallScore >= 75
+                                    ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                                    : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+                                }`}
+                            >
+                              Score: {overallScore}/100
+                            </span>
+                          )}
+                        </div>
+                        {(recommendationText || !isRealTime) && (
+                          <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
+                            {recommendationText || result.recommendation}
+                          </p>
                         )}
                       </div>
-                      {(recommendationText || !isRealTime) && (
-                        <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
-                          {recommendationText || result.recommendation}
-                        </p>
-                      )}
+                      <button
+                        onClick={() => {
+                          setSelectedResult(result);
+                          setShowResultsModal(true);
+                        }}
+                        className="btn btn-secondary flex items-center gap-2 text-xs sm:text-sm w-full sm:w-auto justify-center"
+                      >
+                        <span className="hidden sm:inline">View Details</span>
+                        <span className="sm:hidden">Details</span>
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        setSelectedResult(result);
-                        setShowResultsModal(true);
-                      }}
-                      className="btn btn-secondary flex items-center gap-2 text-xs sm:text-sm w-full sm:w-auto justify-center"
-                    >
-                      <span className="hidden sm:inline">View Details</span>
-                      <span className="sm:hidden">Details</span>
-                    </button>
-                  </div>
 
-                  {result.actualUsage ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
-                        <div className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
-                          Total Calls
-                        </div>
-                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text">
-                          {result.actualUsage.totalCalls.toLocaleString()}
-                        </div>
-                      </div>
-                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-success/10 border-l-4 border-success-500">
-                        <div className="text-xs sm:text-sm font-display font-semibold text-success-700 dark:text-success-300">
-                          Avg Cost
-                        </div>
-                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-success-600 dark:text-success-400">
-                          ${result.actualUsage.avgCost.toFixed(4)}
-                        </div>
-                      </div>
-                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
-                        <div className="text-xs sm:text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
-                          Avg Response Time
-                        </div>
-                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
-                          {result.actualUsage.avgResponseTime.toFixed(0)}ms
-                        </div>
-                      </div>
-                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-danger/10 border-l-4 border-danger-500">
-                        <div className="text-xs sm:text-sm font-display font-semibold text-danger-700 dark:text-danger-300">
-                          Error Rate
-                        </div>
-                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-danger-600 dark:text-danger-400">
-                          {result.actualUsage.errorRate.toFixed(2)}%
-                        </div>
-                      </div>
-                    </div>
-                  ) : isRealTime ? (
-                    <div className="space-y-4">
-                      {/* Row 2: 4-column metric grid */}
+                    {result.actualUsage ? (
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                          <div className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
+                            Total Calls
+                          </div>
+                          <div className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text">
+                            {result.actualUsage.totalCalls.toLocaleString()}
+                          </div>
+                        </div>
                         <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-success/10 border-l-4 border-success-500">
                           <div className="text-xs sm:text-sm font-display font-semibold text-success-700 dark:text-success-300">
-                            Actual Cost
+                            Avg Cost
                           </div>
-                          <div className="text-lg sm:text-xl font-display font-bold text-success-600 dark:text-success-400">
-                            ${actualCost.toFixed(4)}
+                          <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-success-600 dark:text-success-400">
+                            ${result.actualUsage.avgCost.toFixed(4)}
                           </div>
                         </div>
                         <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
                           <div className="text-xs sm:text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
-                            Latency
+                            Avg Response Time
                           </div>
-                          <div className="text-lg sm:text-xl font-display font-bold text-accent-600 dark:text-accent-400">
-                            {latency.toLocaleString()}ms
-                          </div>
-                        </div>
-                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
-                          <div className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
-                            Input Tokens
-                          </div>
-                          <div className="text-lg sm:text-xl font-display font-bold gradient-text">
-                            {inputTokens.toLocaleString()}
+                          <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
+                            {result.actualUsage.avgResponseTime.toFixed(0)}ms
                           </div>
                         </div>
-                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
-                          <div className="text-xs sm:text-sm font-display font-semibold text-secondary-700 dark:text-secondary-300">
-                            Output Tokens
+                        <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-danger/10 border-l-4 border-danger-500">
+                          <div className="text-xs sm:text-sm font-display font-semibold text-danger-700 dark:text-danger-300">
+                            Error Rate
                           </div>
-                          <div className="text-lg sm:text-xl font-display font-bold text-secondary-600 dark:text-secondary-400">
-                            {outputTokens.toLocaleString()}
+                          <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-danger-600 dark:text-danger-400">
+                            {result.actualUsage.errorRate.toFixed(2)}%
                           </div>
                         </div>
                       </div>
-
-                      {/* Row 3: Pricing rates ($/1M tokens) */}
-                      <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                        <div className="glass rounded-xl p-3 bg-gradient-primary/10 border-l-4 border-primary-500">
-                          <div className="text-xs font-display font-semibold text-primary-700 dark:text-primary-300">
-                            Input Rate
+                    ) : isRealTime ? (
+                      <div className="space-y-4">
+                        {/* Row 2: 4-column metric grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                          <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                            <div className="text-xs sm:text-sm font-display font-semibold text-success-700 dark:text-success-300">
+                              Actual Cost
+                            </div>
+                            <div className="text-lg sm:text-xl font-display font-bold text-success-600 dark:text-success-400">
+                              ${actualCost.toFixed(4)}
+                            </div>
                           </div>
-                          <div className="text-sm font-display font-bold gradient-text">
-                            $
-                            {result.costBreakdown?.inputTokens
-                              ? (
+                          <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                            <div className="text-xs sm:text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
+                              Latency
+                            </div>
+                            <div className="text-lg sm:text-xl font-display font-bold text-accent-600 dark:text-accent-400">
+                              {latency.toLocaleString()}ms
+                            </div>
+                          </div>
+                          <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                            <div className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
+                              Input Tokens
+                            </div>
+                            <div className="text-lg sm:text-xl font-display font-bold gradient-text">
+                              {inputTokens.toLocaleString()}
+                            </div>
+                          </div>
+                          <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
+                            <div className="text-xs sm:text-sm font-display font-semibold text-secondary-700 dark:text-secondary-300">
+                              Output Tokens
+                            </div>
+                            <div className="text-lg sm:text-xl font-display font-bold text-secondary-600 dark:text-secondary-400">
+                              {outputTokens.toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Row 3: Pricing rates ($/1M tokens) */}
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                          <div className="glass rounded-xl p-3 bg-gradient-primary/10 border-l-4 border-primary-500">
+                            <div className="text-xs font-display font-semibold text-primary-700 dark:text-primary-300">
+                              Input Rate
+                            </div>
+                            <div className="text-sm font-display font-bold gradient-text">
+                              $
+                              {result.costBreakdown?.inputTokens
+                                ? (
                                   (result.costBreakdown.inputCost /
                                     result.costBreakdown.inputTokens) *
                                   1_000_000
                                 ).toFixed(2)
-                              : getModelPricing(
-                                    result.provider,
-                                    result.model,
-                                  )?.input?.toFixed(2) ?? "N/A"}
-                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
-                              /1M tokens
-                            </span>
+                                : getModelPricing(
+                                  result.provider,
+                                  result.model,
+                                )?.input?.toFixed(2) ?? "N/A"}
+                              <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                                /1M tokens
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="glass rounded-xl p-3 bg-gradient-success/10 border-l-4 border-success-500">
-                          <div className="text-xs font-display font-semibold text-success-700 dark:text-success-300">
-                            Output Rate
-                          </div>
-                          <div className="text-sm font-display font-bold text-success-600 dark:text-success-400">
-                            $
-                            {result.costBreakdown?.outputTokens
-                              ? (
+                          <div className="glass rounded-xl p-3 bg-gradient-success/10 border-l-4 border-success-500">
+                            <div className="text-xs font-display font-semibold text-success-700 dark:text-success-300">
+                              Output Rate
+                            </div>
+                            <div className="text-sm font-display font-bold text-success-600 dark:text-success-400">
+                              $
+                              {result.costBreakdown?.outputTokens
+                                ? (
                                   (result.costBreakdown.outputCost /
                                     result.costBreakdown.outputTokens) *
                                   1_000_000
                                 ).toFixed(2)
-                              : getModelPricing(
-                                    result.provider,
-                                    result.model,
-                                  )?.output?.toFixed(2) ?? "N/A"}
-                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
-                              /1M tokens
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Row 4: Criteria score progress bars */}
-                      {Object.keys(criteriaScores).length > 0 && (
-                        <div className="space-y-2">
-                          <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                            Evaluation Criteria
-                          </div>
-                          <div className="space-y-2">
-                            {Object.entries(criteriaScores).map(
-                              ([criterion, score]) => (
-                                <div
-                                  key={criterion}
-                                  className="flex items-center gap-2"
-                                >
-                                  <span className="text-xs font-body capitalize w-24 sm:w-28 truncate">
-                                    {criterion.replace(/_/g, " ")}
-                                  </span>
-                                  <div className="flex-1 h-2 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-full overflow-hidden">
-                                    <div
-                                      className="h-full bg-primary-500 rounded-full transition-all duration-500"
-                                      style={{
-                                        width: `${Math.min(
-                                          100,
-                                          Math.max(0, score),
-                                        )}%`,
-                                      }}
-                                    />
-                                  </div>
-                                  <span className="text-xs font-display font-semibold w-10 text-right">
-                                    {score}%
-                                  </span>
-                                </div>
-                              ),
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Row 5: Model response - collapsible */}
-                      {(result.response ?? result.bedrockOutput) && (
-                        <div className="mt-4 pt-4 border-t border-primary-200/30">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setExpandedResponseIndex(
-                                expandedResponseIndex === index ? null : index,
-                              )
-                            }
-                            className="flex items-center gap-2 w-full text-left text-sm font-display font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
-                          >
-                            <MessageSquare className="w-4 h-4" />
-                            {expandedResponseIndex === index
-                              ? "Hide model response"
-                              : "View model response"}
-                            {expandedResponseIndex === index ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
-                          </button>
-                          {expandedResponseIndex === index && (
-                            <div className="mt-2 max-h-48 overflow-y-auto rounded-lg border border-primary-200/30 bg-light-bg-100 dark:bg-dark-bg-100 p-4">
-                              <pre className="text-xs text-secondary-700 dark:text-secondary-300 whitespace-pre-wrap font-sans">
-                                {result.response ?? result.bedrockOutput}
-                              </pre>
+                                : getModelPricing(
+                                  result.provider,
+                                  result.model,
+                                )?.output?.toFixed(2) ?? "N/A"}
+                              <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                                /1M tokens
+                              </span>
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {/* Pricing Information - legacy static comparison */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-                        <div className="glass rounded-xl p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
-                          <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
-                            Input Cost
-                          </div>
-                          <div className="text-lg font-display font-bold gradient-text">
-                            $
-                            {(() => {
-                              const pricing = result.pricing?.inputCost
-                                ? {
-                                  input: result.pricing.inputCost * 1000000,
-                                  output: result.pricing.outputCost || 0,
-                                }
-                                : getModelPricing(
-                                  result.provider,
-                                  result.model,
-                                );
-                              return pricing?.input
-                                ? pricing.input.toFixed(2)
-                                : "N/A";
-                            })()}
-                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
                           </div>
                         </div>
-                        <div className="glass rounded-xl p-4 bg-gradient-success/10 border-l-4 border-success-500">
-                          <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300">
-                            Output Cost
-                          </div>
-                          <div className="text-lg font-display font-bold text-success-600 dark:text-success-400">
-                            $
-                            {(() => {
-                              const pricing = result.pricing?.outputCost
-                                ? {
-                                  input: result.pricing.inputCost || 0,
-                                  output: result.pricing.outputCost * 1000000,
-                                }
-                                : getModelPricing(
-                                  result.provider,
-                                  result.model,
-                                );
-                              return pricing?.output
-                                ? pricing.output.toFixed(2)
-                                : "N/A";
-                            })()}
-                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
-                          </div>
-                        </div>
-                        <div className="glass rounded-xl p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
-                          <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
-                            Est. Cost/1K
-                          </div>
-                          <div className="text-lg font-display font-bold text-accent-600 dark:text-accent-400">
-                            ${result.estimatedCostPer1K?.toFixed(4) || "N/A"}
-                          </div>
-                        </div>
-                        <div className="glass rounded-xl p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
-                          <div className="text-sm font-display font-semibold text-secondary-700 dark:text-secondary-300">
-                            Context Window
-                          </div>
-                          <div className="text-lg font-display font-bold text-secondary-600 dark:text-secondary-400">
-                            {result.pricing?.contextWindow?.toLocaleString() ||
-                              "N/A"}{" "}
-                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">tokens</span>
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* Analysis Strengths and Considerations */}
-                      {result.analysis &&
-                        (result.analysis.strengths?.length > 0 ||
-                          result.analysis.considerations?.length > 0) && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {result.analysis.strengths?.length > 0 && (
-                              <div className="glass p-4 bg-gradient-success/10 border-l-4 border-success-500">
-                                <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300 mb-3">
-                                  Strengths
-                                </div>
-                                <ul className="text-sm font-body text-success-600 dark:text-success-400 space-y-2">
-                                  {result.analysis.strengths.map(
-                                    (strength: string, i: number) => (
-                                      <li key={i} className="flex items-start">
-                                        <Check className="w-4 h-4 text-success-500 mr-2 flex-shrink-0 mt-0.5" />
-                                        {strength}
-                                      </li>
-                                    ),
-                                  )}
-                                </ul>
-                              </div>
-                            )}
-                            {result.analysis.considerations?.length > 0 && (
-                              <div className="glass p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
-                                <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300 mb-3">
-                                  Considerations
-                                </div>
-                                <ul className="text-sm font-body text-accent-600 dark:text-accent-400 space-y-2">
-                                  {result.analysis.considerations.map(
-                                    (consideration: string, i: number) => (
-                                      <li key={i} className="flex items-start">
-                                        <AlertTriangle className="w-4 h-4 text-accent-500 dark:text-accent-400 mr-2 flex-shrink-0 mt-0.5" />
-                                        <span>{consideration}</span>
-                                      </li>
-                                    ),
-                                  )}
-                                </ul>
+                        {/* Row 4: Criteria score progress bars */}
+                        {Object.keys(criteriaScores).length > 0 && (
+                          <div className="space-y-2">
+                            <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                              Evaluation Criteria
+                            </div>
+                            <div className="space-y-2">
+                              {Object.entries(criteriaScores).map(
+                                ([criterion, score]) => (
+                                  <div
+                                    key={criterion}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <span className="text-xs font-body capitalize w-24 sm:w-28 truncate">
+                                      {criterion.replace(/_/g, " ")}
+                                    </span>
+                                    <div className="flex-1 h-2 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-full overflow-hidden">
+                                      <div
+                                        className="h-full bg-primary-500 rounded-full transition-all duration-500"
+                                        style={{
+                                          width: `${Math.min(
+                                            100,
+                                            Math.max(0, score),
+                                          )}%`,
+                                        }}
+                                      />
+                                    </div>
+                                    <span className="text-xs font-display font-semibold w-10 text-right">
+                                      {score}%
+                                    </span>
+                                  </div>
+                                ),
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Row 5: Model response - collapsible */}
+                        {(result.response ?? result.bedrockOutput) && (
+                          <div className="mt-4 pt-4 border-t border-primary-200/30">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setExpandedResponseIndex(
+                                  expandedResponseIndex === index ? null : index,
+                                )
+                              }
+                              className="flex items-center gap-2 w-full text-left text-sm font-display font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                            >
+                              <MessageSquare className="w-4 h-4" />
+                              {expandedResponseIndex === index
+                                ? "Hide model response"
+                                : "View model response"}
+                              {expandedResponseIndex === index ? (
+                                <ChevronUp className="w-4 h-4" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4" />
+                              )}
+                            </button>
+                            {expandedResponseIndex === index && (
+                              <div className="mt-2 max-h-48 overflow-y-auto rounded-lg border border-primary-200/30 bg-light-bg-100 dark:bg-dark-bg-100 p-4">
+                                <pre className="text-xs text-secondary-700 dark:text-secondary-300 whitespace-pre-wrap font-sans">
+                                  {result.response ?? result.bedrockOutput}
+                                </pre>
                               </div>
                             )}
                           </div>
                         )}
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {/* Pricing Information - legacy static comparison */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                          <div className="glass rounded-xl p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                            <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
+                              Input Cost
+                            </div>
+                            <div className="text-lg font-display font-bold gradient-text">
+                              $
+                              {(() => {
+                                const pricing = result.pricing?.inputCost
+                                  ? {
+                                    input: result.pricing.inputCost * 1000000,
+                                    output: result.pricing.outputCost || 0,
+                                  }
+                                  : getModelPricing(
+                                    result.provider,
+                                    result.model,
+                                  );
+                                return pricing?.input
+                                  ? pricing.input.toFixed(2)
+                                  : "N/A";
+                              })()}
+                              <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
+                            </div>
+                          </div>
+                          <div className="glass rounded-xl p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                            <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300">
+                              Output Cost
+                            </div>
+                            <div className="text-lg font-display font-bold text-success-600 dark:text-success-400">
+                              $
+                              {(() => {
+                                const pricing = result.pricing?.outputCost
+                                  ? {
+                                    input: result.pricing.inputCost || 0,
+                                    output: result.pricing.outputCost * 1000000,
+                                  }
+                                  : getModelPricing(
+                                    result.provider,
+                                    result.model,
+                                  );
+                                return pricing?.output
+                                  ? pricing.output.toFixed(2)
+                                  : "N/A";
+                              })()}
+                              <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
+                            </div>
+                          </div>
+                          <div className="glass rounded-xl p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                            <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
+                              Est. Cost/1K
+                            </div>
+                            <div className="text-lg font-display font-bold text-accent-600 dark:text-accent-400">
+                              ${result.estimatedCostPer1K?.toFixed(4) || "N/A"}
+                            </div>
+                          </div>
+                          <div className="glass rounded-xl p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
+                            <div className="text-sm font-display font-semibold text-secondary-700 dark:text-secondary-300">
+                              Context Window
+                            </div>
+                            <div className="text-lg font-display font-bold text-secondary-600 dark:text-secondary-400">
+                              {result.pricing?.contextWindow?.toLocaleString() ||
+                                "N/A"}{" "}
+                              <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">tokens</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Analysis Strengths and Considerations */}
+                        {result.analysis &&
+                          (result.analysis.strengths?.length > 0 ||
+                            result.analysis.considerations?.length > 0) && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {result.analysis.strengths?.length > 0 && (
+                                <div className="glass p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                                  <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300 mb-3">
+                                    Strengths
+                                  </div>
+                                  <ul className="text-sm font-body text-success-600 dark:text-success-400 space-y-2">
+                                    {result.analysis.strengths.map(
+                                      (strength: string, i: number) => (
+                                        <li key={i} className="flex items-start">
+                                          <Check className="w-4 h-4 text-success-500 mr-2 flex-shrink-0 mt-0.5" />
+                                          {strength}
+                                        </li>
+                                      ),
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+                              {result.analysis.considerations?.length > 0 && (
+                                <div className="glass p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                                  <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300 mb-3">
+                                    Considerations
+                                  </div>
+                                  <ul className="text-sm font-body text-accent-600 dark:text-accent-400 space-y-2">
+                                    {result.analysis.considerations.map(
+                                      (consideration: string, i: number) => (
+                                        <li key={i} className="flex items-start">
+                                          <AlertTriangle className="w-4 h-4 text-accent-500 dark:text-accent-400 mr-2 flex-shrink-0 mt-0.5" />
+                                          <span>{consideration}</span>
+                                        </li>
+                                      ),
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
 
                         {/* Model response - collapsible (legacy branch) */}
                         {(result.response ?? result.bedrockOutput) && (
@@ -2221,9 +2220,9 @@ const ModelComparison: React.FC = () => {
                             )}
                           </div>
                         )}
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
 
@@ -2515,19 +2514,19 @@ const ModelComparison: React.FC = () => {
                 {/* Strengths / Weaknesses (top-level) */}
                 {(selectedResult.aiEvaluation?.strengths?.length ??
                   0) > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-                      Strengths
-                    </h4>
-                    <ul className="text-sm text-gray-800 dark:text-gray-200 space-y-1 list-disc list-inside">
-                      {selectedResult.aiEvaluation?.strengths?.map(
-                        (s, i) => (
-                          <li key={i}>{s}</li>
-                        ),
-                      )}
-                    </ul>
-                  </div>
-                )}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                        Strengths
+                      </h4>
+                      <ul className="text-sm text-gray-800 dark:text-gray-200 space-y-1 list-disc list-inside">
+                        {selectedResult.aiEvaluation?.strengths?.map(
+                          (s, i) => (
+                            <li key={i}>{s}</li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  )}
                 {(selectedResult.aiEvaluation?.weaknesses?.length ?? 0) > 0 && (
                   <div>
                     <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
