@@ -76,8 +76,16 @@ export function DetailBreakdownModal({ isOpen, onClose, usage, onSimulate }: Det
                       <Dialog.Title className="text-lg font-semibold font-display gradient-text-primary">
                         Usage Details
                       </Dialog.Title>
-                      <p className="text-sm text-secondary-600 dark:text-secondary-400">
-                        {usage.service} • {usage.model}
+                      <p className="text-sm text-secondary-600 dark:text-secondary-400 flex items-center gap-2">
+                        <span>{usage.service} • {usage.model}</span>
+                        {usage.tokensEstimated && (
+                          <span
+                            title="Token counts came from a local estimator, not the provider's response. Cost is approximate."
+                            className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300/30"
+                          >
+                            Estimated
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -178,7 +186,17 @@ export function DetailBreakdownModal({ isOpen, onClose, usage, onSimulate }: Det
 
                           {/* Token Breakdown */}
                           <div className="p-4 rounded-lg border border-primary-200/20 dark:border-primary-600/20 bg-white/30 dark:bg-dark-card/30">
-                            <h4 className="font-semibold text-secondary-900 dark:text-white mb-3">Token Usage</h4>
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold text-secondary-900 dark:text-white">Token Usage</h4>
+                              {usage.tokensEstimated && (
+                                <span
+                                  title="No usage block on the provider response — counts come from a local tokenizer."
+                                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300/30"
+                                >
+                                  Estimated
+                                </span>
+                              )}
+                            </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <div className="text-center">
                                 <p className="text-sm text-secondary-600 dark:text-secondary-400">Input Tokens</p>
@@ -193,6 +211,54 @@ export function DetailBreakdownModal({ isOpen, onClose, usage, onSimulate }: Det
                                 <p className="text-xl font-bold text-secondary-900 dark:text-white">{usage.totalTokens.toLocaleString()}</p>
                               </div>
                             </div>
+
+                            {/* Anthropic prompt cache + OpenAI reasoning breakdown */}
+                            {(usage.cacheReadInputTokens ||
+                              usage.cacheCreationInputTokens ||
+                              usage.reasoningTokens) && (
+                              <div className="mt-4 pt-3 border-t border-primary-200/20 dark:border-primary-600/20 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                                {usage.cacheReadInputTokens !== undefined && usage.cacheReadInputTokens > 0 && (
+                                  <div className="flex items-center justify-between md:flex-col md:items-start">
+                                    <span
+                                      title="Anthropic prompt-cache reads — billed at ~0.1x the standard input rate."
+                                      className="text-xs text-emerald-700 dark:text-emerald-300"
+                                    >
+                                      Cache Hits
+                                    </span>
+                                    <span className="font-medium text-emerald-700 dark:text-emerald-300">
+                                      {usage.cacheReadInputTokens.toLocaleString()}
+                                    </span>
+                                  </div>
+                                )}
+                                {usage.cacheCreationInputTokens !== undefined && usage.cacheCreationInputTokens > 0 && (
+                                  <div className="flex items-center justify-between md:flex-col md:items-start">
+                                    <span
+                                      title="Anthropic prompt-cache writes — billed at ~1.25x the standard input rate."
+                                      className="text-xs text-blue-700 dark:text-blue-300"
+                                    >
+                                      Cache Writes
+                                    </span>
+                                    <span className="font-medium text-blue-700 dark:text-blue-300">
+                                      {usage.cacheCreationInputTokens.toLocaleString()}
+                                    </span>
+                                  </div>
+                                )}
+                                {usage.reasoningTokens !== undefined && usage.reasoningTokens > 0 && (
+                                  <div className="flex items-center justify-between md:flex-col md:items-start">
+                                    <span
+                                      title="OpenAI o1/o3 reasoning tokens — counted within Output Tokens, billed as output."
+                                      className="text-xs text-purple-700 dark:text-purple-300"
+                                    >
+                                      Reasoning Tokens
+                                    </span>
+                                    <span className="font-medium text-purple-700 dark:text-purple-300">
+                                      {usage.reasoningTokens.toLocaleString()}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
                             {detailedContext?.performanceAnalysis && (
                               <div className="mt-3 text-sm text-secondary-600 dark:text-secondary-400">
                                 Cost per token: ${detailedContext.performanceAnalysis.tokenBreakdown.costPerToken.toFixed(8)}
@@ -229,7 +295,17 @@ export function DetailBreakdownModal({ isOpen, onClose, usage, onSimulate }: Det
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Cost Analysis */}
                             <div className="p-4 rounded-lg border border-primary-200/20 dark:border-primary-600/20 bg-white/30 dark:bg-dark-card/30">
-                              <h4 className="font-semibold text-secondary-900 dark:text-white mb-4">Cost Breakdown</h4>
+                              <h4 className="font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+                                Cost Breakdown
+                                {detailedContext.performanceAnalysis.tokenBreakdown.estimated && (
+                                  <span
+                                    title="Costs are derived from estimated token counts."
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300/30"
+                                  >
+                                    Approx.
+                                  </span>
+                                )}
+                              </h4>
                               <div className="space-y-3">
                                 <div className="flex justify-between">
                                   <span className="text-sm text-secondary-600 dark:text-secondary-400">Input Cost</span>
@@ -243,6 +319,20 @@ export function DetailBreakdownModal({ isOpen, onClose, usage, onSimulate }: Det
                                     ${detailedContext.performanceAnalysis.costAnalysis.costBreakdown.outputCost.toFixed(6)}
                                   </span>
                                 </div>
+                                {detailedContext.performanceAnalysis.costAnalysis.costBreakdown.cacheSavings !== undefined &&
+                                  detailedContext.performanceAnalysis.costAnalysis.costBreakdown.cacheSavings > 0 && (
+                                    <div className="flex justify-between text-emerald-700 dark:text-emerald-300">
+                                      <span
+                                        title="Estimated savings from Anthropic prompt-cache reads vs paying the full input rate."
+                                        className="text-sm"
+                                      >
+                                        Prompt-Cache Savings
+                                      </span>
+                                      <span className="text-sm font-medium">
+                                        −${detailedContext.performanceAnalysis.costAnalysis.costBreakdown.cacheSavings.toFixed(6)}
+                                      </span>
+                                    </div>
+                                  )}
                                 <div className="border-t border-primary-200/20 dark:border-primary-600/20 pt-3">
                                   <div className="flex justify-between">
                                     <span className="font-medium text-secondary-900 dark:text-white">Total</span>

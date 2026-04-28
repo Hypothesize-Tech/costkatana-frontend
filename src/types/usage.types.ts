@@ -11,6 +11,14 @@ export interface Usage {
     promptTokens: number;
     completionTokens: number;
     totalTokens: number;
+    /** Anthropic prompt-cache hits (subset of promptTokens, billed at ~0.1x). */
+    cacheReadInputTokens?: number;
+    /** Anthropic prompt-cache writes (counted in promptTokens, billed at ~1.25x). */
+    cacheCreationInputTokens?: number;
+    /** OpenAI o1/o3 reasoning tokens (subset of completionTokens). */
+    reasoningTokens?: number;
+    /** True when token counts came from a local estimator instead of the provider's response. */
+    tokensEstimated?: boolean;
     cost: number;
     responseTime: number;
     metadata?: Record<string, any>;
@@ -176,6 +184,10 @@ export interface TrackUsageData {
     promptTokens: number;
     completionTokens: number;
     totalTokens: number;
+    cacheReadInputTokens?: number;
+    cacheCreationInputTokens?: number;
+    reasoningTokens?: number;
+    tokensEstimated?: boolean;
     cost: number;
     responseTime: number;
     metadata?: Record<string, any>;
@@ -274,6 +286,10 @@ export interface PerformanceAnalysis {
         completionTokens: number;
         totalTokens: number;
         costPerToken: number;
+        cacheReadInputTokens?: number;
+        cacheCreationInputTokens?: number;
+        reasoningTokens?: number;
+        estimated?: boolean;
     };
     responseMetrics: {
         responseTime: number;
@@ -286,6 +302,8 @@ export interface PerformanceAnalysis {
         costBreakdown: {
             inputCost: number;
             outputCost: number;
+            /** Estimated savings from Anthropic prompt-cache reads (vs paying full input rate). */
+            cacheSavings?: number;
         };
         optimizationApplied: boolean;
         optimizationId?: string;

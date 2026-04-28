@@ -259,6 +259,10 @@ class UsageService {
                 promptTokens: item.promptTokens || 0,
                 completionTokens: item.completionTokens || 0,
                 totalTokens: item.totalTokens || (item.promptTokens + item.completionTokens) || 0,
+                cacheReadInputTokens: item.cacheReadInputTokens,
+                cacheCreationInputTokens: item.cacheCreationInputTokens,
+                reasoningTokens: item.reasoningTokens,
+                tokensEstimated: item.tokensEstimated ?? false,
                 cost: item.cost || 0,
                 responseTime: item.responseTime || 0,
                 metadata: {
@@ -1185,12 +1189,27 @@ class UsageService {
             }
 
             // Calculate performance analysis (cached computation)
+            const safeTotal = usage.totalTokens || 1;
+            const inputShare = (usage.promptTokens / safeTotal) * usage.cost;
+            const outputShare = (usage.completionTokens / safeTotal) * usage.cost;
+            // Anthropic prompt-cache reads are billed at ~0.1x the standard
+            // input rate. Estimate the savings vs paying full price for those
+            // tokens — informational only, real savings come from the
+            // backend's pricing registry.
+            const cacheSavings = usage.cacheReadInputTokens
+                ? ((usage.cacheReadInputTokens / safeTotal) * usage.cost) * 0.9
+                : undefined;
+
             detailedContext.performanceAnalysis = {
                 tokenBreakdown: {
                     promptTokens: usage.promptTokens,
                     completionTokens: usage.completionTokens,
                     totalTokens: usage.totalTokens,
-                    costPerToken: usage.cost / usage.totalTokens,
+                    costPerToken: usage.cost / safeTotal,
+                    cacheReadInputTokens: usage.cacheReadInputTokens,
+                    cacheCreationInputTokens: usage.cacheCreationInputTokens,
+                    reasoningTokens: usage.reasoningTokens,
+                    estimated: usage.tokensEstimated,
                 },
                 responseMetrics: {
                     responseTime: usage.responseTime,
@@ -1201,8 +1220,9 @@ class UsageService {
                 costAnalysis: {
                     totalCost: usage.cost,
                     costBreakdown: {
-                        inputCost: (usage.promptTokens / usage.totalTokens) * usage.cost,
-                        outputCost: (usage.completionTokens / usage.totalTokens) * usage.cost,
+                        inputCost: inputShare,
+                        outputCost: outputShare,
+                        cacheSavings,
                     },
                     optimizationApplied: usage.optimizationApplied,
                     optimizationId: usage.optimizationId,
