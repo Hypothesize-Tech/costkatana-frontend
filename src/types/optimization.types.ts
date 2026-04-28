@@ -23,8 +23,6 @@ export interface OptimizationRequestTracking {
     tlsHandshakeTime?: number;
   };
   payload?: {
-    requestBody?: unknown;
-    responseBody?: unknown;
     requestSize?: number;
     responseSize?: number;
     contentType?: string;

@@ -8,7 +8,6 @@ import {
   GlobeAltIcon,
   ComputerDesktopIcon,
   DocumentTextIcon,
-  ArrowRightIcon,
   Squares2X2Icon,
   CurrencyDollarIcon,
   ChartBarIcon,
@@ -63,10 +62,11 @@ export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDeta
     }
   }, [refetchDetailedContext]);
 
-  // Backend sends full requestTracking (headers, payload, performance, etc.) - use permissive type for display
+  // Backend sends requestTracking (headers, payload metadata, performance, etc.) - use permissive type for display.
+  // Request/response bodies are intentionally not captured.
   const requestTracking = usage.requestTracking as {
     headers?: { request?: Record<string, string>; response?: Record<string, string> };
-    payload?: { requestBody?: unknown; responseBody?: unknown; requestSize?: number; responseSize?: number; contentType?: string; compressionRatio?: number };
+    payload?: { requestSize?: number; responseSize?: number; contentType?: string; compressionRatio?: number };
     performance?: { totalRoundTripTime?: number; networkTime?: number; serverProcessingTime?: number; dataTransferEfficiency?: number };
     clientInfo?: { ip?: string; userAgent?: string; geoLocation?: { city?: string; region?: string; country?: string }; environment?: string; sdkVersion?: string };
     networking?: { serverEndpoint?: string; serverFullUrl?: string; clientOrigin?: string; protocol?: string; secure?: boolean; dnsLookupTime?: number; tcpConnectTime?: number };
@@ -94,19 +94,6 @@ export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDeta
     return `${(ms / 1000).toFixed(1)} s`;
   };
 
-  const formatJsonOrString = (value: unknown): string => {
-    if (value == null) return '—';
-    if (typeof value === 'string') {
-      try {
-        const parsed = JSON.parse(value);
-        return JSON.stringify(parsed, null, 2);
-      } catch {
-        return value;
-      }
-    }
-    return JSON.stringify(value, null, 2);
-  };
-
   const renderHeadersTable = (headers: Record<string, string> | undefined, label: string) => {
     if (!headers || Object.keys(headers).length === 0) return null;
     return (
@@ -130,19 +117,6 @@ export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDeta
             </tbody>
           </table>
         </div>
-      </div>
-    );
-  };
-
-  const renderBodyBlock = (body: unknown, label: string) => {
-    const str = formatJsonOrString(body);
-    if (str === '—') return null;
-    return (
-      <div className="mt-2">
-        <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300 mb-1">{label}</p>
-        <pre className="rounded-lg border border-primary-200/30 dark:border-primary-700 bg-primary-50/30 dark:bg-primary-900/20 p-3 text-xs font-mono text-secondary-900 dark:text-white overflow-x-auto max-h-48 overflow-y-auto whitespace-pre-wrap break-words glass">
-          {str}
-        </pre>
       </div>
     );
   };
@@ -616,7 +590,7 @@ export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDeta
                       {!requestTracking && (
                         <div className="rounded-xl p-4 border border-primary-200/30 dark:border-primary-700 glass bg-primary-50/30 dark:bg-primary-900/20">
                           <p className="text-sm text-secondary-700 dark:text-secondary-300">
-                            No headers, request body, or response body were captured for this request. It was tracked via the simple usage API. Use comprehensive tracking (POST /usage/track-comprehensive) to capture full request/response and network details.
+                            No headers or network metadata were captured for this request. It was tracked via the simple usage API. Use comprehensive tracking (POST /usage/track-comprehensive) to capture headers and network details. Request and response bodies are not stored.
                           </p>
                         </div>
                       )}
@@ -634,18 +608,6 @@ export function RequestDetailsModal({ isOpen, onClose, usage, onFetchNetworkDeta
                             (!requestTracking.headers.response || Object.keys(requestTracking.headers.response).length === 0) && (
                               <p className="text-sm text-secondary-600 dark:text-secondary-300">No headers recorded.</p>
                             )}
-                        </div>
-                      )}
-
-                      {/* Request & Response Body */}
-                      {requestTracking?.payload && (requestTracking.payload.requestBody != null || requestTracking.payload.responseBody != null) && (
-                        <div className="rounded-xl p-4 border border-primary-200/30 dark:border-primary-700 glass bg-secondary-50/30 dark:bg-secondary-900/20">
-                          <div className="flex items-center gap-2 mb-3">
-                            <ArrowRightIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
-                            <h4 className="text-lg font-semibold font-display text-secondary-900 dark:text-white">Request & Response Body</h4>
-                          </div>
-                          {renderBodyBlock(requestTracking.payload.requestBody, 'Request body')}
-                          {renderBodyBlock(requestTracking.payload.responseBody, 'Response body')}
                         </div>
                       )}
 
