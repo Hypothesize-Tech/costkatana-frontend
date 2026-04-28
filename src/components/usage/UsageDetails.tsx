@@ -38,6 +38,22 @@ export const UsageDetails: React.FC<UsageDetailsProps> = ({
                 {usage.service}
               </span>
               <span className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">{usage.model}</span>
+              {usage.tokensEstimated && (
+                <span
+                  title="Token counts came from a local estimator, not the provider's response."
+                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300/30"
+                >
+                  Estimated
+                </span>
+              )}
+              {(usage.cacheReadInputTokens ?? 0) > 0 && (
+                <span
+                  title={`${usage.cacheReadInputTokens?.toLocaleString()} prompt-cache hit tokens (Anthropic, billed at ~0.1x).`}
+                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 border border-emerald-300/30"
+                >
+                  Cache Hit
+                </span>
+              )}
               <span className="text-xs text-secondary-500 dark:text-secondary-400">
                 {formatDate(usage.createdAt)}
               </span>

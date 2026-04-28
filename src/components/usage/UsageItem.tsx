@@ -132,10 +132,26 @@ export const UsageItem: React.FC<UsageItemProps> = ({
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="text-sm text-secondary-900 dark:text-white">
+          <div className="text-sm text-secondary-900 dark:text-white flex items-center gap-1">
             {usage.totalTokens.toLocaleString()}
             {usage.totalTokens > 4000 && (
-              <ExclamationCircleIcon className="inline-block ml-1 w-4 h-4 text-warning-500" />
+              <ExclamationCircleIcon className="inline-block w-4 h-4 text-warning-500" />
+            )}
+            {usage.tokensEstimated && (
+              <span
+                title="Token counts came from a local estimator, not the provider's response."
+                className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-300/30"
+              >
+                EST
+              </span>
+            )}
+            {(usage.cacheReadInputTokens ?? 0) > 0 && (
+              <span
+                title={`${usage.cacheReadInputTokens?.toLocaleString()} prompt-cache hit tokens (billed at ~0.1x).`}
+                className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 border border-emerald-300/30"
+              >
+                CACHED
+              </span>
             )}
           </div>
           <div className="text-xs text-secondary-500 dark:text-secondary-400">
@@ -144,8 +160,12 @@ export const UsageItem: React.FC<UsageItemProps> = ({
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center text-sm text-secondary-900 dark:text-white">
+          <div
+            className="flex items-center text-sm text-secondary-900 dark:text-white"
+            title={usage.tokensEstimated ? 'Cost is approximate (token counts estimated).' : undefined}
+          >
             <CurrencyDollarIcon className="mr-1 w-4 h-4 text-success-500" />
+            {usage.tokensEstimated && '~'}
             {formatCurrency(usage.cost)}
             {usage.cost > 0.5 && (
               <ExclamationCircleIcon className="ml-1 w-4 h-4 text-warning-500" />
