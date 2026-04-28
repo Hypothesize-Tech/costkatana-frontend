@@ -76,8 +76,6 @@ export interface Usage {
             requestSize: number;
             responseSize: number;
             compressionRatio?: number;
-            requestBody?: string;
-            responseBody?: string;
         };
         performance: {
             totalTime: number;

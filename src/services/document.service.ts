@@ -246,7 +246,24 @@ class DocumentService {
             const response = await apiClient.get(
                 `/ingestion/documents/${documentId}/preview`
             );
-            return response.data.data;
+            // Backend returns { content, chunksCount, fileName } — normalize to
+            // the `DocumentPreview` shape the preview modal expects. Without
+            // this, `preview.preview` reads as undefined and the modal body
+            // renders empty even though the content was fetched correctly.
+            const raw = response.data.data ?? {};
+            const inferredType =
+                raw.fileType ||
+                (typeof raw.fileName === 'string'
+                    ? raw.fileName.split('.').pop()?.toLowerCase() ?? ''
+                    : '');
+            return {
+                documentId,
+                fileName: raw.fileName ?? 'Unknown Document',
+                fileType: inferredType,
+                preview: raw.preview ?? raw.content ?? '',
+                totalChunks: raw.totalChunks ?? raw.chunksCount ?? 0,
+                previewChunks: raw.previewChunks ?? raw.chunksCount ?? 0,
+            };
         } catch (error: any) {
             console.error('Failed to fetch document preview:', error);
             throw new Error(

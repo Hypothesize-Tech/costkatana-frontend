@@ -282,7 +282,7 @@ class UsageService {
                 customerEmail: item.customerEmail,
                 createdAt: item.createdAt,
                 updatedAt: item.updatedAt,
-                // Comprehensive tracking (headers, request/response body, network)
+                // Comprehensive tracking (headers, network metadata) — bodies are not stored
                 requestTracking: item.requestTracking
             }));
 

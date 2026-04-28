@@ -3,6 +3,27 @@ import { UploadedFileResponse } from '../types/attachment.types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
+/**
+ * Shape returned by GET /files/all on the backend (see
+ * `costkatana-backend/src/modules/file-upload/file-upload.service.ts:53`).
+ * Used by FileLibraryPanel and the @file mention autocomplete.
+ */
+export interface LibraryFile {
+  id: string;
+  name: string;
+  size: number;
+  type: 'uploaded' | 'google' | 'document';
+  mimeType?: string;
+  fileType?: string;
+  url?: string;
+  uploadedAt: string | Date;
+  source: string;
+  conversationId?: string;
+  chunksCount?: number;
+  /** Application-level documentId (e.g. `doc_xxx`) for ingestion-pipeline rows. */
+  documentId?: string;
+}
+
 class FileUploadService {
   /**
    * Upload a file
@@ -87,10 +108,10 @@ class FileUploadService {
   /**
    * Get ALL user's files from all sources (uploaded, Google Drive, and documents)
    */
-  async getAllUserFiles(conversationId?: string): Promise<any[]> {
+  async getAllUserFiles(conversationId?: string): Promise<LibraryFile[]> {
     const token = localStorage.getItem('access_token');
 
-    const response = await axios.get<{ success: boolean; data: any[] }>(
+    const response = await axios.get<{ success: boolean; data: LibraryFile[] }>(
       `${API_BASE_URL}/files/all`,
       {
         params: { conversationId },

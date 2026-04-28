@@ -7,7 +7,6 @@ import {
   GlobeAltIcon,
   ComputerDesktopIcon,
   DocumentTextIcon,
-  ArrowRightIcon,
   Squares2X2Icon,
   ChartBarIcon,
   CircleStackIcon,
@@ -82,19 +81,6 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
     return `${(ms / 1000).toFixed(1)} s`;
   };
 
-  const formatJsonOrString = (value: unknown): string => {
-    if (value == null) return '—';
-    if (typeof value === 'string') {
-      try {
-        const parsed = JSON.parse(value);
-        return JSON.stringify(parsed, null, 2);
-      } catch {
-        return value;
-      }
-    }
-    return JSON.stringify(value, null, 2);
-  };
-
   const renderHeadersTable = (headers: Record<string, string> | undefined, label: string) => {
     if (!headers || Object.keys(headers).length === 0) return null;
     return (
@@ -118,19 +104,6 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
             </tbody>
           </table>
         </div>
-      </div>
-    );
-  };
-
-  const renderBodyBlock = (body: unknown, label: string) => {
-    const str = formatJsonOrString(body);
-    if (str === '—') return null;
-    return (
-      <div className="mt-2">
-        <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300 mb-1">{label}</p>
-        <pre className="rounded-lg border border-primary-200/30 dark:border-primary-700 bg-primary-50/30 dark:bg-primary-900/20 p-3 text-xs font-mono text-secondary-900 dark:text-white overflow-x-auto max-h-48 overflow-y-auto whitespace-pre-wrap break-words glass">
-          {str}
-        </pre>
       </div>
     );
   };
@@ -396,17 +369,6 @@ export function OptimizationDetailsModal({ isOpen, onClose, optimization }: Opti
                               </div>
                               {renderHeadersTable(rt.headers.request, 'Request headers')}
                               {renderHeadersTable(rt.headers.response, 'Response headers')}
-                            </div>
-                          )}
-
-                          {rt.payload && (rt.payload.requestBody != null || rt.payload.responseBody != null) && (
-                            <div className="rounded-xl p-4 border border-primary-200/30 dark:border-primary-700 glass bg-secondary-50/30 dark:bg-secondary-900/20">
-                              <div className="flex items-center gap-2 mb-3">
-                                <ArrowRightIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
-                                <h4 className="text-lg font-semibold font-display text-secondary-900 dark:text-white">Request & Response Body</h4>
-                              </div>
-                              {renderBodyBlock(rt.payload.requestBody, 'Request body')}
-                              {renderBodyBlock(rt.payload.responseBody, 'Response body')}
                             </div>
                           )}
 

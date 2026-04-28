@@ -1,5 +1,63 @@
-import apiClient, { chatApiClient } from "@/config/api";
+import apiClient, { chatApiClient, API_BASE_URL } from "@/config/api";
 import { MessageAttachment } from "../types/attachment.types";
+
+export interface ToolCallSource {
+  title: string;
+  url: string;
+  description?: string;
+}
+
+export interface StreamToolCallEvent {
+  id: string;
+  name: string;
+  input: unknown;
+  startedAt: string;
+}
+
+export interface StreamToolResultEvent {
+  id: string;
+  name: string;
+  output: { content: string };
+  sources?: ToolCallSource[];
+  status: 'success' | 'error';
+  durationMs: number;
+}
+
+export interface Citation {
+  id: string;
+  /** Index of the assistant text block this citation belongs to. */
+  textBlockIndex: number;
+  /** Char offsets of the citing span inside its text block. May be -1/-1
+   *  when the backend could not resolve the inline position; the renderer
+   *  then falls back to appending the marker at the end of the block. */
+  startOffset: number;
+  endOffset: number;
+  /** Exact text Claude copied from the source document. */
+  citedText: string;
+  document: {
+    index: number;
+    documentId?: string;
+    title: string;
+    url?: string;
+    sourceType: 'attachment' | 'upload' | 'rag';
+  };
+  location: {
+    type: 'page' | 'char' | 'chunk';
+    start: number;
+    end: number;
+  };
+}
+
+export interface StreamSendCallbacks {
+  onChunk?: (text: string) => void;
+  onReasoning?: (text: string) => void;
+  onReasoningDone?: () => void;
+  onToolCall?: (call: StreamToolCallEvent) => void;
+  onToolResult?: (result: StreamToolResultEvent) => void;
+  onCitation?: (citation: Citation) => void;
+  onDone?: () => void;
+  onError?: (err: Error) => void;
+}
 
 export interface ChatMessage {
   id: string;
@@ -21,6 +79,31 @@ export interface ChatMessage {
     latency?: number;
     tokenCount?: number;
   };
+  thinking?: {
+    content: string;
+    mode?: 'adaptive' | 'enabled';
+    effort?: 'low' | 'medium' | 'high' | 'max';
+    budgetTokens?: number;
+    durationMs?: number;
+  };
+  toolCalls?: Array<{
+    id: string;
+    name: string;
+    input?: unknown;
+    output?: { content: string; sources?: ToolCallSource[] };
+    status?: 'running' | 'success' | 'error';
+    startedAt?: string | Date;
+    finishedAt?: string | Date;
+    durationMs?: number;
+  }>;
+  sources?: ToolCallSource[];
+  /**
+   * Claude-native citations (Messages API `citations` feature). When present,
+   * the renderer paints inline numbered markers in the message content and
+   * shows a grouped citations panel below. Absent on messages that did not go
+   * through a citations-enabled request.
+   */
+  citations?: Citation[];
   mongodbSelectedViewType?: 'table' | 'json' | 'schema' | 'stats' | 'chart' | 'text' | 'error' | 'empty' | 'explain' | 'list';
   integrationSelectorData?: any; 
   mongodbIntegrationData?: any; 
@@ -98,6 +181,9 @@ export interface Conversation {
   };
 }
 
+export type ThinkingCapability = 'adaptive' | 'enabled' | 'none';
+export type ThinkingEffort = 'low' | 'medium' | 'high' | 'max';
+
 export interface AvailableModel {
   id: string;
   name: string;
@@ -109,6 +195,8 @@ export interface AvailableModel {
     output: number;
     unit: string;
   };
+  thinkingCapability?: ThinkingCapability;
+  supportsTools?: boolean;
 }
 
 export interface SendMessageRequest {
@@ -138,6 +226,14 @@ export interface SendMessageRequest {
     collectedParams: Record<string, unknown>;
     integration?: string;
   };
+  // Extended thinking (Claude on Bedrock)
+  thinking?: {
+    enabled: boolean;
+    effort?: ThinkingEffort;
+    budgetTokens?: number;
+  };
+  // Stream tokens from Bedrock (enables reasoning/reasoning_done SSE events)
+  stream?: boolean;
 }
 
 export interface SendMessageResponse {
@@ -148,16 +244,24 @@ export interface SendMessageResponse {
   latency: number;
   tokenCount: number;
   model: string;
-  thinking?: {
-    title: string;
-    steps: Array<{
-      step: number;
-      description: string;
-      reasoning: string;
-      outcome?: string;
-    }>;
-    summary?: string;
-  };
+  thinking?:
+    | {
+        title: string;
+        steps: Array<{
+          step: number;
+          description: string;
+          reasoning: string;
+          outcome?: string;
+        }>;
+        summary?: string;
+      }
+    | {
+        content: string;
+        mode?: 'adaptive' | 'enabled';
+        effort?: ThinkingEffort;
+        budgetTokens?: number;
+      }
+    | string;
   // Multi-agent enhancements
   optimizationsApplied?: string[];
   cacheHit?: boolean;
@@ -196,6 +300,19 @@ export interface SendMessageResponse {
     type: 'document' | 'spreadsheet' | 'presentation' | 'file' | 'email' | 'calendar' | 'form';
   }>;
   metadata?: any;
+  // Tool-call history populated by Bedrock tool-use loops (web_search etc.)
+  toolCalls?: Array<{
+    id: string;
+    name: string;
+    input?: unknown;
+    output?: { content: string; sources?: ToolCallSource[] };
+    status?: 'success' | 'error';
+    startedAt?: string | Date;
+    finishedAt?: string | Date;
+    durationMs?: number;
+  }>;
+  // Unique sources aggregated from tool results
+  sources?: ToolCallSource[];
   requiresIntegrationSelector?: boolean;
   integrationSelectorData?: {
     parameterName: string;
@@ -420,6 +537,128 @@ export class ChatService {
       const message = error.response?.data?.message || error.message || "Failed to send message";
       throw new Error(message);
     }
+  }
+
+  /**
+   * Send a message via SSE streaming. Invokes callbacks as tokens and
+   * reasoning deltas arrive. Resolves with the full accumulated content
+   * and (optional) reasoning text once the stream completes.
+   */
+  static async sendMessageStream(
+    request: SendMessageRequest,
+    callbacks: StreamSendCallbacks = {}
+  ): Promise<{ content: string; reasoning: string }> {
+    const token = localStorage.getItem('access_token');
+    const url = `${API_BASE_URL}/api/chat/message`;
+    const body = JSON.stringify({ ...request, stream: true });
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/event-stream',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      credentials: 'include',
+      body,
+    });
+
+    if (!resp.ok || !resp.body) {
+      const text = await resp.text().catch(() => '');
+      const err = new Error(
+        `SSE request failed (${resp.status}): ${text.slice(0, 200)}`
+      );
+      callbacks.onError?.(err);
+      throw err;
+    }
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let currentEvent: string | null = null;
+    let content = '';
+    let reasoning = '';
+
+    const handleEventFrame = (evt: string | null, dataLine: string) => {
+      if (!dataLine) return;
+      let data: any;
+      try {
+        data = JSON.parse(dataLine);
+      } catch {
+        return;
+      }
+      if (evt === 'chunk' || (!evt && typeof data?.content === 'string' && !data?.type)) {
+        if (typeof data.content === 'string') {
+          content += data.content;
+          callbacks.onChunk?.(data.content);
+        }
+      } else if (evt === 'reasoning') {
+        if (typeof data.content === 'string') {
+          reasoning += data.content;
+          callbacks.onReasoning?.(data.content);
+        }
+      } else if (evt === 'reasoning_done') {
+        callbacks.onReasoningDone?.();
+      } else if (evt === 'tool_call') {
+        callbacks.onToolCall?.({
+          id: data.id,
+          name: data.name,
+          input: data.input,
+          startedAt: data.startedAt,
+        });
+      } else if (evt === 'tool_result') {
+        callbacks.onToolResult?.({
+          id: data.id,
+          name: data.name,
+          output: data.output,
+          sources: data.sources,
+          status: data.status,
+          durationMs: data.durationMs,
+        });
+      } else if (evt === 'citation') {
+        // Claude-native citations streamed as they are finalized. `data` is a
+        // single Citation object (see `Citation` interface above).
+        if (data && typeof data.id === 'string') {
+          callbacks.onCitation?.({
+            id: data.id,
+            textBlockIndex: data.textBlockIndex,
+            startOffset: data.startOffset,
+            endOffset: data.endOffset,
+            citedText: data.citedText,
+            document: data.document,
+            location: data.location,
+          });
+        }
+      } else if (evt === 'done') {
+        callbacks.onDone?.();
+      } else if (evt === 'error') {
+        callbacks.onError?.(new Error(data?.error || 'stream error'));
+      }
+    };
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      // SSE frames are separated by blank lines.
+      const frames = buffer.split('\n\n');
+      buffer = frames.pop() || '';
+      for (const frame of frames) {
+        currentEvent = null;
+        let dataLine = '';
+        for (const line of frame.split('\n')) {
+          if (line.startsWith(':')) continue;
+          if (line.startsWith('event:')) {
+            currentEvent = line.slice(6).trim();
+          } else if (line.startsWith('data:')) {
+            dataLine += line.slice(5).trimStart();
+          }
+        }
+        handleEventFrame(currentEvent, dataLine);
+      }
+    }
+
+    callbacks.onDone?.();
+    return { content, reasoning };
   }
 
   /**

@@ -13,6 +13,7 @@ import {
     MusicalNoteIcon,
     ArrowTopRightOnSquareIcon,
     ClockIcon,
+    PlusCircleIcon,
 } from '@heroicons/react/24/outline';
 import { fileUploadService } from '../../services/fileUpload.service';
 import { DocumentPreviewModal } from './DocumentPreviewModal';
@@ -37,6 +38,14 @@ interface FileLibraryPanelProps {
     currentConversationId?: string;
     filterMode: 'all' | 'current';
     onFilterModeChange: (mode: 'all' | 'current') => void;
+    /**
+     * Optional. When provided, each row in the library shows an "Attach"
+     * button that hands the file back to the parent so it can be added to
+     * the chat composer's selectedDocuments. Currently only `type: 'document'`
+     * files (the only kind with a real `documentId` for retrieval) are
+     * attachable.
+     */
+    onAttachToChat?: (file: CombinedFile) => void;
 }
 
 export const FileLibraryPanel: React.FC<FileLibraryPanelProps> = ({
@@ -45,6 +54,7 @@ export const FileLibraryPanel: React.FC<FileLibraryPanelProps> = ({
     currentConversationId,
     filterMode,
     onFilterModeChange,
+    onAttachToChat,
 }) => {
     const [files, setFiles] = useState<CombinedFile[]>([]);
     const [loading, setLoading] = useState(false);
@@ -313,58 +323,83 @@ export const FileLibraryPanel: React.FC<FileLibraryPanelProps> = ({
                                 </div>
                             ) : (
                                 <div className="space-y-1.5">
-                                    {files.map((file) => (
-                                        <button
-                                            key={file.id}
-                                            onClick={() => handleFileClick(file)}
-                                            className="w-full flex items-center gap-2.5 p-2.5 text-left rounded-lg glass backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 border border-primary-200/30 hover:from-primary-50/50 hover:to-primary-100/30 dark:hover:from-primary-900/20 dark:hover:to-primary-800/20 hover:border-primary-400/50 transition-all duration-300 group"
-                                        >
-                                            {/* Icon */}
-                                            <div className="flex-shrink-0">
-                                                {getFileIcon(file)}
-                                            </div>
-
-                                            {/* Content */}
-                                            <div className="flex-1 min-w-0">
-                                                {/* Filename */}
-                                                <p className="text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-0.5 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                                                    {file.name}
-                                                </p>
-
-                                                {/* Metadata Row */}
-                                                <div className="flex items-center gap-1.5 text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary">
-                                                    {file.type === 'document' ? (
-                                                        <>
-                                                            <span className="font-medium">{file.chunksCount} chunks</span>
+                                    {files.map((file) => {
+                                        const canAttach =
+                                            !!onAttachToChat &&
+                                            file.type === 'document' &&
+                                            !!file.documentId;
+                                        return (
+                                            <div
+                                                key={file.id}
+                                                className="w-full flex items-center gap-2.5 p-2.5 rounded-lg glass backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 border border-primary-200/30 hover:from-primary-50/50 hover:to-primary-100/30 dark:hover:from-primary-900/20 dark:hover:to-primary-800/20 hover:border-primary-400/50 transition-all duration-300 group"
+                                            >
+                                                {/* Main click area — opens preview / external link */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleFileClick(file)}
+                                                    className="flex-1 min-w-0 flex items-center gap-2.5 text-left"
+                                                >
+                                                    {/* Icon */}
+                                                    <div className="flex-shrink-0">
+                                                        {getFileIcon(file)}
+                                                    </div>
+                                                    {/* Content */}
+                                                    <div className="flex-1 min-w-0">
+                                                        {/* Filename */}
+                                                        <p className="text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-0.5 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                                            {file.name}
+                                                        </p>
+                                                        {/* Metadata Row */}
+                                                        <div className="flex items-center gap-1.5 text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                                            {file.type === 'document' ? (
+                                                                <>
+                                                                    <span className="font-medium">{file.chunksCount} chunks</span>
+                                                                    <span>•</span>
+                                                                    <span className="px-1.5 py-0.5 rounded bg-amber-100/80 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 font-semibold">
+                                                                        Document
+                                                                    </span>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <span className="font-medium">{formatFileSize(file.size)}</span>
+                                                                    <span>•</span>
+                                                                    <span className={`px-1.5 py-0.5 rounded font-semibold ${file.type === 'google'
+                                                                        ? 'bg-blue-100/80 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                                                                        : 'bg-gray-100/80 text-gray-700 dark:bg-gray-800/50 dark:text-gray-400'
+                                                                        }`}>
+                                                                        {file.type === 'google' ? 'Google Drive' : 'Uploaded'}
+                                                                    </span>
+                                                                </>
+                                                            )}
                                                             <span>•</span>
-                                                            <span className="px-1.5 py-0.5 rounded bg-amber-100/80 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 font-semibold">
-                                                                Document
+                                                            <span className="flex items-center gap-0.5">
+                                                                <ClockIcon className="w-2.5 h-2.5" />
+                                                                {formatDate(file.uploadedAt)}
                                                             </span>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <span className="font-medium">{formatFileSize(file.size)}</span>
-                                                            <span>•</span>
-                                                            <span className={`px-1.5 py-0.5 rounded font-semibold ${file.type === 'google'
-                                                                ? 'bg-blue-100/80 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                                                                : 'bg-gray-100/80 text-gray-700 dark:bg-gray-800/50 dark:text-gray-400'
-                                                                }`}>
-                                                                {file.type === 'google' ? 'Google Drive' : 'Uploaded'}
-                                                            </span>
-                                                        </>
+                                                        </div>
+                                                    </div>
+                                                </button>
+
+                                                {/* Right-side actions */}
+                                                <div className="flex items-center gap-1 flex-shrink-0">
+                                                    {canAttach && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                onAttachToChat?.(file);
+                                                            }}
+                                                            title="Attach to current chat"
+                                                            className="p-1.5 rounded-md text-primary-500 hover:bg-primary-500/15 hover:text-primary-600 transition-all opacity-0 group-hover:opacity-100"
+                                                        >
+                                                            <PlusCircleIcon className="w-4 h-4" />
+                                                        </button>
                                                     )}
-                                                    <span>•</span>
-                                                    <span className="flex items-center gap-0.5">
-                                                        <ClockIcon className="w-2.5 h-2.5" />
-                                                        {formatDate(file.uploadedAt)}
-                                                    </span>
+                                                    <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5 text-primary-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                                 </div>
                                             </div>
-
-                                            {/* External Link Icon */}
-                                            <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5 text-primary-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                                        </button>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
