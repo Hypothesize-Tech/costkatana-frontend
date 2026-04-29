@@ -129,6 +129,31 @@ export function calculateCost(
       pricing = PRICING_DATA.find((p) => p.model === "grok-3");
     } else if (model.toLowerCase().includes("grok-2")) {
       pricing = PRICING_DATA.find((p) => p.model === "grok-2-1212us-east-1");
+    } else if (model.toLowerCase().includes("gpt-5.5")) {
+      pricing = PRICING_DATA.find((p) => p.model === "gpt-5.5");
+    } else if (
+      model.toLowerCase().includes("gpt-5.4") &&
+      model.toLowerCase().includes("mini")
+    ) {
+      pricing = PRICING_DATA.find((p) => p.model === "gpt-5.4-mini");
+    } else if (model.toLowerCase().includes("gpt-5.4")) {
+      pricing = PRICING_DATA.find((p) => p.model === "gpt-5.4");
+    } else if (
+      model.toLowerCase().includes("gpt-5") &&
+      !model.toLowerCase().includes("gpt-5.4") &&
+      !model.toLowerCase().includes("gpt-5.5")
+    ) {
+      pricing = PRICING_DATA.find((p) => p.model === "gpt-5");
+    } else if (
+      model.toLowerCase().includes("claude-opus-4-7") ||
+      model.toLowerCase().includes("opus-4-7")
+    ) {
+      pricing = PRICING_DATA.find((p) => p.model === "claude-opus-4-7");
+    } else if (
+      model.toLowerCase().includes("claude-opus-4-6") ||
+      model.toLowerCase().includes("opus-4-6")
+    ) {
+      pricing = PRICING_DATA.find((p) => p.model === "claude-opus-4-6");
     } else if (model.toLowerCase().includes("claude-3-opus")) {
       pricing = PRICING_DATA.find((p) => p.model === "claude-opus-4-20250514");
     } else if (model.toLowerCase().includes("claude-sonnet-4-6")) {
@@ -148,7 +173,11 @@ export function calculateCost(
     } else if (model.toLowerCase().includes("gpt-3.5")) {
       pricing = PRICING_DATA.find((p) => p.model === "gpt-3.5-turbo-0125");
     } else if (model.toLowerCase().includes("gemini")) {
-      pricing = PRICING_DATA.find((p) => p.model === "gemini-2.5-pro");
+      if (model.toLowerCase().includes("gemini-3")) {
+        pricing = PRICING_DATA.find((p) => p.model.includes("gemini-3"));
+      } else {
+        pricing = PRICING_DATA.find((p) => p.model === "gemini-2.5-pro");
+      }
     } else if (model.toLowerCase().includes("mistral")) {
       pricing = PRICING_DATA.find((p) => p.model === "mistral-medium-latest");
     } else if (model.toLowerCase().includes("deepseek")) {

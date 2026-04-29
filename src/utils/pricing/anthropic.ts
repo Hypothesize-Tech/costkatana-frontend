@@ -1,6 +1,27 @@
 import { ModelPricing } from "../cost";
 
 export const ANTHROPIC_PRICING: ModelPricing[] = [
+  // === Claude Opus 4.6 / 4.7 ($5 / $25 per 1M) ===
+  {
+    provider: "Anthropic",
+    model: "claude-opus-4-7",
+    inputPrice: 0.005,
+    outputPrice: 0.025,
+    contextWindow: 200000,
+    capabilities: ["text", "vision", "multimodal", "reasoning", "agents", "coding"],
+    category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "Anthropic",
+    model: "claude-opus-4-6",
+    inputPrice: 0.005,
+    outputPrice: 0.025,
+    contextWindow: 200000,
+    capabilities: ["text", "vision", "multimodal", "reasoning", "agents", "coding"],
+    category: "text",
+    isLatest: true,
+  },
   // === Claude 4.6 Series (Latest) ===
   {
     provider: "Anthropic",

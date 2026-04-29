@@ -209,11 +209,13 @@ export const TemplateExecutionModal: React.FC<TemplateExecutionModalProps> = ({
                   focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
                             >
                                 <option value="">Select a model...</option>
+                                <option value="gpt-5.4-mini">GPT-5.4 Mini - Fast</option>
                                 <option value="gpt-4o-mini">GPT-4o Mini - Balanced</option>
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
                                 <option value="amazon.nova-micro-v1:0">Nova Micro - Ultra Cheap</option>
                                 <option value="amazon.nova-lite-v1:0">Nova Lite - Balanced</option>
                                 <option value="anthropic.claude-3-5-haiku-20241022-v1:0">Claude 3.5 Haiku - Fast</option>
-                                <option value="anthropic.claude-3-5-sonnet-20241022-v2:0">Claude 3.5 Sonnet - Premium</option>
+                                <option value="anthropic.claude-sonnet-4-6">Claude Sonnet 4.6 - Premium</option>
                             </select>
                         </div>
                     )}

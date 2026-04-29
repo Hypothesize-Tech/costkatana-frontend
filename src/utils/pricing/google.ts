@@ -1,6 +1,37 @@
 import { ModelPricing } from "../cost";
 
 export const GOOGLE_PRICING: ModelPricing[] = [
+  // === Gemini 3 (preview / API ids — verify on ai.google.dev) ===
+  {
+    provider: "Google AI",
+    model: "gemini-3-pro-preview",
+    inputPrice: 0.002, // $2/1M
+    outputPrice: 0.012, // $12/1M
+    contextWindow: 2_000_000,
+    capabilities: ["text", "multimodal", "reasoning", "coding"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "Google AI",
+    model: "gemini-3-flash-preview",
+    inputPrice: 0.00035,
+    outputPrice: 0.0028,
+    contextWindow: 1_000_000,
+    capabilities: ["text", "multimodal", "reasoning"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "Google AI",
+    model: "gemini-3.1-pro",
+    inputPrice: 0.002,
+    outputPrice: 0.012,
+    contextWindow: 2_000_000,
+    capabilities: ["text", "multimodal", "reasoning", "coding"],
+    category: "multimodal",
+    isLatest: true,
+  },
   // === Gemini 2.5 Models (Latest) ===
   {
     provider: "Google AI",

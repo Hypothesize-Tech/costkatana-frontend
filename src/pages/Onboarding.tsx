@@ -71,17 +71,18 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
     const [llmQueryData, setLlmQueryData] = useState<LlmQueryFormData>({
         query: '',
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
     });
 
     const [llmResponse, setLlmResponse] = useState<string>('');
 
     // Available LLM models
     const availableModels = [
-        { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'OpenAI' },
-        { id: 'gpt-4', name: 'GPT-4', provider: 'OpenAI' },
-        { id: 'claude-3-sonnet', name: 'Claude 3 Sonnet', provider: 'Anthropic' },
-        { id: 'gemini-pro', name: 'Gemini Pro', provider: 'Google' },
+        { id: 'gpt-5.4-mini', name: 'GPT-5.4 Mini', provider: 'OpenAI' },
+        { id: 'gpt-4o-mini', name: 'GPT-4o Mini', provider: 'OpenAI' },
+        { id: 'gpt-4o', name: 'GPT-4o', provider: 'OpenAI' },
+        { id: 'claude-sonnet-4-6', name: 'Claude Sonnet 4.6', provider: 'Anthropic' },
+        { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', provider: 'Google' },
     ];
 
     // Onboarding steps
