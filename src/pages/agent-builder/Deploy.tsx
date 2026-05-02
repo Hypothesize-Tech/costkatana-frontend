@@ -19,6 +19,8 @@ import {
   CheckIcon,
   CircleStackIcon,
   ArrowTopRightOnSquareIcon,
+  ShieldCheckIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/24/outline';
 
 // Widget JS is served directly from the backend — no S3 upload needed.
@@ -196,34 +198,36 @@ const Deploy: React.FC = () => {
 
         {/* ── LIVE BANNER: shown only when deployed ── */}
         {activeDeployment && (
-          <section className="p-4 md:p-5 rounded-xl md:rounded-2xl border shadow-xl backdrop-blur-xl glass border-primary-500/40 bg-gradient-light-panel dark:bg-gradient-dark-panel ring-1 ring-primary-500/20">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-primary-500 shadow-[0_0_8px_#06ec9e]" />
-              <span className="font-display text-sm font-semibold text-secondary-900 dark:text-secondary-50">
-                Live — embed this script on your site
-              </span>
-              <span className="ml-auto text-[10px] text-secondary-500 dark:text-secondary-400 font-mono">
-                id: {activeDeployment.publicId}
-              </span>
+          <section className="p-4 md:p-5 rounded-xl md:rounded-2xl border shadow-xl backdrop-blur-xl glass border-primary-500/40 bg-gradient-light-panel dark:bg-gradient-dark-panel ring-1 ring-primary-500/20 space-y-4">
+            {/* Script tag */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full bg-primary-500 shadow-[0_0_8px_#06ec9e]" />
+                <span className="font-display text-sm font-semibold text-secondary-900 dark:text-secondary-50">
+                  Live — embed this script on your site
+                </span>
+                <span className="ml-auto text-[10px] text-secondary-500 dark:text-secondary-400 font-mono">
+                  id: {activeDeployment.publicId}
+                </span>
+              </div>
+              <div className="rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-100 dark:bg-dark-bg-100 p-3 font-mono text-xs overflow-x-auto mb-3">
+                <code className="text-primary-700 dark:text-primary-300 break-all">{snippet}</code>
+              </div>
+              <button
+                type="button"
+                onClick={onCopySnippet}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold shadow-md shadow-primary-500/30 transition-all"
+              >
+                {copied ? (
+                  <><CheckIcon className="w-4 h-4" /> Copied!</>
+                ) : (
+                  <><ClipboardDocumentIcon className="w-4 h-4" /> Copy script tag</>
+                )}
+              </button>
             </div>
-            <div className="rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-100 dark:bg-dark-bg-100 p-3 font-mono text-xs overflow-x-auto mb-3">
-              <code className="text-primary-700 dark:text-primary-300 break-all">{snippet}</code>
-            </div>
-            <button
-              type="button"
-              onClick={onCopySnippet}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold shadow-md shadow-primary-500/30 transition-all"
-            >
-              {copied ? (
-                <>
-                  <CheckIcon className="w-4 h-4" /> Copied!
-                </>
-              ) : (
-                <>
-                  <ClipboardDocumentIcon className="w-4 h-4" /> Copy script tag
-                </>
-              )}
-            </button>
+
+            {/* CSP instructions */}
+            <CspInstructions apiUrl={API_BASE_URL} />
           </section>
         )}
 
@@ -416,6 +420,381 @@ const Deploy: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+type CspEntry = { key: string; label: string; code: string };
+type CspGroup = { group: string; items: CspEntry[] };
+
+function buildCspSnippets(api: string): CspGroup[] {
+  const d = `script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}`;
+  return [
+    {
+      group: 'React / JS Frameworks',
+      items: [
+        {
+          key: 'nextjs',
+          label: 'Next.js (next.config.js)',
+          code: `// next.config.js
+const csp = \`
+  script-src 'self' 'unsafe-inline' ... ${api};
+  connect-src 'self' ... ${api};
+\`.replace(/\\n/g, ' ').trim();
+
+module.exports = {
+  async headers() {
+    return [{ source: '/(.*)', headers: [{ key: 'Content-Security-Policy', value: csp }] }];
+  },
+};`,
+        },
+        {
+          key: 'nuxt',
+          label: 'Nuxt 3 (nuxt.config.ts)',
+          code: `// nuxt.config.ts
+export default defineNuxtConfig({
+  routeRules: {
+    '/**': {
+      headers: {
+        'Content-Security-Policy':
+          "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}",
+      },
+    },
+  },
+});`,
+        },
+        {
+          key: 'sveltekit',
+          label: 'SvelteKit (hooks.server.ts)',
+          code: `// src/hooks.server.ts
+import type { Handle } from '@sveltejs/kit';
+
+export const handle: Handle = async ({ event, resolve }) => {
+  const response = await resolve(event);
+  response.headers.set(
+    'Content-Security-Policy',
+    "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}",
+  );
+  return response;
+};`,
+        },
+        {
+          key: 'remix',
+          label: 'Remix (entry.server.tsx)',
+          code: `// app/entry.server.tsx — add to handleRequest
+responseHeaders.set(
+  'Content-Security-Policy',
+  "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}",
+);`,
+        },
+        {
+          key: 'gatsby',
+          label: 'Gatsby (gatsby-config.js)',
+          code: `// gatsby-config.js
+module.exports = {
+  plugins: [
+    {
+      resolve: 'gatsby-plugin-csp',
+      options: {
+        directives: {
+          'script-src': "'self' 'unsafe-inline' ... ${api}",
+          'connect-src': "'self' ... ${api}",
+        },
+      },
+    },
+  ],
+};`,
+        },
+        {
+          key: 'cra',
+          label: 'React (CRA / Vite — meta tag)',
+          code: `<!-- public/index.html (CRA) or index.html (Vite) — inside <head> -->
+<meta http-equiv="Content-Security-Policy"
+  content="script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}">`,
+        },
+        {
+          key: 'angular',
+          label: 'Angular (server / meta tag)',
+          code: `<!-- src/index.html — inside <head> (simplest approach) -->
+<meta http-equiv="Content-Security-Policy"
+  content="script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}">
+
+<!-- Or in your Express SSR server.ts: -->
+// res.setHeader('Content-Security-Policy', "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}");`,
+        },
+      ],
+    },
+    {
+      group: 'Node.js Backends',
+      items: [
+        {
+          key: 'express',
+          label: 'Express.js (helmet)',
+          code: `// npm install helmet
+const helmet = require('helmet');
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", '${api}'],
+      connectSrc: ["'self'", '${api}'],
+    },
+  }),
+);`,
+        },
+        {
+          key: 'nestjs',
+          label: 'NestJS (helmet)',
+          code: `// main.ts
+import helmet from 'helmet';
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", '${api}'],
+      connectSrc: ["'self'", '${api}'],
+    },
+  }),
+);`,
+        },
+      ],
+    },
+    {
+      group: '.NET',
+      items: [
+        {
+          key: 'aspnet',
+          label: 'ASP.NET Core (Program.cs)',
+          code: `// Program.cs
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append(
+        "Content-Security-Policy",
+        "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}");
+    await next();
+});`,
+        },
+        {
+          key: 'aspnet-mvc',
+          label: 'ASP.NET MVC (web.config)',
+          code: `<!-- web.config -->
+<system.webServer>
+  <httpProtocol>
+    <customHeaders>
+      <add name="Content-Security-Policy"
+           value="script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}" />
+    </customHeaders>
+  </httpProtocol>
+</system.webServer>`,
+        },
+      ],
+    },
+    {
+      group: 'Python',
+      items: [
+        {
+          key: 'django',
+          label: 'Django (django-csp)',
+          code: `# settings.py — pip install django-csp
+INSTALLED_APPS += ['csp']
+MIDDLEWARE += ['csp.middleware.CSPMiddleware']
+
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", '${api}')
+CSP_CONNECT_SRC = ("'self'", '${api}')`,
+        },
+        {
+          key: 'flask',
+          label: 'Flask (flask-talisman)',
+          code: `# pip install flask-talisman
+from flask_talisman import Talisman
+
+Talisman(app, content_security_policy={
+    'script-src': ["'self'", "'unsafe-inline'", '${api}'],
+    'connect-src': ["'self'", '${api}'],
+})`,
+        },
+      ],
+    },
+    {
+      group: 'PHP',
+      items: [
+        {
+          key: 'laravel',
+          label: 'Laravel (middleware)',
+          code: `<?php
+// app/Http/Middleware/ContentSecurityPolicy.php
+public function handle(Request $request, Closure $next)
+{
+    $response = $next($request);
+    $response->headers->set(
+        'Content-Security-Policy',
+        "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}"
+    );
+    return $response;
+}
+
+// Register in app/Http/Kernel.php $middleware array`,
+        },
+        {
+          key: 'wordpress',
+          label: 'WordPress (functions.php)',
+          code: `<?php
+// functions.php (or a plugin file)
+add_action('send_headers', function () {
+    header("Content-Security-Policy: script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}");
+});`,
+        },
+      ],
+    },
+    {
+      group: 'Ruby',
+      items: [
+        {
+          key: 'rails',
+          label: 'Ruby on Rails (secure_headers)',
+          code: `# Gemfile: gem 'secure_headers'
+# config/initializers/secure_headers.rb
+SecureHeaders::Configuration.default do |config|
+  config.csp = {
+    default_src: %w('self'),
+    script_src: %w('self' 'unsafe-inline' ${api}),
+    connect_src: %w('self' ${api}),
+  }
+end`,
+        },
+      ],
+    },
+    {
+      group: 'Web Servers',
+      items: [
+        {
+          key: 'nginx',
+          label: 'Nginx (nginx.conf)',
+          code: `# nginx.conf — inside server {} or location {} block
+add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}" always;`,
+        },
+        {
+          key: 'apache',
+          label: 'Apache (.htaccess)',
+          code: `# .htaccess
+Header set Content-Security-Policy "script-src 'self' 'unsafe-inline' ... ${api}; connect-src 'self' ... ${api}"`,
+        },
+      ],
+    },
+    {
+      group: 'Hosting Platforms',
+      items: [
+        {
+          key: 'vercel',
+          label: 'Vercel (vercel.json)',
+          code: `{
+  "headers": [{
+    "source": "/(.*)",
+    "headers": [{
+      "key": "Content-Security-Policy",
+      "value": "${d}"
+    }]
+  }]
+}`,
+        },
+        {
+          key: 'netlify',
+          label: 'Netlify / Cloudflare Pages (_headers)',
+          code: `# _headers file in project root
+/*
+  Content-Security-Policy: ${d}`,
+        },
+        {
+          key: 'html',
+          label: 'Plain HTML (meta tag)',
+          code: `<!-- Inside <head> — least preferred but works when you have no server control -->
+<meta http-equiv="Content-Security-Policy"
+  content="${d}">`,
+        },
+      ],
+    },
+  ];
+}
+
+const CspInstructions: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState('nextjs');
+  const [copied, setCopied] = useState(false);
+
+  const groups = useMemo(() => buildCspSnippets(apiUrl), [apiUrl]);
+  const allItems = groups.flatMap((g) => g.items);
+  const active = allItems.find((i) => i.key === selected) ?? allItems[0];
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(active.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* ignore */ }
+  };
+
+  return (
+    <div className="border-t border-primary-200/20 dark:border-primary-500/10 pt-4">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 text-left"
+      >
+        <ShieldCheckIcon className="w-4 h-4 text-accent-500 flex-shrink-0" />
+        <span className="text-xs font-semibold text-secondary-800 dark:text-secondary-100 flex-1">
+          Content Security Policy (CSP) — required if your site sets a CSP header
+        </span>
+        <ChevronDownIcon
+          className={`w-3.5 h-3.5 text-secondary-400 transition-transform ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {open && (
+        <div className="mt-3 space-y-3">
+          <p className="text-xs text-secondary-600 dark:text-secondary-300">
+            Add{' '}
+            <code className="text-[11px] bg-light-bg-100 dark:bg-dark-bg-100 px-1.5 py-0.5 rounded border border-primary-200/30 dark:border-primary-500/20 text-primary-700 dark:text-primary-300">
+              {apiUrl}
+            </code>{' '}
+            to both <strong>script-src</strong> and <strong>connect-src</strong>. Pick your stack:
+          </p>
+
+          {/* Framework selector */}
+          <select
+            value={selected}
+            onChange={(e) => setSelected(e.target.value)}
+            className="w-full rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-100 dark:bg-dark-bg-100 px-3 py-1.5 text-xs text-secondary-900 dark:text-secondary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/40"
+          >
+            {groups.map((g) => (
+              <optgroup key={g.group} label={g.group}>
+                {g.items.map((item) => (
+                  <option key={item.key} value={item.key}>
+                    {item.label}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+
+          {/* Code block */}
+          <div className="relative rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-100 dark:bg-dark-bg-100 p-3 font-mono text-[11px] overflow-x-auto">
+            <pre className="text-secondary-800 dark:text-secondary-200 whitespace-pre-wrap leading-relaxed pr-14">
+              {active.code}
+            </pre>
+            <button
+              type="button"
+              onClick={copy}
+              className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] bg-white dark:bg-dark-bg-200 border border-primary-200/30 dark:border-primary-500/20 text-secondary-600 dark:text-secondary-300 hover:text-secondary-900 dark:hover:text-secondary-50 transition-colors"
+            >
+              {copied ? (
+                <><CheckIcon className="w-3 h-3 text-success-500" /> Copied</>
+              ) : (
+                <><ClipboardDocumentIcon className="w-3 h-3" /> Copy</>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
