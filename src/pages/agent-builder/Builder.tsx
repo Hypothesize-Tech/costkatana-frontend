@@ -160,6 +160,7 @@ const Builder: React.FC = () => {
         testRunPending={testRunMutation.isPending}
         issues={issues}
         onBack={() => navigate('/agent-builder')}
+        onOpenKnowledgeBase={() => navigate('/agent-builder/knowledge-base')}
       />
       <div className="flex flex-1 overflow-hidden">
         <NodePalette />
@@ -184,6 +185,7 @@ const CanvasToolbar: React.FC<{
   testRunPending: boolean;
   issues: DagValidationIssue[];
   onBack: () => void;
+  onOpenKnowledgeBase: () => void;
 }> = ({
   agent,
   versionNumber,
@@ -195,113 +197,114 @@ const CanvasToolbar: React.FC<{
   testRunPending,
   issues,
   onBack,
+  onOpenKnowledgeBase,
 }) => {
-  const status = useMemo(() => {
-    if (saveState === 'saving')
-      return {
-        icon: <ArrowPathIcon className="w-3 h-3 animate-spin" />,
-        text: 'Saving…',
-        cls: 'text-secondary-500 dark:text-secondary-400',
-      };
-    if (saveState === 'saved')
-      return {
-        icon: <CheckCircleIcon className="w-3 h-3" />,
-        text: 'Saved',
-        cls: 'text-success-600 dark:text-success-400',
-      };
-    if (saveState === 'error')
-      return {
-        icon: <ExclamationTriangleIcon className="w-3 h-3" />,
-        text: 'Save failed',
-        cls: 'text-danger-600 dark:text-danger-400',
-      };
-    if (lastSavedAt) {
-      const ago = Math.round((Date.now() - lastSavedAt) / 1000);
-      return {
-        icon: <CheckCircleIcon className="w-3 h-3" />,
-        text: ago < 5 ? 'Just saved' : `Saved ${ago}s ago`,
-        cls: 'text-secondary-400 dark:text-secondary-500',
-      };
-    }
-    return { icon: null, text: '', cls: 'text-secondary-400' };
-  }, [saveState, lastSavedAt]);
+    const status = useMemo(() => {
+      if (saveState === 'saving')
+        return {
+          icon: <ArrowPathIcon className="w-3 h-3 animate-spin" />,
+          text: 'Saving…',
+          cls: 'text-secondary-500 dark:text-secondary-400',
+        };
+      if (saveState === 'saved')
+        return {
+          icon: <CheckCircleIcon className="w-3 h-3" />,
+          text: 'Saved',
+          cls: 'text-success-600 dark:text-success-400',
+        };
+      if (saveState === 'error')
+        return {
+          icon: <ExclamationTriangleIcon className="w-3 h-3" />,
+          text: 'Save failed',
+          cls: 'text-danger-600 dark:text-danger-400',
+        };
+      if (lastSavedAt) {
+        const ago = Math.round((Date.now() - lastSavedAt) / 1000);
+        return {
+          icon: <CheckCircleIcon className="w-3 h-3" />,
+          text: ago < 5 ? 'Just saved' : `Saved ${ago}s ago`,
+          cls: 'text-secondary-400 dark:text-secondary-500',
+        };
+      }
+      return { icon: null, text: '', cls: 'text-secondary-400' };
+    }, [saveState, lastSavedAt]);
 
-  const statusDot =
-    agent.status === 'published'
-      ? 'bg-primary-500 shadow-[0_0_6px_#06ec9e]'
-      : 'bg-secondary-400';
+    const statusDot =
+      agent.status === 'published'
+        ? 'bg-primary-500 shadow-[0_0_6px_#06ec9e]'
+        : 'bg-secondary-400';
 
-  return (
-    <div className="flex items-center justify-between px-4 py-2.5 bg-white dark:bg-dark-bg-100 border-b border-primary-200/30 dark:border-primary-500/20">
-      <div className="flex items-center gap-3 min-w-0">
-        <button
-          type="button"
-          onClick={onBack}
-          className="text-xs text-secondary-500 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-50 inline-flex items-center gap-1"
-        >
-          <ChevronLeftIcon className="w-3.5 h-3.5" />
-          Back
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate('/agent-builder/knowledge-base')}
-          className="text-xs text-secondary-500 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-50 inline-flex items-center gap-1"
-        >
-          <CircleStackIcon className="w-3.5 h-3.5" />
-          KB
-        </button>
-        <span className="w-px h-5 bg-primary-200/30 dark:bg-primary-500/20 mx-1" />
-        <span className={`w-2 h-2 rounded-full ${statusDot}`} />
-        <div className="flex flex-col leading-tight min-w-0">
-          <span className="font-display text-sm font-semibold text-secondary-900 dark:text-secondary-50 truncate">
-            {agent.name}
-          </span>
-          <span className="text-[10px] uppercase tracking-wider text-secondary-500 dark:text-secondary-400">
-            v{versionNumber} · {agent.status}
-          </span>
+    return (
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white dark:bg-dark-bg-100 border-b border-primary-200/30 dark:border-primary-500/20">
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-xs text-secondary-500 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-50 inline-flex items-center gap-1"
+          >
+            <ChevronLeftIcon className="w-3.5 h-3.5" />
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={onOpenKnowledgeBase}
+            className="text-xs text-secondary-500 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-50 inline-flex items-center gap-1"
+          >
+            <CircleStackIcon className="w-3.5 h-3.5" />
+            KB
+          </button>
+          <span className="w-px h-5 bg-primary-200/30 dark:bg-primary-500/20 mx-1" />
+          <span className={`w-2 h-2 rounded-full ${statusDot}`} />
+          <div className="flex flex-col leading-tight min-w-0">
+            <span className="font-display text-sm font-semibold text-secondary-900 dark:text-secondary-50 truncate">
+              {agent.name}
+            </span>
+            <span className="text-[10px] uppercase tracking-wider text-secondary-500 dark:text-secondary-400">
+              v{versionNumber} · {agent.status}
+            </span>
+          </div>
+          {issues.length > 0 && (
+            <span className="ml-3 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border border-accent-300/40 dark:border-accent-500/30 text-accent-700 dark:text-accent-400 bg-accent-50/40 dark:bg-accent-900/15">
+              <ExclamationTriangleIcon className="w-3 h-3" />
+              {issues.length} issue{issues.length === 1 ? '' : 's'}
+            </span>
+          )}
+          {status.text && (
+            <span className={`text-[10px] inline-flex items-center gap-1 ml-2 ${status.cls}`}>
+              {status.icon} {status.text}
+            </span>
+          )}
         </div>
-        {issues.length > 0 && (
-          <span className="ml-3 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border border-accent-300/40 dark:border-accent-500/30 text-accent-700 dark:text-accent-400 bg-accent-50/40 dark:bg-accent-900/15">
-            <ExclamationTriangleIcon className="w-3 h-3" />
-            {issues.length} issue{issues.length === 1 ? '' : 's'}
-          </span>
-        )}
-        {status.text && (
-          <span className={`text-[10px] inline-flex items-center gap-1 ml-2 ${status.cls}`}>
-            {status.icon} {status.text}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary-200/40 dark:border-primary-500/20 text-xs text-secondary-700 dark:text-secondary-200 hover:border-primary-400/60 hover:bg-light-bg-100/40 dark:hover:bg-dark-bg-200/40 transition-colors disabled:opacity-50"
+            onClick={onTestRun}
+            disabled={testRunPending}
+          >
+            {testRunPending ? (
+              <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <PlayIcon className="w-3.5 h-3.5" />
+            )}
+            Run & Trace
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-600 text-white text-xs font-medium shadow-md shadow-primary-500/30 transition-all disabled:opacity-50"
+            onClick={onPublish}
+            disabled={publishPending}
+          >
+            {publishPending ? (
+              <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <RocketLaunchIcon className="w-3.5 h-3.5" />
+            )}
+            Publish
+          </button>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary-200/40 dark:border-primary-500/20 text-xs text-secondary-700 dark:text-secondary-200 hover:border-primary-400/60 hover:bg-light-bg-100/40 dark:hover:bg-dark-bg-200/40 transition-colors disabled:opacity-50"
-          onClick={onTestRun}
-          disabled={testRunPending}
-        >
-          {testRunPending ? (
-            <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <PlayIcon className="w-3.5 h-3.5" />
-          )}
-          Run & Trace
-        </button>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-600 text-white text-xs font-medium shadow-md shadow-primary-500/30 transition-all disabled:opacity-50"
-          onClick={onPublish}
-          disabled={publishPending}
-        >
-          {publishPending ? (
-            <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <RocketLaunchIcon className="w-3.5 h-3.5" />
-          )}
-          Publish
-        </button>
-      </div>
-    </div>
-  );
-};
+    );
+  };
 
 export default Builder;
