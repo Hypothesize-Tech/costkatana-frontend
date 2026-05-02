@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { API_BASE_URL } from '../../config/api';
 import {
   agentPlatformService,
   AgentDefinition,
@@ -20,11 +21,10 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/24/outline';
 
+// Widget JS is served directly from the backend — no S3 upload needed.
 const CDN_URL =
   import.meta.env.VITE_AGENT_WIDGET_CDN ??
-  // Default to the existing CostKatana media bucket — no separate CDN needed.
-  // S3 website URL or CloudFront in front of it both work; pick whichever is wired.
-  'https://costkatana-media.s3.amazonaws.com/agent-platform/widget/widget.js';
+  `${API_BASE_URL}/api/public/widget/bundle.js`;
 
 const Deploy: React.FC = () => {
   const { agentId } = useParams<{ agentId: string }>();
@@ -127,7 +127,7 @@ const Deploy: React.FC = () => {
 
   const snippet = useMemo(() => {
     const id = activeDeployment?.publicId ?? '<deployment-id>';
-    return `<script src="${CDN_URL}" data-deployment-id="${id}" defer></script>`;
+    return `<script src="${CDN_URL}" data-deployment-id="${id}" data-api-url="${API_BASE_URL}" defer></script>`;
   }, [activeDeployment?.publicId]);
 
   const onAddOrigin = () => {
