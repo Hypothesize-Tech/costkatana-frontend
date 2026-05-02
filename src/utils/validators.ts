@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AI_SERVICES } from "./constant";
 
 // Auth validation schemas
 export const loginSchema = z.object({
@@ -154,21 +155,9 @@ export const isValidPrompt = (prompt: string): boolean => {
 };
 
 export const isValidModel = (service: string, model: string): boolean => {
-  const validModels: Record<string, string[]> = {
-    openai: ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "text-embedding-ada-002"],
-    "aws-bedrock": [
-      "claude-3-opus",
-      "claude-3-sonnet",
-      "claude-3-haiku",
-      "claude-2.1",
-    ],
-    "google-ai": ["gemini-pro", "gemini-pro-vision", "palm-2"],
-    anthropic: ["claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
-    huggingface: ["llama-2", "mistral-7b", "falcon-40b"],
-    cohere: ["command", "command-light", "embed-english-v3.0"],
-  };
-
-  return validModels[service]?.includes(model) || false;
+  const cfg = AI_SERVICES[service as keyof typeof AI_SERVICES];
+  if (!cfg) return false;
+  return (cfg.models as readonly string[]).includes(model);
 };
 
 // Type guards

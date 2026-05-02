@@ -113,14 +113,15 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
   const [loading, setLoading] = useState(false);
 
   const availableModels = [
-    "gpt-3.5-turbo",
-    "gpt-4",
+    "gpt-5.4-mini",
+    "gpt-4o-mini",
+    "gpt-4o",
     "gpt-4-turbo",
-    "claude-3-haiku",
-    "claude-3-sonnet",
-    "claude-3-opus",
-    "gemini-pro",
-    "llama-2-70b",
+    "claude-3-5-haiku-20241022",
+    "claude-sonnet-4-6",
+    "claude-opus-4-7",
+    "gemini-2.5-flash",
+    "gemini-2.5-pro",
   ];
 
   const currencies = ["USD", "EUR", "GBP", "JPY", "CAD", "AUD"];

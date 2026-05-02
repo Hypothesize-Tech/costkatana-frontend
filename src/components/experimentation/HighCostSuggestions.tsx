@@ -106,7 +106,15 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
             }
 
             // Expensive model detection
-            const expensiveModels = ['gpt-4', 'claude-3-opus', 'claude-opus-4'];
+            const expensiveModels = [
+              'gpt-5.5',
+              'gpt-5-pro',
+              'gpt-5',
+              'gpt-4',
+              'claude-3-opus',
+              'claude-opus-4',
+              'claude-opus-4-7',
+            ];
             if (expensiveModels.some(model => usage.model.toLowerCase().includes(model.toLowerCase()))) {
                 const reason = `Using premium model (${usage.model}) - cheaper alternatives available`;
                 const potentialSavings = '60-80% savings with model switching';

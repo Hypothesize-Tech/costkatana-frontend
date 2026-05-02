@@ -4,30 +4,57 @@ export const APP_VERSION = import.meta.env.VITE_APP_VERSION || "1.0.10";
 export const AI_SERVICES = {
   openai: {
     name: "OpenAI",
-    models: ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "text-embedding-ada-002"],
+    models: [
+      "gpt-5.5",
+      "gpt-5.4",
+      "gpt-5",
+      "gpt-4o",
+      "gpt-4o-mini",
+      "gpt-4-turbo",
+      "gpt-4.1",
+      "gpt-3.5-turbo",
+      "text-embedding-ada-002",
+    ],
     color: "#FFF",
     logo: "/assets/openai.png", // Logo path - add logo to public/assets/ folder
   },
   "aws-bedrock": {
     name: "AWS Bedrock",
     models: [
-      "claude-3-opus",
-      "claude-3-sonnet",
-      "claude-3-haiku",
-      "claude-2.1",
+      "anthropic.claude-opus-4-7-v1:0",
+      "anthropic.claude-sonnet-4-6",
+      "anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "anthropic.claude-3-5-sonnet-20241022-v2:0",
+      "anthropic.claude-3-5-haiku-20241022-v1:0",
+      "amazon.nova-pro-v1:0",
     ],
     color: "#FF9900",
     logo: "/assets/aws-bedrock.svg", // Logo path - add logo to public/assets/ folder
   },
   "google-ai": {
     name: "Google AI",
-    models: ["gemini-pro", "gemini-pro-vision", "palm-2"],
+    models: [
+      "gemini-3-pro-preview",
+      "gemini-2.5-pro",
+      "gemini-2.5-flash",
+      "gemini-2.0-flash",
+      "gemini-1.5-pro",
+      "gemini-1.5-flash",
+    ],
     color: "#4285F4",
     logo: "/assets/gemini-ai.svg", // Logo path - add logo to public/assets/ folder
   },
   anthropic: {
     name: "Anthropic",
-    models: ["claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
+    models: [
+      "claude-opus-4-7",
+      "claude-opus-4-6",
+      "claude-sonnet-4-6",
+      "claude-sonnet-4-5-20250929",
+      "claude-3-5-sonnet-20241022",
+      "claude-3-5-haiku-20241022",
+      "claude-3-haiku-20240307",
+    ],
     color: "#D97757",
     logo: "/assets/anthropic.png", // Logo path - add logo to public/assets/ folder
   },
@@ -62,7 +89,7 @@ export const SUBSCRIPTION_PLANS = {
       seats: 1,
       cortexDailyUsage: 0,
     },
-    allowedModels: ['claude-3-haiku', 'gpt-3.5-turbo', 'gemini-1.5-flash'],
+    allowedModels: ['claude-3-5-haiku-20241022', 'gpt-4o-mini', 'gemini-2.5-flash'],
     features: [
       "Basic usage tracking",
       "Simple analytics",

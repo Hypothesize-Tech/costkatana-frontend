@@ -1,7 +1,26 @@
 /// <reference types="vite/client" />
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import CachePage from './pages/Cache';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+// Agent Builder pages — lazy so the xyflow bundle ships separately.
+const AgentBuilderLayout = React.lazy(() => import('./pages/agent-builder/AgentBuilderLayout'));
+const AgentBuilderDashboard = React.lazy(() => import('./pages/agent-builder/Dashboard'));
+const AgentBuilderTemplates = React.lazy(() => import('./pages/agent-builder/Templates'));
+const AgentBuilderTextToAgent = React.lazy(() => import('./pages/agent-builder/TextToAgent'));
+const AgentBuilderKnowledgeBase = React.lazy(() => import('./pages/agent-builder/KnowledgeBase'));
+const AgentBuilderBuilder = React.lazy(() => import('./pages/agent-builder/Builder'));
+const AgentBuilderTrace = React.lazy(() => import('./pages/agent-builder/Trace'));
+const AgentBuilderCheckpoint = React.lazy(() => import('./pages/agent-builder/Checkpoint'));
+const AgentBuilderDeploy = React.lazy(() => import('./pages/agent-builder/Deploy'));
+const EmbedWidgetRoute = React.lazy(() => import('./pages/embed/EmbedRoute'));
+
+const AgentBuilderFallback: React.FC = () => (
+  <div className="min-h-[40vh] flex items-center justify-center">
+    <div className="w-6 h-6 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
+  </div>
+);
 
 // Contexts
 import { AuthProvider } from './contexts/AuthContext';
@@ -139,6 +158,16 @@ function AppContent() {
         <Route path="/subscription/success" element={<SubscriptionSuccess />} />
         <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
 
+        {/* Public embed widget — rendered inside an iframe on customer sites */}
+        <Route
+          path="/embed/:deploymentId"
+          element={
+            <Suspense fallback={<AgentBuilderFallback />}>
+              <EmbedWidgetRoute />
+            </Suspense>
+          }
+        />
+
         {/* Protected routes */}
         <Route
           path="/"
@@ -232,6 +261,25 @@ function AppContent() {
             path="workflows"
             element={<Navigate to="/agent-trace" replace />}
           />
+
+          {/* Agent Builder — nested inside the main CostKatana Layout */}
+          <Route
+            path="agent-builder"
+            element={
+              <Suspense fallback={<AgentBuilderFallback />}>
+                <AgentBuilderLayout />
+              </Suspense>
+            }
+          >
+            <Route index element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderDashboard /></Suspense>} />
+            <Route path="templates" element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderTemplates /></Suspense>} />
+            <Route path="text-to-agent" element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderTextToAgent /></Suspense>} />
+            <Route path="knowledge-base" element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderKnowledgeBase /></Suspense>} />
+            <Route path=":agentId" element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderBuilder /></Suspense>} />
+            <Route path=":agentId/runs/:runId" element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderTrace /></Suspense>} />
+            <Route path=":agentId/runs/:runId/checkpoint" element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderCheckpoint /></Suspense>} />
+            <Route path=":agentId/deploy" element={<Suspense fallback={<AgentBuilderFallback />}><AgentBuilderDeploy /></Suspense>} />
+          </Route>
           <Route
             path="key-vault"
             element={<KeyVault />}

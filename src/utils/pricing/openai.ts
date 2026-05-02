@@ -1,13 +1,64 @@
 import { ModelPricing } from "../cost";
 
 export const OPENAI_PRICING: ModelPricing[] = [
+  // === GPT-5.5 / GPT-5.4 (aligned with OpenAI API list pricing) ===
+  {
+    provider: "OpenAI",
+    model: "gpt-5.5",
+    inputPrice: 0.005, // $5/1M
+    outputPrice: 0.03, // $30/1M
+    contextWindow: 1_050_000,
+    capabilities: ["text", "vision", "reasoning", "tools", "agents"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
+    model: "gpt-5.5-2026-04-23",
+    inputPrice: 0.005,
+    outputPrice: 0.03,
+    contextWindow: 1_050_000,
+    capabilities: ["text", "vision", "reasoning", "tools"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
+    model: "gpt-5.5-pro",
+    inputPrice: 0.03, // $30/1M
+    outputPrice: 0.18, // $180/1M
+    contextWindow: 1_050_000,
+    capabilities: ["text", "vision", "reasoning", "tools", "premium"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
+    model: "gpt-5.4",
+    inputPrice: 0.0025, // $2.5/1M
+    outputPrice: 0.015, // $15/1M
+    contextWindow: 256_000,
+    capabilities: ["text", "vision", "reasoning", "tools"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
+    model: "gpt-5.4-mini",
+    inputPrice: 0.00075, // $0.75/1M
+    outputPrice: 0.0045, // $4.5/1M
+    contextWindow: 256_000,
+    capabilities: ["text", "vision", "reasoning"],
+    category: "multimodal",
+    isLatest: true,
+  },
   // === GPT-5 Models (Latest) ===
   {
     provider: "OpenAI",
     model: "gpt-5",
-    inputPrice: 0.00125, // $1.25/1M tokens = $0.00125/1K tokens
-    outputPrice: 0.01, // $10.00/1M tokens = $0.01/1K tokens
-    contextWindow: 128000,
+    inputPrice: 0.005, // $5/1M — flagship-class tier
+    outputPrice: 0.03, // $30/1M
+    contextWindow: 1_050_000,
     capabilities: ["text", "reasoning", "analysis", "coding", "agents"],
     category: "text",
     isLatest: true,
@@ -15,9 +66,9 @@ export const OPENAI_PRICING: ModelPricing[] = [
   {
     provider: "OpenAI",
     model: "gpt-5-mini",
-    inputPrice: 0.00025, // $0.25/1M tokens = $0.00025/1K tokens
-    outputPrice: 0.002, // $2.00/1M tokens = $0.002/1K tokens
-    contextWindow: 128000,
+    inputPrice: 0.00075, // $0.75/1M
+    outputPrice: 0.0045, // $4.5/1M
+    contextWindow: 256_000,
     capabilities: ["text", "reasoning", "analysis", "efficient"],
     category: "text",
     isLatest: true,
@@ -25,19 +76,29 @@ export const OPENAI_PRICING: ModelPricing[] = [
   {
     provider: "OpenAI",
     model: "gpt-5-nano",
-    inputPrice: 0.00005, // $0.05/1M tokens = $0.00005/1K tokens
-    outputPrice: 0.0004, // $0.40/1M tokens = $0.0004/1K tokens
-    contextWindow: 128000,
+    inputPrice: 0.0002, // $0.20/1M
+    outputPrice: 0.0008, // $0.80/1M
+    contextWindow: 128_000,
     capabilities: ["text", "fast", "cost-effective"],
     category: "text",
     isLatest: true,
   },
   {
     provider: "OpenAI",
+    model: "gpt-5-chat",
+    inputPrice: 0.005,
+    outputPrice: 0.03,
+    contextWindow: 1_050_000,
+    capabilities: ["text", "chat", "reasoning"],
+    category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
     model: "gpt-5-pro",
-    inputPrice: 0.0025, // $2.50/1M tokens = $0.0025/1K tokens
-    outputPrice: 0.02, // $20.00/1M tokens = $0.02/1K tokens
-    contextWindow: 128000,
+    inputPrice: 0.03, // $30/1M — premium tier (see gpt-5.5-pro)
+    outputPrice: 0.18, // $180/1M
+    contextWindow: 1_050_000,
     capabilities: ["text", "reasoning", "analysis", "coding", "agents", "premium"],
     category: "text",
     isLatest: true,
@@ -55,9 +116,9 @@ export const OPENAI_PRICING: ModelPricing[] = [
   {
     provider: "OpenAI",
     model: "gpt-5-chat-latest",
-    inputPrice: 0.00125, // $1.25/1M tokens = $0.00125/1K tokens
-    outputPrice: 0.01, // $10.00/1M tokens = $0.01/1K tokens
-    contextWindow: 128000,
+    inputPrice: 0.005,
+    outputPrice: 0.03,
+    contextWindow: 1_050_000,
     capabilities: ["text", "chat", "reasoning", "analysis"],
     category: "text",
     isLatest: true,
