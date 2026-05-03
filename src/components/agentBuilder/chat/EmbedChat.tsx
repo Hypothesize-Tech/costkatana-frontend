@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   ensureSession,
   postMessage,
@@ -6,6 +8,9 @@ import {
 } from '../../../services/widget.service';
 import {
   ArrowPathIcon,
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+  ChevronDownIcon,
   PaperAirplaneIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -18,6 +23,8 @@ interface ChatMessage {
   pausedForApproval?: boolean;
 }
 
+type WindowState = 'normal' | 'expanded' | 'minimized';
+
 const EmbedChat: React.FC<{
   deploymentId: string;
   onClose?: () => void;
@@ -29,6 +36,7 @@ const EmbedChat: React.FC<{
   const [input, setInput] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [windowState, setWindowState] = useState<WindowState>('normal');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const subscribeOff = useRef<(() => void) | null>(null);
 
@@ -37,8 +45,6 @@ const EmbedChat: React.FC<{
       .then((session) => {
         setTheme(session.theme ?? {});
         setWelcome(session.welcomeMessage ?? 'Hi!');
-        // Use session-issued agent name if the backend returned one;
-        // fall back to a neutral label otherwise.
         if ((session as any).agentName) {
           setAgentName((session as any).agentName);
         }
@@ -59,8 +65,31 @@ const EmbedChat: React.FC<{
   }, [deploymentId]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [messages]);
+    if (windowState !== 'minimized') {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [messages, windowState]);
+
+  // Notify the widget-loader (parent window) so it can resize the iframe to
+  // match. Loader trusts only messages tagged with our deploymentId.
+  const notifyParent = (
+    type: 'costkatana-widget:expand' | 'costkatana-widget:minimize' | 'costkatana-widget:restore' | 'costkatana-widget:close',
+  ) => {
+    if (window.parent === window) return;
+    window.parent.postMessage({ type, deploymentId }, '*');
+  };
+
+  const setWindow = (next: WindowState) => {
+    setWindowState(next);
+    if (next === 'expanded') notifyParent('costkatana-widget:expand');
+    else if (next === 'minimized') notifyParent('costkatana-widget:minimize');
+    else notifyParent('costkatana-widget:restore');
+  };
+
+  const handleClose = () => {
+    notifyParent('costkatana-widget:close');
+    onClose?.();
+  };
 
   const send = async () => {
     const text = input.trim();
@@ -143,7 +172,7 @@ const EmbedChat: React.FC<{
     }
   };
 
-  const primary = theme.primary ?? '#06ec9e'; // CostKatana primary
+  const primary = theme.primary ?? '#06ec9e';
   const surface = theme.surface ?? '#ffffff';
 
   if (error && messages.length === 0) {
@@ -157,77 +186,168 @@ const EmbedChat: React.FC<{
     );
   }
 
+  const isMinimized = windowState === 'minimized';
+  const isExpanded = windowState === 'expanded';
+
   return (
     <div
       className="w-full h-full flex flex-col font-sans"
       style={{ background: surface, color: '#0f172a' }}
     >
       <header
-        className="flex items-center gap-3 px-4 py-3 border-b border-secondary-200/40"
+        className={`flex items-center gap-2 px-4 py-3 border-b border-secondary-200/40 ${
+          isMinimized ? 'cursor-pointer hover:bg-black/[0.03]' : ''
+        }`}
         style={{
           background: `linear-gradient(180deg, ${primary}1F, transparent)`,
         }}
+        onClick={isMinimized ? () => setWindow('normal') : undefined}
+        role={isMinimized ? 'button' : undefined}
+        aria-label={isMinimized ? 'Restore chat' : undefined}
       >
         <span
-          className="w-2 h-2 rounded-full"
+          className="w-2 h-2 rounded-full flex-shrink-0"
           style={{ background: primary, boxShadow: `0 0 6px ${primary}` }}
         />
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-sm truncate">{agentName}</div>
-          <div className="text-[10px] opacity-60 truncate">{welcome}</div>
+          <div className="text-[10px] opacity-60 truncate">
+            {isMinimized ? 'Click to expand' : welcome}
+          </div>
         </div>
-        {onClose && (
+
+        {!isMinimized && (
           <button
             type="button"
-            onClick={onClose}
-            className="w-7 h-7 rounded hover:bg-black/10 flex items-center justify-center"
-            aria-label="Close"
+            onClick={(e) => {
+              e.stopPropagation();
+              setWindow('minimized');
+            }}
+            className="w-7 h-7 rounded hover:bg-black/10 flex items-center justify-center flex-shrink-0"
+            aria-label="Minimize"
+            title="Minimize"
           >
-            <XMarkIcon className="w-4 h-4" />
+            <ChevronDownIcon className="w-4 h-4" />
           </button>
         )}
+        {!isMinimized && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setWindow(isExpanded ? 'normal' : 'expanded');
+            }}
+            className="w-7 h-7 rounded hover:bg-black/10 flex items-center justify-center flex-shrink-0"
+            aria-label={isExpanded ? 'Restore' : 'Expand to full screen'}
+            title={isExpanded ? 'Restore' : 'Expand'}
+          >
+            {isExpanded ? (
+              <ArrowsPointingInIcon className="w-4 h-4" />
+            ) : (
+              <ArrowsPointingOutIcon className="w-4 h-4" />
+            )}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClose();
+          }}
+          className="w-7 h-7 rounded hover:bg-black/10 flex items-center justify-center flex-shrink-0"
+          aria-label="Close"
+          title="Close"
+        >
+          <XMarkIcon className="w-4 h-4" />
+        </button>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {messages.map((msg) => (
-          <Bubble key={msg.id} msg={msg} primary={primary} />
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
+      {!isMinimized && (
+        <>
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            {messages.map((msg) => (
+              <Bubble key={msg.id} msg={msg} primary={primary} />
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          send();
-        }}
-        className="border-t border-secondary-200/40 p-2 flex items-center gap-2 bg-secondary-50/60"
-      >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message…"
-          disabled={pending}
-          className="flex-1 bg-transparent outline-none text-sm px-2 py-1.5 disabled:opacity-50"
-        />
-        <button
-          type="submit"
-          disabled={pending || !input.trim()}
-          className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-50"
-          style={{ background: primary, color: '#fff' }}
-          aria-label="Send"
-        >
-          {pending ? (
-            <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <PaperAirplaneIcon className="w-3.5 h-3.5" />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              send();
+            }}
+            className="border-t border-secondary-200/40 p-2 flex items-center gap-2 bg-secondary-50/60"
+          >
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type a message…"
+              disabled={pending}
+              className="flex-1 bg-transparent outline-none text-sm px-2 py-1.5 disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={pending || !input.trim()}
+              className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-50"
+              style={{ background: primary, color: '#fff' }}
+              aria-label="Send"
+            >
+              {pending ? (
+                <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <PaperAirplaneIcon className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </form>
+          {error && (
+            <div className="px-4 py-1 text-[10px] text-danger-600">{error}</div>
           )}
-        </button>
-      </form>
-      {error && (
-        <div className="px-4 py-1 text-[10px] text-danger-600">{error}</div>
+        </>
       )}
     </div>
+  );
+};
+
+// Animated 3-dot "typing" indicator. Each dot has a staggered delay so they
+// pulse in sequence. Pure inline styles + a one-shot keyframe injection so it
+// works regardless of the host's Tailwind config (the embed iframe inherits a
+// minimal CSS surface).
+const TYPING_DOT_KEYFRAME_ID = '__ck-embed-typing-dots-keyframe';
+function ensureTypingKeyframes() {
+  if (typeof document === 'undefined') return;
+  if (document.getElementById(TYPING_DOT_KEYFRAME_ID)) return;
+  const style = document.createElement('style');
+  style.id = TYPING_DOT_KEYFRAME_ID;
+  style.textContent = `
+@keyframes ck-typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}`;
+  document.head.appendChild(style);
+}
+
+const TypingDots: React.FC<{ color: string }> = ({ color }) => {
+  useMemo(() => ensureTypingKeyframes(), []);
+  const dotStyle = (delayMs: number): React.CSSProperties => ({
+    width: 6,
+    height: 6,
+    borderRadius: '50%',
+    background: color,
+    display: 'inline-block',
+    animation: 'ck-typing-bounce 1.2s infinite ease-in-out',
+    animationDelay: `${delayMs}ms`,
+  });
+  return (
+    <span
+      className="inline-flex items-center gap-1"
+      aria-label="Assistant is typing"
+      role="status"
+    >
+      <span style={dotStyle(0)} />
+      <span style={dotStyle(160)} />
+      <span style={dotStyle(320)} />
+    </span>
   );
 };
 
@@ -236,7 +356,7 @@ const Bubble: React.FC<{ msg: ChatMessage; primary: string }> = ({ msg, primary 
     return (
       <div className="flex justify-end">
         <div
-          className="max-w-[80%] rounded-2xl px-3 py-2 text-sm"
+          className="max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap break-words"
           style={{ background: primary, color: '#fff' }}
         >
           {msg.text}
@@ -246,13 +366,61 @@ const Bubble: React.FC<{ msg: ChatMessage; primary: string }> = ({ msg, primary 
   }
   return (
     <div className="flex justify-start">
-      <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-secondary-100/70 text-secondary-900">
+      <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-secondary-100/70 text-secondary-900 break-words">
         {msg.pending ? (
-          <span className="inline-flex items-center gap-2 opacity-70">
-            <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" /> Thinking…
-          </span>
+          <TypingDots color={primary} />
         ) : (
-          <span className="whitespace-pre-wrap">{msg.text}</span>
+          <div className="ck-md text-sm leading-relaxed">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                ul: ({ children }) => (
+                  <ul className="list-disc pl-5 mb-2 last:mb-0 space-y-1">{children}</ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className="list-decimal pl-5 mb-2 last:mb-0 space-y-1">{children}</ol>
+                ),
+                li: ({ children }) => <li>{children}</li>,
+                strong: ({ children }) => (
+                  <strong className="font-semibold">{children}</strong>
+                ),
+                em: ({ children }) => <em className="italic">{children}</em>,
+                code: ({ children }) => (
+                  <code className="px-1 py-0.5 rounded bg-black/10 text-[12px] font-mono">
+                    {children}
+                  </code>
+                ),
+                pre: ({ children }) => (
+                  <pre className="my-2 p-2 rounded bg-black/10 text-[12px] font-mono overflow-x-auto">
+                    {children}
+                  </pre>
+                ),
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:no-underline"
+                    style={{ color: primary }}
+                  >
+                    {children}
+                  </a>
+                ),
+                h1: ({ children }) => (
+                  <h1 className="text-base font-semibold mt-2 mb-1 first:mt-0">{children}</h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="text-sm font-semibold mt-2 mb-1 first:mt-0">{children}</h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="text-sm font-semibold mt-2 mb-1 first:mt-0">{children}</h3>
+                ),
+              }}
+            >
+              {msg.text}
+            </ReactMarkdown>
+          </div>
         )}
       </div>
     </div>
