@@ -14,7 +14,6 @@ const AgentBuilderBuilder = React.lazy(() => import('./pages/agent-builder/Build
 const AgentBuilderTrace = React.lazy(() => import('./pages/agent-builder/Trace'));
 const AgentBuilderCheckpoint = React.lazy(() => import('./pages/agent-builder/Checkpoint'));
 const AgentBuilderDeploy = React.lazy(() => import('./pages/agent-builder/Deploy'));
-const EmbedWidgetRoute = React.lazy(() => import('./pages/embed/EmbedRoute'));
 
 const AgentBuilderFallback: React.FC = () => (
   <div className="min-h-[40vh] flex items-center justify-center">
@@ -157,16 +156,6 @@ function AppContent() {
         <Route path="/integrations/slack/error" element={<SlackCallback />} />
         <Route path="/subscription/success" element={<SubscriptionSuccess />} />
         <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
-
-        {/* Public embed widget — rendered inside an iframe on customer sites */}
-        <Route
-          path="/embed/:deploymentId"
-          element={
-            <Suspense fallback={<AgentBuilderFallback />}>
-              <EmbedWidgetRoute />
-            </Suspense>
-          }
-        />
 
         {/* Protected routes */}
         <Route
