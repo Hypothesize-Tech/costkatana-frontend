@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAgentBuilderStore } from '../../../stores/agentBuilderStore';
 import {
@@ -6,9 +6,13 @@ import {
   Cog6ToothIcon,
   ExclamationTriangleIcon,
   ArrowTopRightOnSquareIcon,
+  ClockIcon,
 } from '@heroicons/react/24/outline';
 import type { NodeType } from '../../../services/agentPlatform.service';
 import { NODE_COLOR, NODE_LABEL } from '../nodes';
+import PromptEditor from '../../prompt/PromptEditor';
+import PromptVersionHistory from '../../prompt/PromptVersionHistory';
+import { PromptTemplateService } from '../../../services/promptTemplate.service';
 
 const MODEL_OPTIONS = [
   { id: 'anthropic.claude-3-5-sonnet-20241022-v2:0', name: 'Claude Sonnet 4', cost: '$3 / 1M in' },
@@ -112,11 +116,13 @@ const NodeConfigPanel: React.FC = () => {
             </div>
           </Section>
           <Section label="System prompt">
-            <textarea
-              className={`${inputCls} min-h-[80px] resize-none`}
-              value={cfg.system ?? ''}
-              onChange={(e) => updateConfig(node.id, { system: e.target.value })}
-              placeholder="You are a helpful…"
+            <PromptNodeEditor
+              templateId={cfg.promptTemplateId}
+              freeformValue={cfg.system ?? ''}
+              onFreeformChange={(v) => updateConfig(node.id, { system: v })}
+              onTemplateBound={(id) => updateConfig(node.id, { promptTemplateId: id })}
+              onTemplateUnbound={() => updateConfig(node.id, { promptTemplateId: undefined })}
+              nodeId={node.id}
             />
           </Section>
           <Section label="Generation">
@@ -332,5 +338,127 @@ const FieldRow: React.FC<{
     />
   </label>
 );
+
+interface PromptNodeEditorProps {
+  templateId?: string;
+  freeformValue: string;
+  onFreeformChange: (v: string) => void;
+  onTemplateBound: (id: string) => void;
+  onTemplateUnbound: () => void;
+  nodeId: string;
+}
+
+const PromptNodeEditor: React.FC<PromptNodeEditorProps> = ({
+  templateId,
+  freeformValue,
+  onFreeformChange,
+  onTemplateBound,
+  onTemplateUnbound,
+  nodeId,
+}) => {
+  const [showHistory, setShowHistory] = useState(false);
+  const [boundContent, setBoundContent] = useState<string>('');
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [bindError, setBindError] = useState<string | null>(null);
+  const [bindLoading, setBindLoading] = useState(false);
+
+  useEffect(() => {
+    if (!templateId) {
+      setBoundContent('');
+      return;
+    }
+    let cancelled = false;
+    PromptTemplateService.getTemplate(templateId)
+      .then((t) => {
+        if (!cancelled) setBoundContent(t.content ?? '');
+      })
+      .catch((e) =>
+        setBindError(e instanceof Error ? e.message : 'Failed to load template'),
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, [templateId, refreshKey]);
+
+  const bindNew = async () => {
+    setBindLoading(true);
+    setBindError(null);
+    try {
+      const created = await PromptTemplateService.createTemplate({
+        name: `Agent prompt — ${nodeId.slice(0, 6)}`,
+        content: freeformValue || 'You are a helpful assistant.',
+        category: 'general',
+      });
+      onTemplateBound(created._id);
+    } catch (e) {
+      setBindError(e instanceof Error ? e.message : 'Failed to create template');
+    } finally {
+      setBindLoading(false);
+    }
+  };
+
+  if (!templateId) {
+    return (
+      <>
+        <textarea
+          className="w-full rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-100 dark:bg-dark-bg-100 px-2 py-1.5 text-xs text-secondary-900 dark:text-secondary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500 min-h-[80px] resize-none"
+          value={freeformValue}
+          onChange={(e) => onFreeformChange(e.target.value)}
+          placeholder="You are a helpful…"
+        />
+        <button
+          type="button"
+          onClick={bindNew}
+          disabled={bindLoading}
+          className="mt-2 w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary-200/40 dark:border-primary-500/20 text-xs text-primary-700 dark:text-primary-300 hover:border-primary-400/60 hover:bg-primary-50/40 dark:hover:bg-primary-900/15 transition-colors disabled:opacity-50"
+        >
+          {bindLoading ? 'Saving…' : 'Save as versioned template'}
+        </button>
+        {bindError && (
+          <div className="text-[11px] text-danger-600 dark:text-danger-400 mt-1">
+            {bindError}
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <PromptEditor
+        templateId={templateId}
+        initialContent={boundContent}
+        onSaved={() => setRefreshKey((k) => k + 1)}
+        nodeId={nodeId}
+      />
+      <div className="flex items-center justify-between gap-2 mt-2">
+        <button
+          type="button"
+          onClick={() => setShowHistory((s) => !s)}
+          className="inline-flex items-center gap-1 text-[11px] text-primary-600 dark:text-primary-400 hover:underline"
+        >
+          <ClockIcon className="w-3 h-3" />
+          {showHistory ? 'Hide versions' : 'View versions'}
+        </button>
+        <button
+          type="button"
+          onClick={onTemplateUnbound}
+          className="text-[11px] text-secondary-500 dark:text-secondary-400 hover:underline"
+        >
+          Unbind
+        </button>
+      </div>
+      {showHistory && (
+        <div className="mt-2">
+          <PromptVersionHistory
+            templateId={templateId}
+            refreshKey={refreshKey}
+            onPinned={() => setRefreshKey((k) => k + 1)}
+          />
+        </div>
+      )}
+    </>
+  );
+};
 
 export default NodeConfigPanel;

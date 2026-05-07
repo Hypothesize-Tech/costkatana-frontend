@@ -34,6 +34,7 @@ import {
   EyeIcon,
   TagIcon,
   CreditCardIcon,
+  ClipboardDocumentCheckIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 import { useAuth } from '../../hooks';
@@ -93,6 +94,7 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Agent Trace', href: '/agent-trace', icon: QueueListIcon, description: 'Monitor and optimize agent traces' },
       { name: 'Agent Builder', href: '/agent-builder', icon: Squares2X2Icon, description: 'Visual agent builder, templates, and deployments' },
+      { name: 'Evals', href: '/evals', icon: ClipboardDocumentCheckIcon, description: 'RAGAS quality + feedback dashboard' },
       { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Performance insights' },
       { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'A/B testing' },
     ],

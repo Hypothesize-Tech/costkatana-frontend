@@ -71,6 +71,7 @@ import JiraCallback from './pages/JiraCallback';
 import DiscordCallback from './pages/DiscordCallback';
 import SlackCallback from './pages/SlackCallback';
 import PromptTemplates from './pages/PromptTemplates';
+import EvalsDashboard from './pages/EvalsDashboard';
 import TemplateUsage from './pages/TemplateUsage';
 import TemplateAnalytics from './pages/TemplateAnalytics';
 import { Integration } from './pages/Integration';
@@ -217,6 +218,10 @@ function AppContent() {
           <Route
             path="templates"
             element={<PromptTemplates />}
+          />
+          <Route
+            path="evals"
+            element={<EvalsDashboard />}
           />
           <Route
             path="templates/use"

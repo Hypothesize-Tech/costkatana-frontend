@@ -159,7 +159,7 @@ export class PromptTemplateService {
     const response = await apiClient.get(
       `${this.baseUrl}/${templateId}/versions`,
     );
-    return response.data.data;
+    return response.data.versions ?? response.data.data ?? [];
   }
 
   // Get specific template version
@@ -170,18 +170,63 @@ export class PromptTemplateService {
     const response = await apiClient.get(
       `${this.baseUrl}/${templateId}/versions/${version}`,
     );
-    return response.data.data;
+    return response.data.version ?? response.data.data;
+  }
+
+  // Create a new version snapshot of a template
+  static async createTemplateVersion(
+    templateId: string,
+    payload: { content: string; changeNote?: string; agentId?: string; nodeId?: string },
+  ): Promise<TemplateVersion> {
+    const response = await apiClient.post(
+      `${this.baseUrl}/${templateId}/versions`,
+      payload,
+    );
+    return response.data.version ?? response.data.data;
+  }
+
+  // Pin a specific version as the current/active version (live agents will use it)
+  static async pinTemplateVersion(
+    templateId: string,
+    version: number,
+  ): Promise<PromptTemplate> {
+    const response = await apiClient.put(
+      `${this.baseUrl}/${templateId}/versions/${version}/pin`,
+    );
+    return response.data.template ?? response.data.data;
+  }
+
+  // Diff two versions (returns line-level diff)
+  static async getTemplateVersionDiff(
+    templateId: string,
+    from: number,
+    to: number,
+  ): Promise<{
+    from: number;
+    to: number;
+    lines: Array<{
+      type: 'add' | 'remove' | 'context';
+      content: string;
+      oldLine?: number;
+      newLine?: number;
+    }>;
+  }> {
+    const response = await apiClient.get(
+      `${this.baseUrl}/${templateId}/versions/diff`,
+      { params: { from, to } },
+    );
+    return response.data.diff ?? response.data.data;
   }
 
   // Restore template to specific version
   static async restoreVersion(
     templateId: string,
     version: number,
-  ): Promise<PromptTemplate> {
+  ): Promise<TemplateVersion> {
     const response = await apiClient.post(
       `${this.baseUrl}/${templateId}/versions/${version}/restore`,
     );
-    return response.data.data;
+    return response.data.version ?? response.data.data;
   }
 
   // Share template with users

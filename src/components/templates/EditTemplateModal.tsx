@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FiPlus, FiMinus, FiSave, FiCpu as FiBrain, FiImage } from "react-icons/fi";
+import { FiPlus, FiMinus, FiSave, FiCpu as FiBrain, FiImage, FiClock } from "react-icons/fi";
 import { Modal } from "../common/Modal";
 import { PromptTemplate } from "../../types/promptTemplate.types";
 import { AITemplateOptimizer } from "./AITemplateOptimizer";
 import { FeatureExtractionStatus } from "./FeatureExtractionStatus";
 import { useExtractionStream } from "../../hooks/useExtractionStream";
+import PromptVersionHistory from "../prompt/PromptVersionHistory";
 
 interface EditTemplateModalProps {
   template: PromptTemplate;
@@ -17,7 +18,8 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [activeTab, setActiveTab] = useState<"edit" | "optimize">("edit");
+  const [activeTab, setActiveTab] = useState<"edit" | "optimize" | "versions">("edit");
+  const [versionsRefreshKey, setVersionsRefreshKey] = useState(0);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
   const [liveExtractionStatus, setLiveExtractionStatus] = useState<any>(null);
@@ -272,9 +274,29 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             <span className="hidden sm:inline">AI Optimization</span>
             <span className="sm:hidden">Optimize</span>
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("versions")}
+            className={`px-4 sm:px-6 py-2 sm:py-3 font-display font-semibold text-xs sm:text-sm transition-all duration-300 hover:scale-105 whitespace-nowrap ${activeTab === "versions"
+              ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-500 bg-gradient-primary/10"
+              : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20"
+              }`}
+          >
+            <FiClock className="inline-block mr-1 sm:mr-2 mb-0.5 sm:mb-1" />
+            <span className="hidden sm:inline">Versions</span>
+            <span className="sm:hidden">History</span>
+          </button>
         </div>
 
-        {activeTab === "edit" ? (
+        {activeTab === "versions" ? (
+          <div className="overflow-y-auto flex-1 p-4 sm:p-6 md:p-8">
+            <PromptVersionHistory
+              templateId={template._id}
+              refreshKey={versionsRefreshKey}
+              onPinned={() => setVersionsRefreshKey((k) => k + 1)}
+            />
+          </div>
+        ) : activeTab === "edit" ? (
           <form
             onSubmit={handleSubmit}
             className="flex flex-col flex-1"
